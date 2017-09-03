@@ -14,7 +14,17 @@ private:
   Engine();
 
 public:
-  Engine(Configuration configuration)
+  Engine(Configuration configuration);
+
+  /*
+   *  Given a list of polygons we render them
+   */
+  void RenderPolygons(std::vector<Polygon> polygons);
+
+  /*
+   *  Given a polygon we want to render it to the screen
+   */
+  void RenderPolygon(Polygon &poly);
 };
 }
 }

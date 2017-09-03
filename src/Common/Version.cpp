@@ -6,16 +6,16 @@ namespace jerobins
 namespace common
 {
 /*
-         * Creates a version object.
-         */
+ * Creates a version object.
+ */
 Version::Version(uint16_t major, uint16_t minor, uint16_t patch) : Major(major), Minor(minor), Patch(patch)
 {
     /* Empty */
 }
 
 /*
-*  Returns a string representation of the version.
-*/
+ *  Returns a string representation of the version.
+ */
 const std::string Version::ToString() const
 {
     if (this->strRep == "")
@@ -23,6 +23,11 @@ const std::string Version::ToString() const
         this->strRep = std::to_string(this->Major) + "." + std::to_string(this->Minor) + "." + std::to_string(this->Patch);
     }
     return this->strRep;
+}
+
+std::ostream &operator<<(std::ostream &strm, const Version &a)
+{
+    return strm << a.ToString();
 }
 }
 };

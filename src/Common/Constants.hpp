@@ -8,7 +8,7 @@ namespace jerobins
 {
 namespace common
 {
-const Version version(0, 1, 0);
+extern const Version version;
 }
 }
 #endif

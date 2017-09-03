@@ -1,0 +1,17 @@
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="dirs.proj" />  
+  <PropertyGroup>
+    <LibraryRoot>$(MSBuildThisFileDirectory)</LibraryRoot>
+    <LibrarySourceFolder>$(LibraryRoot)src</LibrarySourceFolder>
+    <LibraryFriendlyName>Game Engine Library</LibraryFriendlyName>
+    <BinariesFolder>$(LibraryRoot)binaries</BinariesFolder>
+    <Scope Condition=" '$(Scope)' == '' ">All</Scope>
+    <BuildInParallel>true</BuildInParallel>
+    <ImportDirectoryBuildTargets>true</ImportDirectoryBuildTargets>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Well Known Properties">
+  </PropertyGroup>
+ 
+  <Import Project="buildTargets\common.Build.props"/>
+</Project>

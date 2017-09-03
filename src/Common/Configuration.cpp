@@ -22,6 +22,8 @@ Configuration::Configuration(const Configuration &other) : mappings(other.mappin
 
 Configuration &Configuration::operator = (const Configuration &other)
 {
+	std::map<std::string, char*> tmp(other.mappings);
+	this->mappings = tmp;
     return *this;
 }
 
@@ -38,13 +40,28 @@ void Configuration::Delete(std::string key)
 
 static Configuration Deserialize(std::istream &input)
 {
-    return Configuration();
+	Configuration config;
+	std::string line;
+	while (std::getline(input, line)) {
+		std::vector<std::string> lines = jerobins::common::Split(line, ":");
+		if (lines.size() != 2) {
+
+			throw std::runtime_error("Could not deserialize");
+		}
+		std::string key = lines[0];
+		std::string value = lines[1];
+		config.Write<std::string>(key, value);
+	}
+	return config;
 }
 
 void Configuration::Serialize(std::ostream &output) const
 {
+	for each(std::pair<std::string, char*> pair in this->mappings) {
+		output << pair.first << ":" << pair.second << std::endl;
+	}
+	output.flush();
 }
-
 
 }
 }

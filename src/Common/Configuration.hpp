@@ -4,8 +4,11 @@
 
 #include <map>
 #include <string>
+#include <vector>
+
 #include <Common/Util.hpp>
 #include <Common/Version.hpp>
+#include <Common/StringUtil.hpp>
 
 namespace jerobins
 {
@@ -48,17 +51,14 @@ class Configuration
 
         auto valueBytes = new char[sizeof(T)];
         auto ptr = &value;
-        std::copy(ptr, ptr + sizeof(T), valueBytes);
+        std::fill(ptr, ptr + sizeof(T), valueBytes);
         mappings.insert(std::pair<std::string, char*>(key, valueBytes));
     }
 
     // Remove the configuration value
     void Delete(std::string key);
 
-    static Configuration Deserialize(std::istream &input)
-    {
-        return Configuration();
-    }
+	static Configuration Deserialize(std::istream &input);
 
     void Serialize(std::ostream &output) const;
 };
