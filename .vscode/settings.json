@@ -29,6 +29,10 @@
         "xmemory0": "cpp",
         "xstddef": "cpp",
         "xtr1common": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "iosfwd": "cpp",
+        "xlocale": "cpp",
+        "forward_list": "cpp",
+        "valarray": "cpp"
     }
 }

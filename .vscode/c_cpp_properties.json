@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceRoot}/src",
+                "${workspaceRoot}/include",
+                "${workspaceRoot}/lib/json",
                 "${workspaceRoot}/lib/googletest-release-1.8.0/googletest/include",
                 "C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Tools/MSVC/14.10.25017/include",
                 "C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/SDK/ScopeCppSDK/VC/include"
@@ -15,7 +16,8 @@
             "intelliSenseMode": "msvc-x64",
             "browse": {
                 "path": [
-                    "${workspaceRoot}/src",
+                    "${workspaceRoot}/include",
+                    "${workspaceRoot}/lib/json",
                     "${workspaceRoot}/lib/googletest-release-1.8.0/googletest/include",
                     "C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Tools/MSVC/14.10.25017/include",
                     "C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/SDK/ScopeCppSDK/VC/include"
