@@ -1,6 +1,9 @@
 
+#ifndef _RENDERTYPE_HPP_
+#define _RENDERTYPE_HPP_
+
 namespace jerobins {
-  namespace Render {
+  namespace render {
     enum RenderType {
       LineLoop,
       Lines,
@@ -11,9 +14,11 @@ namespace jerobins {
       Points,
       TriangleFan,
       Triangles,
-      TrianglesAdjacency
+      TrianglesAdjacency,
       TriangleStrip,
       TriangleStripAdjacency,
     };
   }
 }
+
+#endif

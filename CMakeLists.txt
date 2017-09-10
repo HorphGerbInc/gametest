@@ -1,0 +1,26 @@
+#
+# https://stackoverflow.com/questions/16398937/cmake-and-finding-other-projects-and-their-dependencies
+#
+
+cmake_minimum_required(VERSION 3.0)
+
+project(Jerobins)
+
+set(GLEW_ROOT "${CMAKE_HOME_DIRECTORY}/lib/glew")
+set(GLEW_INCLUDE "${CMAKE_HOME_DIRECTORY}/lib/glew")
+set(GLEW_LIB "${CMAKE_HOME_DIRECTORY}/lib/glew/lib/Release/Win32")
+set(GLEW_DLL "${CMAKE_HOME_DIRECTORY}/lib/glew/bin/Release/Win32/")
+
+# Remove 'lib' prefix for shared libraries on Windows
+if (WIN32)
+    set(APPEND CMAKE_SHARED_LIBRARY_PREFIX "")
+    list(APPEND CMAKE_PREFIX_PATH ${GLEW_LIB} ${GLEW_INCLUDE} ${GLEW_DLL})
+    list(APPEND CMAKE_LIBRARY_PATH ${GLEW_LIB} ${GLEW_INCLUDE} ${GLEW_DLL})
+endif ()
+
+
+add_subdirectory(src/Common)
+add_subdirectory(src/Engine)
+add_subdirectory(src/Math)
+#add_subdirectory(src/Render)
+add_subdirectory(src/Resource)

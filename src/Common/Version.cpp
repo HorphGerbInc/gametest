@@ -1,4 +1,6 @@
 
+#include <vector>
+
 // LIB
 #include <json.hpp>
 
@@ -15,6 +17,12 @@ namespace jerobins {
       /* Empty */
     }
 
+    Version::Version(const Version && other) : Major(other.Major), Minor(other.Minor), Patch(other.Patch) {
+    }
+
+    Version::Version(const Version & other) : Major(other.Major), Minor(other.Minor), Patch(other.Patch) {
+    }
+
     /*
      *  Returns a string representation of the version.
      */
@@ -29,42 +37,48 @@ namespace jerobins {
 
     void Version::Serialize(std::ostream &os,
                             SerializationFormat format) const {
+
       nlohmann::json j;
       j["major"] = this->Major;
       j["minor"] = this->Minor;
       j["patch"] = this->Patch;
+
+      std::vector<std::uint8_t> bytes;
+
       switch (format) {
-      case SerializationFormat.Binary:
-        std::vector<std::uint8_t> bytes =
-            json::to_cbor(j) os.write((char *)&bytes[0], bytes.size());
+      case SerializationFormat::Binary:
+        bytes = nlohmann::json::to_cbor(j);
+        os.write((char *)&bytes[0], bytes.size());
         break;
-      case SerializationFormat.Text:
+      case SerializationFormat::Text:
         os << j;
         break;
       default:
         throw std::runtime_error("Unknown SerializationFormat");
-      }
+        break;
+      };
     }
 
-    static Vesion Version::Deserialize(std::istream &is,
-                                       SerializationFormat format) {
+    Version Version::Deserialize(std::istream &is, SerializationFormat format) {
       nlohmann::json j;
       uint16_t major;
       uint16_t minor;
       uint16_t patch;
+
+      uint8_t buffer[512] = {0};
+      std::vector<std::uint8_t> bytes;
+      std::streamsize bytesRead = 0;
+
       switch (format) {
-      case SerializationFormat.Binary:
-        std::vector<std::uint8_t> bytes;
-        char bytes[512];
-        int bytesRead = 0;
-        while(is.read(bytes, 512)) {
-            bytesRead = is.gcount();            
+      case SerializationFormat::Binary:
+        while (is.read((char*)buffer, 512)) {
+          bytesRead = is.gcount();
         }
-        bytes.insert(bytes, bytes + bytesRead);
-        j <<  json::from_cbor(bytes);
+        bytes.insert(bytes.end(), buffer, buffer + bytesRead);
+        j = nlohmann::json::from_cbor(bytes);
         break;
-      case SerializationFormat.Text:
-        j << is;
+      case SerializationFormat::Text:
+        is >> j;
         break;
       default:
         throw std::runtime_error("Unknown SerializationFormat");

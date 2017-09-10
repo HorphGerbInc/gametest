@@ -2,17 +2,28 @@
 #ifndef _SHADER_HPP_
 #define _SHADER_HPP_
 
+#include <windows.h>
+
+#define GL_GLEXT_PROTOTYPES 1
+
+#include <GL/glew.h> 
+#include <GL/gl.h> 
+#include <GL/glext.h> 
+
+#include <vector>
+
 #include <Common/IString.hpp>
+#include <Common/Version.hpp>
 #include <Resource/IResource.hpp>
 
 namespace jerobins {
   namespace resource {
 
-    enume ShaderType{Vertex, Fragment};
+    enum ShaderType { Vertex, Fragment };
 
     class Shader : public jerobins::resource::IResource<Shader> {
     public:
-      Shader(Shader &&other);
+      Shader(const Shader &&other);
 
       // Return shader contents
       std::string Content() const;
@@ -20,7 +31,7 @@ namespace jerobins {
       size_t Length() const;
 
       // Compile the shader
-      bool Compile();
+      bool Compile(ShaderType type);
 
       // Return a string representation
       virtual std::string ToString() const;
@@ -34,8 +45,9 @@ namespace jerobins {
       Shader &operator=(Shader &&other);
 
     private:
-      std::list<std::string> dependencies;
-      Shader(std::string);
+      std::vector<std::string> dependencies;
+      Shader(jerobins::common::Version,std::string,std::vector<std::string>);
+      jerobins::common::Version version;
       std::string content;
       unsigned int shaderId;
     };

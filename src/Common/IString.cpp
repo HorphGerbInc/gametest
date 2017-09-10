@@ -1,10 +1,10 @@
 
 #include <Common/IString.hpp>
 
-std::ostream <<(std::ostream & os, const IString & str) {
-    return os << str.ToString();
+std::ostream &operator<<(std::ostream &os, const jerobins::common::IString &str) {
+  return os << str.ToString();
 }
 
-std::ostream <<(std::ostream & os, const IString && str) {
-    return os << str;
+std::ostream &operator<<(std::ostream &os, const jerobins::common::IString &&str) {
+  return os << str;
 }

@@ -1,4 +1,7 @@
 
+#ifndef _RESOURCEFACTORY_HPP_
+#define _RESOURCEFACTORY_HPP_
+
 namespace jerobins {
   namespace resource {
     template <class T> class ResourceFactory {
@@ -30,3 +33,5 @@ namespace jerobins {
     };
   }
 }
+
+#endif

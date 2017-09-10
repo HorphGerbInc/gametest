@@ -13,10 +13,11 @@ namespace jerobins {
     /*
     *   Provides methods to serialize and deserialize an object.
     */
-    class ISerializable<T> {
-
+    template <class T> class ISerializable {
+    public:
       // Serialize an object to a stream.
-      virtual void Serialize(std::ostream &os, SerializationFormat format) const = 0;
+      virtual void Serialize(std::ostream &os,
+                             SerializationFormat format) const = 0;
 
       // Deserialize an object
       static T Deserialize(std::istream &is, SerializationFormat format);

@@ -2,6 +2,7 @@
 // STL
 #include <fstream>
 #include <streambuf>
+#include <sstream>
 
 // lib
 #include <json.hpp>
@@ -12,11 +13,9 @@
 namespace jerobins {
   namespace resource {
 
-    Shader::Shader(std::string fileContents) { this->content = fileContents; }
+    Shader::Shader(jerobins::common::Version version, std::string content, std::vector<std::string> deps) : version(version), content(content), dependencies(deps) {}
 
-    Shader::Shader(Shader &&other) {
-      this->content = other.content;
-      other.content = "";
+    Shader::Shader(const Shader &&other) : version(other.version), content(other.content), dependencies(other.dependencies) {
     }
 
     Shader &Shader::operator=(Shader &&other) {
@@ -45,14 +44,15 @@ namespace jerobins {
 
       // create shader
       shaderId = glCreateShader(shaderType);
-      glShaderSource(shaderId, 1, content.c_str(), nullptr);
+      const char* str = content.c_str();
+      glShaderSource(shaderId, 1, &str, NULL);
 
       // compile shader
       glCompileShader(shaderId);
 
       // check shader
       int success = 0;
-      glGetShader(shaderId, GL_COMPILE_STATUS, &success);
+      glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
       if (!success) {
         char error[512];
         glGetShaderInfoLog(shaderId, 512, NULL, error);
@@ -64,13 +64,19 @@ namespace jerobins {
 
     Shader Shader::Load(std::string filename) {
       std::ifstream input(filename);
-      json j;
+      nlohmann::json j;
       input >> j;
-      std::string version = input["version"];
-      std::string name = input["name"];
-      std::string contents = input["contents"];
-      std::list deps = input["dependencies"];
-      return Shader(str);
+      std::string versionString = j["version"];
+      std::string name = j["name"];
+      std::string content = j["content"];
+      std::vector<std::string> deps = j["dependencies"];
+
+      std::stringstream ss;
+      ss << versionString;
+      auto version = jerobins::common::Version::Deserialize(
+          ss, jerobins::common::SerializationFormat::Text);
+
+      return Shader(version, content, deps);
     }
   }
 }

@@ -1,41 +1,44 @@
 
-
 #include <Engine/Engine.hpp>
 
 namespace jerobins {
   namespace engine {
 
-    Engine::Engine(Configuration configuration) {}
+    Engine::Engine(jerobins::common::Configuration configuration) {}
 
-    void Render(std::vector<IRenderable> objects) {
-      std::for_each(objects.begin(), objects.end(), Render);
+    void Engine::Render(std::vector<jerobins::render::IRenderable> objects) {
+      auto iter = objects.begin();
+      while(iter != objects.end()) {
+        Render(*iter);
+        ++iter;
+      }
     }
-
-    void Render(IRenderable &obj) {
+    
+    void Engine::Render(jerobins::render::IRenderable &obj) {
       switch (obj.Type()) {
-      case jerobins::render::RenderType.LineLoop:
+      case jerobins::render::RenderType::LineLoop:
         break;
-      case jerobins::render::RenderType.Lines:
+      case jerobins::render::RenderType::Lines:
         break;
-      case jerobins::render::RenderType.LinesAdjacency:
+      case jerobins::render::RenderType::LinesAdjacency:
         break;
-      case jerobins::render::RenderType.LineStrip:
+      case jerobins::render::RenderType::LineStrip:
         break;
-      case jerobins::render::RenderType.LineStripAdjacency:
+      case jerobins::render::RenderType::LineStripAdjacency:
         break;
-      case jerobins::render::RenderType.Patches:
+      case jerobins::render::RenderType::Patches:
         break;
-      case jerobins::render::RenderType.Points:
+      case jerobins::render::RenderType::Points:
         break;
-      case jerobins::render::RenderType.TriangleFan:
+      case jerobins::render::RenderType::TriangleFan:
         break;
-      case jerobins::render::RenderType.Triangles:
+      case jerobins::render::RenderType::Triangles:
         break;
-      case jerobins::render::RenderType.TrianglesAdjacency:
+      case jerobins::render::RenderType::TrianglesAdjacency:
         break;
-      case jerobins::render::RenderType.TriangleStrip:
+      case jerobins::render::RenderType::TriangleStrip:
         break;
-      case jerobins::render::RenderType.TriangleStripAdjacency:
+      case jerobins::render::RenderType::TriangleStripAdjacency:
         break;
       default:
         // TODO: LOG and continue

@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION 3.0)
+
+project(Math CXX)
+
+file(GLOB CPP_FILES
+"*.cpp"
+)
+
+add_library(${PROJECT_NAME} SHARED ${CPP_FILES})
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC "${CMAKE_HOME_DIRECTORY}/include"
+    PUBLIC "${CMAKE_HOME_DIRECTORY}/lib/json"
+)
