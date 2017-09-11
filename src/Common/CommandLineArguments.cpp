@@ -21,13 +21,23 @@ namespace jerobins {
       }
     }
 
+    bool
+    CommandLineArguments::ParameterSet(const std::string &&parameter) const {
+      return jerobins::common::Contains(mappings, parameter);
+    }
+
+    std::string
+    CommandLineArguments::ParameterValue(const std::string &&parameter) const {
+      auto iter = mappings.find(parameter);
+      return iter->second;
+    }
+
     void CommandLineArguments::AddFlag(const std::string &&flag) {
       if (!jerobins::common::Contains(flags, flag)) {
         flags.push_back(flag);
       }
     }
-
-    bool CommandLineArguments::FlagSet(const std::string &&flag) {
+    bool CommandLineArguments::FlagSet(const std::string &&flag) const {
       return jerobins::common::Contains(flagsSeen, flag);
     }
 
@@ -39,15 +49,15 @@ namespace jerobins {
       while (pos < argc) {
         auto token = std::string(argv[pos]);
 
-        #ifdef _DEBUG
-          std::cout << "token is: " << token << std::endl;
-        #endif
+#ifdef _DEBUG
+        std::cout << "token is: " << token << std::endl;
+#endif
 
         if (token[0] == '-') {
           token = token.substr(1);
-          #ifdef _DEBUG
-            std::cout << "token is: " << token << std::endl;
-          #endif
+#ifdef _DEBUG
+          std::cout << "token is: " << token << std::endl;
+#endif
         }
 
         auto posOfEqual = std::find(token.begin(), token.end(), '=');
@@ -59,15 +69,15 @@ namespace jerobins {
             throw jerobins::common::CommandLineArgumentException(key, token);
           }
 
-          auto value = std::string(posOfEqual+1, token.end());
+          auto value = std::string(posOfEqual + 1, token.end());
 
           if (value.size() == 0) {
             throw std::runtime_error("key has no value: " + key);
           }
 
-          #if _DEBUG
+#if _DEBUG
           std::cout << "'" << key << "' : '" << value << "'" << std::endl;
-          #endif
+#endif
 
           mappings.insert(std::pair<std::string, std::string>(key, value));
           ++pos;
