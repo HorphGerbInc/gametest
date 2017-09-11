@@ -1,4 +1,7 @@
 
+#ifdef _DEBUG
+#include <iostream>
+#endif
 #include <Common/CommandLineArguments.hpp>
 
 #include <Common/CommandLineArgumentException.hpp>
@@ -9,21 +12,22 @@
 
 namespace jerobins {
   namespace common {
-    CommandLineArguments::CommandLineArguments() { /* Empty */ }
+    CommandLineArguments::CommandLineArguments() { /* Empty */
+    }
 
     void CommandLineArguments::AddParameter(const std::string &&parameter) {
-      if (jerobins::common::Contains(parameters, parameter)) {
+      if (!jerobins::common::Contains(parameters, parameter)) {
         parameters.push_back(parameter);
       }
     }
 
     void CommandLineArguments::AddFlag(const std::string &&flag) {
-      if (jerobins::common::Contains(flags, flag)) {
+      if (!jerobins::common::Contains(flags, flag)) {
         flags.push_back(flag);
       }
     }
 
-    bool CommandLineArguments::FlagSet(const std::string && flag) {
+    bool CommandLineArguments::FlagSet(const std::string &&flag) {
       return std::find(flags.begin(), flags.end(), flag) != this->flags.end();
     }
 
@@ -35,8 +39,15 @@ namespace jerobins {
       while (pos < argc) {
         auto token = std::string(argv[pos]);
 
+        if (_DEBUG) {
+          std::cout << "token is: " << token << std::endl;
+        }
+
         if (token[0] == '-') {
           token = token.substr(1);
+          if (_DEBUG) {
+            std::cout << "token is: " << token << std::endl;
+          }
         }
 
         auto posOfEqual = std::find(token.begin(), token.end(), '=');
@@ -48,7 +59,16 @@ namespace jerobins {
             throw jerobins::common::CommandLineArgumentException(key, token);
           }
 
-          auto value = std::string(posOfEqual, token.end());
+          auto value = std::string(posOfEqual+1, token.end());
+
+          if (value.size() == 0) {
+            throw std::runtime_error("key has no value: " + key);
+          }
+
+          #if _DEBUG
+          std::cout << "'" << key << "' : '" << value << "'" << std::endl;
+          #endif
+
           mappings.insert(std::pair<std::string, std::string>(key, value));
           ++pos;
         } else if (jerobins::common::Contains(parameters, token)) {
