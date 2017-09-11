@@ -39,15 +39,15 @@ namespace jerobins {
       while (pos < argc) {
         auto token = std::string(argv[pos]);
 
-        if (_DEBUG) {
+        #ifdef _DEBUG
           std::cout << "token is: " << token << std::endl;
-        }
+        #endif
 
         if (token[0] == '-') {
           token = token.substr(1);
-          if (_DEBUG) {
+          #ifdef _DEBUG
             std::cout << "token is: " << token << std::endl;
-          }
+          #endif
         }
 
         auto posOfEqual = std::find(token.begin(), token.end(), '=');
