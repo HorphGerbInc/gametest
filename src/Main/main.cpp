@@ -16,8 +16,8 @@ int main(int argc, char *argv[]) {
     cli.Parse(argc, argv);
 
     // print them out
-    std::cout << "Debug set: " << cli.FlagSet("debug");
-    
+    std::cout << "Debug set: " << cli.FlagSet("debug") << std::endl;
+
   } catch (std::runtime_error &e) {
     std::cout << std::string(e.what()) << std::endl;
   }
