@@ -28,7 +28,7 @@ namespace jerobins {
 
     std::string Shader::Content() const { return this->content; }
 
-    size_t Shader::Length() const { return this->content.length(); }
+    std::size_t Shader::Length() const { return this->content.length(); }
 
     std::string Shader::ToString() const { return Content(); }
 

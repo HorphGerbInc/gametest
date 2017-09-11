@@ -31,7 +31,7 @@ namespace jerobins {
       // Return shader contents
       std::string Content() const;
       // Length of the shader
-      size_t Length() const;
+      std::size_t Length() const;
 
       // Compile the shader
       bool Compile(ShaderType type);
