@@ -2,8 +2,9 @@
 #ifndef _SHADER_HPP_
 #define _SHADER_HPP_
 
+#if defined(_WIN32)
 #include <windows.h>
-
+#endif
 #define GL_GLEXT_PROTOTYPES 1
 
 // jerobins: This MUST be before GL/gl.h
