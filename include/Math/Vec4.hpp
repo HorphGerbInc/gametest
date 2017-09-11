@@ -2,8 +2,6 @@
 #ifndef _VEC4_HPP_
 #define _VEC4_HPP_
 
-#include <intrin.h>
-
 #include <Common/ArgumentCheck.hpp>
 #include <Math/VectorBase.hpp>
 

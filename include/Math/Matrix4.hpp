@@ -3,7 +3,12 @@
 #define _MATRIX4_HPP_
 
 #include <array>
+
+#ifdef WIN32
 #include <intrin.h>
+#else
+#include <x86intrin.h>
+#endif
 
 #include <Common/ArgumentCheck.hpp>
 #include <Math/Vec4.hpp>

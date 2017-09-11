@@ -2,7 +2,12 @@
 #ifndef _VECTORBASE_HPP_
 #define _VECTORBASE_HPP_
 
+#ifdef WIN32
 #include <intrin.h>
+#else
+#include <x86intrin.h>
+#endif
+
 
 namespace jerobins {
   namespace math {
