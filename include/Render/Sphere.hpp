@@ -1,13 +1,18 @@
 
-#ifndef _IRENDERABLE_HPP_
-#define _IRENDERABLE_HPP_
+#ifndef _SPHERE_HPP_
+#define _SPHERE_HPP_
 
-#include <Render/RenderType.hpp>
+#include <vector>
+
+#include <Render/IRenderable.hpp>
 
 namespace jerobins {
   namespace render {
-    class IRenderable {
+    class Sphere : public IRenderable {
     public:
+      // Construct a new spehere
+      Sphere(float radius, size_t subdivisions);
+
       // Raw underlying data
       virtual const float *Data() const = 0;
       virtual size_t DataCount() const = 0;
@@ -18,6 +23,10 @@ namespace jerobins {
 
       // The structure of the data
       virtual RenderType Type() const = 0;
+
+    private:
+      std::vector<float> data;
+      std::vector<size_t> indices;
     };
   }
 }
