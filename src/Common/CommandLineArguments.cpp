@@ -28,7 +28,7 @@ namespace jerobins {
     }
 
     bool CommandLineArguments::FlagSet(const std::string &&flag) {
-      return std::find(flags.begin(), flags.end(), flag) != this->flags.end();
+      return std::find(flagsSeen.begin(), flagsSeen.end(), flag) != this->flags.end();
     }
 
     void CommandLineArguments::Parse(int argc, char *argv[]) {
