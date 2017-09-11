@@ -4,11 +4,9 @@
 
 #include <common/Version.hpp>
 
-namespace jerobins
-{
-namespace common
-{
-extern const Version version;
-}
+namespace jerobins {
+  namespace common {
+    extern const Version version;
+  }
 }
 #endif

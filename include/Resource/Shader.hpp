@@ -6,9 +6,11 @@
 
 #define GL_GLEXT_PROTOTYPES 1
 
-#include <GL/glew.h> 
-#include <GL/gl.h> 
-#include <GL/glext.h> 
+// jerobins: This MUST be before GL/gl.h
+#include <GL/glew.h>
+
+#include <GL/gl.h>
+#include <GL/glext.h>
 
 #include <vector>
 
@@ -46,7 +48,7 @@ namespace jerobins {
 
     private:
       std::vector<std::string> dependencies;
-      Shader(jerobins::common::Version,std::string,std::vector<std::string>);
+      Shader(jerobins::common::Version, std::string, std::vector<std::string>);
       jerobins::common::Version version;
       std::string content;
       unsigned int shaderId;

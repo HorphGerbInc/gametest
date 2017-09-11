@@ -17,11 +17,11 @@ namespace jerobins {
       /* Empty */
     }
 
-    Version::Version(const Version && other) : Major(other.Major), Minor(other.Minor), Patch(other.Patch) {
-    }
+    Version::Version(const Version &&other)
+        : Major(other.Major), Minor(other.Minor), Patch(other.Patch) {}
 
-    Version::Version(const Version & other) : Major(other.Major), Minor(other.Minor), Patch(other.Patch) {
-    }
+    Version::Version(const Version &other)
+        : Major(other.Major), Minor(other.Minor), Patch(other.Patch) {}
 
     /*
      *  Returns a string representation of the version.
@@ -71,7 +71,7 @@ namespace jerobins {
 
       switch (format) {
       case SerializationFormat::Binary:
-        while (is.read((char*)buffer, 512)) {
+        while (is.read((char *)buffer, 512)) {
           bytesRead = is.gcount();
         }
         bytes.insert(bytes.end(), buffer, buffer + bytesRead);

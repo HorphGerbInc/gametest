@@ -25,8 +25,7 @@ namespace jerobins {
       /*
        *  Given a polygon we want to render it to the screen
        */
-       void Render(jerobins::render::IRenderable &poly);
-
+      void Render(jerobins::render::IRenderable &poly);
     };
   }
 }

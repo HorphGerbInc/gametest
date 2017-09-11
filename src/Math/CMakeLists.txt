@@ -6,7 +6,7 @@ file(GLOB CPP_FILES
 "*.cpp"
 )
 
-add_library(${PROJECT_NAME} SHARED ${CPP_FILES})
+add_library(${PROJECT_NAME} STATIC ${CPP_FILES})
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC "${CMAKE_HOME_DIRECTORY}/include"

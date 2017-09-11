@@ -23,8 +23,6 @@ include_directories(${PROJECT_NAME}
 
 find_package(OpenGL REQUIRED)
 
-add_library(${PROJECT_NAME} SHARED ${CPP_FILES})
+add_library(${PROJECT_NAME} STATIC ${CPP_FILES})
 
-target_link_libraries(${PROJECT_NAME} Common ${OPENGL_LIBRARIES} )
-
-message("${OPENGL_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} )

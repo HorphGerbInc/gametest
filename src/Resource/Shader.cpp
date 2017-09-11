@@ -1,8 +1,8 @@
 
 // STL
 #include <fstream>
-#include <streambuf>
 #include <sstream>
+#include <streambuf>
 
 // lib
 #include <json.hpp>
@@ -13,10 +13,13 @@
 namespace jerobins {
   namespace resource {
 
-    Shader::Shader(jerobins::common::Version version, std::string content, std::vector<std::string> deps) : version(version), content(content), dependencies(deps) {}
+    Shader::Shader(jerobins::common::Version version, std::string content,
+                   std::vector<std::string> deps)
+        : version(version), content(content), dependencies(deps) {}
 
-    Shader::Shader(const Shader &&other) : version(other.version), content(other.content), dependencies(other.dependencies) {
-    }
+    Shader::Shader(const Shader &&other)
+        : version(other.version), content(other.content),
+          dependencies(other.dependencies) {}
 
     Shader &Shader::operator=(Shader &&other) {
       this->content = other.content;
@@ -44,7 +47,7 @@ namespace jerobins {
 
       // create shader
       shaderId = glCreateShader(shaderType);
-      const char* str = content.c_str();
+      const char *str = content.c_str();
       glShaderSource(shaderId, 1, &str, NULL);
 
       // compile shader

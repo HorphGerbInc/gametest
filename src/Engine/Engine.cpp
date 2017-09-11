@@ -8,12 +8,12 @@ namespace jerobins {
 
     void Engine::Render(std::vector<jerobins::render::IRenderable> objects) {
       auto iter = objects.begin();
-      while(iter != objects.end()) {
+      while (iter != objects.end()) {
         Render(*iter);
         ++iter;
       }
     }
-    
+
     void Engine::Render(jerobins::render::IRenderable &obj) {
       switch (obj.Type()) {
       case jerobins::render::RenderType::LineLoop:
