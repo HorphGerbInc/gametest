@@ -1,9 +1,9 @@
 
 #include <iostream>
 
-#include <common/CommandLineArguments.hpp>
-#include <common/Configuration.hpp>
-#include <common/constants.hpp>
+#include <Common/CommandLineArguments.hpp>
+#include <Common/Configuration.hpp>
+#include <Common/constants.hpp>
 
 /**/
 int main(int argc, char *argv[]) {

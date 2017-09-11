@@ -2,7 +2,7 @@
 #ifndef CONSTANTS_HPP_
 #define CONSTANTS_HPP_
 
-#include <common/Version.hpp>
+#include <Common/Version.hpp>
 
 namespace jerobins {
   namespace common {
