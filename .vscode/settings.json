@@ -57,6 +57,7 @@
         "xlocinfo": "cpp",
         "xlocmes": "cpp",
         "xlocmon": "cpp",
-        "xloctime": "cpp"
+        "xloctime": "cpp",
+        "cctype": "cpp"
     }
 }
