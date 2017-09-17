@@ -36,3 +36,12 @@ add_subdirectory(src/Math)
 add_subdirectory(src/Render)
 add_subdirectory(src/Resource)
 add_subdirectory(src/Main)
+add_subdirectory(src/Platform)
+
+# Tests
+enable_testing ()
+add_subdirectory(test/Common)
+add_subdirectory(test/Math)
+add_subdirectory(test/Platform)
+
+add_test(NAME Common COMMAND CommonTests)

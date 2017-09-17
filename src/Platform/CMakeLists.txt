@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(Render CXX)
+project(Platform CXX)
 
 file(GLOB CPP_FILES
 "*.cpp"

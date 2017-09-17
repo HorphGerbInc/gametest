@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.0)
-
 project(Common CXX)
 
 file(GLOB CPP_FILES

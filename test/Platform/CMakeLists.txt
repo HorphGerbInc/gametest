@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(CommonTest CXX)
+project(PlatformTest CXX)
 
 file(GLOB CPP_FILES
 "*.cpp"
@@ -8,10 +8,10 @@ file(GLOB CPP_FILES
 add_executable(${PROJECT_NAME} ${CPP_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
-target_include_directories(CommonTest 
+target_include_directories(${PROJECT_NAME} 
     PUBLIC "${CMAKE_HOME_DIRECTORY}/include"
     PUBLIC "${CMAKE_HOME_DIRECTORY}/lib/catch"
-    )
+)
 
-target_link_libraries(${PROJECT_NAME} Common)
 
+target_link_libraries(${PROJECT_NAME} Platform)

@@ -1,4 +1,6 @@
 
+#include <iostream>
+
 #include <Platform/Windows/WindowsWindow.hpp>
 
 std::string GetLastErrorAsString() {
@@ -45,19 +47,32 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam,
 namespace jerobins {
   namespace platform {
 
-    void WindowsWindow::WindowsWindow(HINSTANCE hInstance, std::string name,
-                                      int height, int width, bool fullscreen,
-                                      bool borderless)
-        : Window(name, height, width, fullscreen, borderless, bool resizable) {
+    WindowsWindow::WindowsWindow(HINSTANCE hInstance, std::string name,
+                                 int height, int width, bool fullscreen,
+                                 bool borderless, bool resizable)
+        : Window(name, height, width, fullscreen, borderless, resizable) {
 
+      HWND display = GetDesktopWindow();
+	  RECT desktop;
+	  GetWindowRect(display, &desktop);
+	  std::cout << "Desktop size: " << desktop.right << " " << desktop.bottom << std::endl;
+	  x = desktop.right / 2;
+      y = desktop.bottom / 2;
+
+      x -= width / 2;
+      y -= height / 2;
+
+	  std::cout << x << " : " << y << std::endl;
+	  std::cout << width << " : " << height << std::endl;
       // Register the window class.
-      const wchar_t ClassName[1025] = {0};
-      int result = MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, name.c_str(),
-                                       name.length(), ClassName, 1024);
+      wchar_t ClassName[1025] = {0};
+      int result = MultiByteToWideChar(CP_UTF8, 0, name.c_str(),
+                                       (int)name.length(), ClassName, 1024);
       ClassName[1024] = 0;
 
-      if (result != 0) {
-        throw std::runtime_error(GetLastErrorAsString());
+      if (result == 0) {
+        throw std::runtime_error("could not convert to wide character: " +
+                                 GetLastErrorAsString());
       }
 
       WNDCLASS wc = {};
@@ -66,7 +81,12 @@ namespace jerobins {
       wc.hInstance = hInstance;
       wc.lpszClassName = ClassName;
 
-      RegisterClass(&wc);
+      ATOM registerResult = RegisterClass(&wc);
+
+      if (registerResult == 0) {
+        throw std::runtime_error("could not register class: " +
+                                 GetLastErrorAsString());
+      }
 
       // Create the window.
       DWORD exStyle, dwStyle;
@@ -88,8 +108,8 @@ namespace jerobins {
                                      WS_OVERLAPPEDWINDOW, // Window style
 
                                      // Size and position
-                                     CW_USEDEFAULT, CW_USEDEFAULT,
-                                     CW_USEDEFAULT, CW_USEDEFAULT,
+                                     x, y,
+                                     width, height,
 
                                      NULL,      // Parent window
                                      NULL,      // Menu
@@ -97,11 +117,12 @@ namespace jerobins {
                                      NULL       // Additional application data
                                      );
 
-      if (hwnd == NULL) {
-        throw std::runtime_error("Could not create the window.");
+      if (windowHandle == NULL) {
+        std::string msg = GetLastErrorAsString();
+        throw std::runtime_error("Could not create the window: " + msg);
       }
 
-      SetGeometry(x, y, height, width);
+      SetSize(height, width);
       FullScreen(fullscreen);
       Borderless(borderless);
     }
@@ -111,16 +132,21 @@ namespace jerobins {
     void WindowsWindow::SetY(int y) { SetPosition(GetX(), y); }
 
     void WindowsWindow::SetPosition(int x, int y) {
-      SetGeometry(x, y, GetWidth(), GetHeight());
+      SetGeometry(x, y, Width(), Height());
     }
 
-    void WindowsWindow::Show() { ShowWindow(hwnd, SW_SHOW); }
+    void WindowsWindow::Show() {
+      ShowWindow(windowHandle, SW_SHOW);
+      SetForegroundWindow(windowHandle);
+    }
 
-    void WindowsWindow::Hide() { ShowWindow(hwnd, SW_HIDE); }
+    bool WindowsWindow::HasMouseFocus() const { return true; }
 
-    void WindowsWindow::SetHeight(int height) { SetSize(height, GetWidth()); }
+    void WindowsWindow::Hide() { ShowWindow(windowHandle, SW_HIDE); }
 
-    void WindowsWindow::SetWidth(int width) { SetSize(GetHeight(), width); }
+    void WindowsWindow::SetHeight(int height) { SetSize(height, Width()); }
+
+    void WindowsWindow::SetWidth(int width) { SetSize(Height(), width); }
 
     void WindowsWindow::SetSize(int height, int width) {
       SetGeometry(GetX(), GetY(), height, width);
@@ -129,11 +155,11 @@ namespace jerobins {
     void WindowsWindow::SetGeometry(int x, int y, int height, int width) {
       // Just don't do it
       if (!Resizable()) {
-        height = GetHeight();
-        width = GetWidth();
+        height = Height();
+        width = Width();
       }
 
-      if (SetWindowPos(this->hWnd, x, y, width, height)) {
+      if (MoveWindow(this->windowHandle, x, y, width, height, true)) {
         this->x = x;
         this->y = y;
         this->height = height;
@@ -143,8 +169,8 @@ namespace jerobins {
 
     void WindowsWindow::Repaint() {
       RECT rect;
-      GetWindowRect(hWnd, &rect);
-      MoveWindow(hWnd, rect.left, rect.top, rect.right - rect.left,
+      GetWindowRect(windowHandle, &rect);
+      MoveWindow(windowHandle, rect.left, rect.top, rect.right - rect.left,
                  rect.bottom - rect.top, TRUE);
     }
 
@@ -154,17 +180,27 @@ namespace jerobins {
         return;
 
       if (setFullScreen) {
-        SetWindowLongPtr(hWnd, GWL_STYLE,
+        SetWindowLongPtr(windowHandle, GWL_STYLE,
                          WS_SYSMENU | WS_POPUP | WS_CLIPCHILDREN |
                              WS_CLIPSIBLINGS | WS_VISIBLE);
       } else if (Resizable()) {
-        SetWindowLongPtr(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+        SetWindowLongPtr(windowHandle, GWL_STYLE,
+                         WS_OVERLAPPEDWINDOW | WS_VISIBLE);
         Repaint();
       } else {
-        SetWindowLongPtr(hWnd, GWL_STYLE,
+        SetWindowLongPtr(windowHandle, GWL_STYLE,
                          WS_CAPTION | WS_MINIMIZEBOX | WS_POPUPWINDOW |
                              WS_VISIBLE);
         Repaint();
+      }
+    }
+
+    void WindowsWindow::Borderless(bool isBorderless) {
+      if (this->borderless != isBorderless) {
+        if (isBorderless) {
+
+        } else {
+        }
       }
     }
   }

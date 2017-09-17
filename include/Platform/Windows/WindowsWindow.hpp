@@ -7,28 +7,34 @@
 
 #include <windows.h>
 
+#include <string>
+
 namespace jerobins {
   namespace platform {
     class WindowsWindow : public Window {
 
     public:
-      WindowsWindow(const std::string name, int height = 1080, int width = 1920,
-                    bool fullscreen = false, bool windowless = false, bool resizable = true);
+      WindowsWindow(HINSTANCE instance, const std::string name,
+                    int height = 1080, int width = 1920,
+                    bool fullscreen = false, bool borderless = false,
+                    bool resizable = true);
 
       // Enables or disables borderless
-      virtual void Borderless(bool isBorderless) = 0;
+      virtual void Borderless(bool isBorderless);
 
       // Enables or disables fullscreen
-      virtual void FullScreen(bool isFullScreen) = 0;
+      virtual void FullScreen(bool isFullScreen);
+
+      virtual bool HasMouseFocus() const;
 
       // Hide the window.
-      virtual void Hide() = 0;
+      virtual void Hide();
 
       // Show the window.
-      virtual void Show() = 0;
+      virtual void Show();
 
       // Repaint the window.
-      virtual void Repaint() = 0;
+      virtual void Repaint();
 
       // Set the position of the left of the window.
       virtual void SetX(int x);
@@ -51,11 +57,8 @@ namespace jerobins {
       // Set the position and size of the window.
       virtual void SetGeometry(int x, int y, int height, int width);
 
-      // Enables or disables fullscreen
-      virtual void FullScreen(bool fullscreen);
-
     private:
-      HWnd windowHandle;
-    }
+      HWND windowHandle;
+    };
   }
 }

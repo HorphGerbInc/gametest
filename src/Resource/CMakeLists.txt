@@ -6,10 +6,6 @@ file(GLOB CPP_FILES
 "*.cpp"
 )
 
-# Debug messages
-message("CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-message("CMAKE_LIBRARY_PATH: ${CMAKE_LIBRARY_PATH}")
-
 find_package(GLEW REQUIRED)
 if (GLEW_FOUND)
     include_directories(${GLEW_INCLUDE_DIRS})

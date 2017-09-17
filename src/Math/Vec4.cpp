@@ -4,7 +4,8 @@
 namespace jerobins {
   namespace math {
 
-    Vec4::Vec4() { /* Empty */ }
+    Vec4::Vec4() { /* Empty */
+    }
 
     Vec4::Vec4(float x, float y, float z, float w) {
       data_[0] = x;
@@ -16,6 +17,13 @@ namespace jerobins {
     Vec4::Vec4(const Vec4 &&other) { this->xmm_ = other.xmm_; }
 
     Vec4::Vec4(const Vec4 &other) { this->xmm_ = other.xmm_; }
+
+    Vec4 &Vec4::operator=(const Vec4 &other) {
+      for(int i = 0 ; i < 4; ++i) this->data_[i] = other.data_[i];
+      return *this;
+    }
+
+    Vec4 &Vec4::operator=(const Vec4 &&other) { return (*this = other); }
 
     float Vec4::Get(uint8_t pos) const {
       jerobins::common::ArgumentCheck<uint8_t>(

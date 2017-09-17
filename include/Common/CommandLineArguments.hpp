@@ -36,12 +36,19 @@ namespace jerobins {
     public:
       CommandLineArguments();
 
+      // Parameters
+      void AddParameter(const std::string &parameter);
       void AddParameter(const std::string &&parameter);
-      bool ParameterSet(const std::string && parameter) const;
-      std::string ParameterValue(const std::string && parameter) const;
-      
+      bool ParameterSet(const std::string &parameter) const;
+      bool ParameterSet(const std::string &&parameter) const;
+      std::string ParameterValue(const std::string &parameter) const;
+      std::string ParameterValue(const std::string &&parameter) const;
+
+      // Flags
+      void AddFlag(const std::string &flag);
       void AddFlag(const std::string &&flag);
-      bool FlagSet(const std::string && flag) const;
+      bool FlagSet(const std::string &flag) const;
+      bool FlagSet(const std::string &&flag) const;
 
       void Parse(int argc, char *argv[]);
     };

@@ -1,7 +1,4 @@
 
-#ifdef _DEBUG
-#include <iostream>
-#endif
 #include <Common/CommandLineArguments.hpp>
 
 #include <Common/CommandLineArgumentException.hpp>
@@ -15,10 +12,20 @@ namespace jerobins {
     CommandLineArguments::CommandLineArguments() { /* Empty */
     }
 
-    void CommandLineArguments::AddParameter(const std::string &&parameter) {
+    // Parameter
+    void CommandLineArguments::AddParameter(const std::string &parameter) {
       if (!jerobins::common::Contains(parameters, parameter)) {
         parameters.push_back(parameter);
       }
+    }
+
+    void CommandLineArguments::AddParameter(const std::string &&parameter) {
+      AddParameter(parameter);
+    }
+
+    bool
+    CommandLineArguments::ParameterSet(const std::string &parameter) const {
+      return jerobins::common::Contains(mappings, parameter);
     }
 
     bool
@@ -27,20 +34,36 @@ namespace jerobins {
     }
 
     std::string
-    CommandLineArguments::ParameterValue(const std::string &&parameter) const {
+    CommandLineArguments::ParameterValue(const std::string &parameter) const {
       auto iter = mappings.find(parameter);
       return iter->second;
     }
 
-    void CommandLineArguments::AddFlag(const std::string &&flag) {
+    std::string
+    CommandLineArguments::ParameterValue(const std::string &&parameter) const {
+      return ParameterValue(parameter);
+    }
+
+    // Flags
+    void CommandLineArguments::AddFlag(const std::string &flag) {
       if (!jerobins::common::Contains(flags, flag)) {
         flags.push_back(flag);
       }
     }
+
+    void CommandLineArguments::AddFlag(const std::string &&flag) {
+      AddFlag(flag);
+    }
+
+    bool CommandLineArguments::FlagSet(const std::string &flag) const {
+      return jerobins::common::Contains(flagsSeen, flag);
+    }
+
     bool CommandLineArguments::FlagSet(const std::string &&flag) const {
       return jerobins::common::Contains(flagsSeen, flag);
     }
 
+    // Parse
     void CommandLineArguments::Parse(int argc, char *argv[]) {
       // Skip the name of the program
       ++argv;
@@ -49,15 +72,8 @@ namespace jerobins {
       while (pos < argc) {
         auto token = std::string(argv[pos]);
 
-#ifdef _DEBUG
-        std::cout << "token is: " << token << std::endl;
-#endif
-
         if (token[0] == '-') {
           token = token.substr(1);
-#ifdef _DEBUG
-          std::cout << "token is: " << token << std::endl;
-#endif
         }
 
         auto posOfEqual = std::find(token.begin(), token.end(), '=');
@@ -74,10 +90,6 @@ namespace jerobins {
           if (value.size() == 0) {
             throw std::runtime_error("key has no value: " + key);
           }
-
-#if _DEBUG
-          std::cout << "'" << key << "' : '" << value << "'" << std::endl;
-#endif
 
           mappings.insert(std::pair<std::string, std::string>(key, value));
           ++pos;

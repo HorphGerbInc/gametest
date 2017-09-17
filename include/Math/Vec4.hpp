@@ -15,6 +15,9 @@ namespace jerobins {
       Vec4(const Vec4 &&other);
       Vec4(const Vec4 &other);
 
+      Vec4 &operator=(const Vec4 &other);
+      Vec4 &operator=(const Vec4 &&other);
+
       float Get(uint8_t pos) const;
       void Set(uint8_t pos, float value);
 

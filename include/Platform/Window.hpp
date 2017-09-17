@@ -2,22 +2,26 @@
 #ifndef _WINDOW_HPP
 #define _WINDOW_HPP
 
+#include <string>
+
 namespace jerobins {
-  namespace Platform {
+  namespace platform {
 
     /// Base class for windows which drawing occurs
     class Window {
     public:
       // Set all the parameters.
-      Window(int x, int y, int height, int width, bool fullscreen,
-             bool borderless, bool windowless, bool resizable) {
-        this->x = x;
-        this->y = y;
+      Window(std::string name, int height, int width, bool fullscreen,
+             bool borderless, bool resizable) {
         this->height = height;
         this->width = width;
         this->fullscreen = fullscreen;
         this->borderless = borderless;
       }
+
+      // Return title of window.
+      std::string GetTitle() const { return name; }
+
       // AspectRatio of the window.
       float AspectRatio() const { return (float)width / (float)height; }
 
@@ -34,16 +38,16 @@ namespace jerobins {
       bool Resizable() const { return !fullscreen && resizable; }
 
       // returns the height of the window.
-      int Height() const {return height};
+      int Height() const { return height; }
 
       // returns the width of the window.
-      int Width() const {return width};
+      int Width() const { return width; }
 
       // returns the x position of the top left corner of the window.
       int GetX() const { return x; }
 
       // returns the y position of the top left corner of the window.
-      int GetY() const { return y; }
+      int GetY() const { return y;}
 
       // Enables or disables borderless
       virtual void Borderless(bool isBorderless) = 0;
@@ -84,10 +88,11 @@ namespace jerobins {
       // Set the position and size of the window.
       virtual void SetGeometry(int x, int y, int height, int width) = 0;
 
-    private:
+    protected:
       bool fullscreen, borderless;
       bool resizable;
       bool hasFocus;
+      std::string name;
       int x, y, height, width;
     };
   }
