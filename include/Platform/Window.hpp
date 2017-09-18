@@ -26,10 +26,10 @@ namespace jerobins {
       float AspectRatio() const { return (float)width / (float)height; }
 
       // Returns true if borderless window, false otherwise.
-      bool BorderLess() const { return borderless; }
+      bool IsBorderless() const { return borderless; }
 
       // Returns true if fullscreen window, false otherwise.
-      bool FullScreen() const { return fullscreen; }
+      bool IsFullScreen() const { return fullscreen; }
 
       // Returns true if the window has focus
       bool HasFocus() const { return hasFocus; }
@@ -87,6 +87,9 @@ namespace jerobins {
 
       // Set the position and size of the window.
       virtual void SetGeometry(int x, int y, int height, int width) = 0;
+
+      // This will handle all current events.
+      virtual void HandleEvents() = 0;
 
     protected:
       bool fullscreen, borderless;

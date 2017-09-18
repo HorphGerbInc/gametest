@@ -11,9 +11,10 @@ namespace jerobins {
     public:
       Vec3();
       Vec3(float x, float y, float z);
-      Vec3(const float *data);
-      Vec3(const Vec3 &&other);
-      Vec3(const Vec3 &other);
+
+      float X() const;
+      float Y() const;
+      float Z() const;
 
       // Cross Product
       Vec3 Cross(const Vec3 &&other) const;

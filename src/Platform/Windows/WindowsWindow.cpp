@@ -3,6 +3,21 @@
 
 #include <Platform/Windows/WindowsWindow.hpp>
 
+struct Point2D {
+  int x, y;
+};
+
+// Get main monitor handle
+HMONITOR GetPrimaryMonitorHandle() {
+  const POINT ptZero = {0, 0};
+  return MonitorFromPoint(ptZero, MONITOR_DEFAULTTOPRIMARY);
+}
+
+Point2D GetScreenSize() {
+  return {};
+}
+
+
 std::string GetLastErrorAsString() {
   // Get the error message, if any.
   DWORD errorMessageID = ::GetLastError();
@@ -34,15 +49,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam,
   case WM_PAINT: {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hwnd, &ps);
-
     FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-
     EndPaint(hwnd, &ps);
   }
     return 0;
   }
   return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
+
+
 
 namespace jerobins {
   namespace platform {
@@ -52,18 +67,20 @@ namespace jerobins {
                                  bool borderless, bool resizable)
         : Window(name, height, width, fullscreen, borderless, resizable) {
 
-      HWND display = GetDesktopWindow();
-	  RECT desktop;
-	  GetWindowRect(display, &desktop);
-	  std::cout << "Desktop size: " << desktop.right << " " << desktop.bottom << std::endl;
-	  x = desktop.right / 2;
-      y = desktop.bottom / 2;
+      int w = GetSystemMetrics(SM_CXSCREEN);
+      int h = GetSystemMetrics(SM_CYSCREEN);
+
+      if (width > w)
+        width = w;
+      if (height > h)
+        height = h;
+
+      x = w / 2;
+      y = h / 2;
 
       x -= width / 2;
       y -= height / 2;
 
-	  std::cout << x << " : " << y << std::endl;
-	  std::cout << width << " : " << height << std::endl;
       // Register the window class.
       wchar_t ClassName[1025] = {0};
       int result = MultiByteToWideChar(CP_UTF8, 0, name.c_str(),
@@ -108,8 +125,7 @@ namespace jerobins {
                                      WS_OVERLAPPEDWINDOW, // Window style
 
                                      // Size and position
-                                     x, y,
-                                     width, height,
+                                     x, y, width, height,
 
                                      NULL,      // Parent window
                                      NULL,      // Menu
@@ -137,7 +153,22 @@ namespace jerobins {
 
     void WindowsWindow::Show() {
       ShowWindow(windowHandle, SW_SHOW);
+      /*
       SetForegroundWindow(windowHandle);
+      SetCapture(windowHandle);
+      SetFocus(windowHandle);
+      SetActiveWindow(windowHandle);
+      EnableWindow(windowHandle, TRUE);
+      SetForegroundWindow(windowHandle);
+      */
+    }
+
+    void WindowsWindow::HandleEvents() {
+      MSG msg;
+      if (GetMessage(&msg, 0, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+      }
     }
 
     bool WindowsWindow::HasMouseFocus() const { return true; }

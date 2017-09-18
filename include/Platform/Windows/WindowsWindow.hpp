@@ -25,6 +25,10 @@ namespace jerobins {
       // Enables or disables fullscreen
       virtual void FullScreen(bool isFullScreen);
 
+      // Handle window events.
+      virtual void HandleEvents();
+
+      // Returns true if window has mouse focus.
       virtual bool HasMouseFocus() const;
 
       // Hide the window.
