@@ -15,5 +15,10 @@ namespace jerobins {
     float Vec4::Y() const { return Get(1); }
     float Vec4::Z() const { return Get(2); }
     float Vec4::W() const { return Get(3); }
+
+    void Vec4::SetX(float newX) { return Set(0, newX); }
+    void Vec4::SetY(float newY) { return Set(1, newY); }
+    void Vec4::SetZ(float newZ) { return Set(2, newZ); }
+    void Vec4::SetW(float newW) { return Set(3, newW); }
   }
 }

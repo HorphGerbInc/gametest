@@ -15,6 +15,10 @@ namespace jerobins {
       float X() const;
       float Y() const;
       float Z() const;
+      
+      void SetX(float);
+      void SetY(float);
+      void SetZ(float);
 
       // Cross Product
       Vec3 Cross(const Vec3 &&other) const;

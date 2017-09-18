@@ -30,8 +30,7 @@ namespace jerobins {
         }
       }
 
-      VectorBase(const DerivedClass &&other) : VectorBase(other) {
-        /* Empty */
+      VectorBase(const DerivedClass &&other) : VectorBase(other) { /* Empty */
       }
 
       DerivedClass &operator=(const DerivedClass &other) {
@@ -63,7 +62,25 @@ namespace jerobins {
         return *this * other;
       }
 
-      // Addition
+      // Scalar multiplication
+      DerivedClass &operator*=(const float &scalar) {
+        __m128 scalarVector = _mm_set1_ps(scalar);
+        this->xmm_ = _mm_mul_ps(this->xmm_, scalarVector);
+        return CastToDerived();
+      }
+
+      DerivedClass &operator*=(const float &&scalar) {
+        return (*this *= scalar);
+      }
+
+      DerivedClass operator*(const float &scalar) {
+        DervicedClass result(*this);
+        return result *= scalar;
+      }
+
+      DerivedClass operator*(const float &&scalar) { return *this * scalar; }
+
+      // Pairwise Addition
       DerivedClass &operator+=(const DerivedClass &other) {
         xmm_ = _mm_add_ps(this->xmm_, other.xmm_);
         return CastToDerived();
@@ -80,17 +97,37 @@ namespace jerobins {
       }
 
       DerivedClass operator+(const DerivedClass &&other) const {
-        return *this += other;
+        return *this + other;
+      }
+
+      // Pairwise Subtraction
+      DerivedClass &operator-=(const DerivedClass &other) {
+        this->xmm_ = _mm_sub_ps(this->xmm_, other.xmm_);
+        return CastToDerived();
+      }
+
+      DerivedClass &operator-=(const DerivedClass &&other) {
+        return *this -= other;
+      }
+
+      DerivedClass operator-(const DerivedClass &other) const {
+        DerivedClass result;
+        result.xmm_ = _mm_sub_ps(this->xmm_, other.xmm_);
+        return result;
+      }
+
+      DerivedClass operator-(const DerivedClass &&other) const {
+        return (*this - other);
       }
 
       // Dot
       float Dot(const VectorBase &&other) const {
-        return _mm_dp_ps(xmm_, other.xmm_, 15)[0];
+		  return Dot(other);
       }
 
       float Dot(const VectorBase &other) const {
         float data[4];
-        auto result = _mm_dp_ps(xmm_, other.xmm_, 15);
+        auto result = _mm_dp_ps(xmm_, other.xmm_, 255);
         _mm_storeu_ps(data, result);
         return data[0];
       }

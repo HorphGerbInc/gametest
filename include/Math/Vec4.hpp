@@ -18,6 +18,10 @@ namespace jerobins {
       float Z() const;
       float W() const;
       
+      void SetX(float);
+      void SetY(float);
+      void SetZ(float);
+      void SetW(float);
 
       friend class Matrix4;
     };

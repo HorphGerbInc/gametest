@@ -4,7 +4,8 @@
 namespace jerobins {
   namespace math {
 
-    Vec3::Vec3() : VectorBase(3) { /*Empty */ }
+    Vec3::Vec3() : VectorBase(3) { /*Empty */
+    }
 
     Vec3::Vec3(float x, float y, float z) : VectorBase(3, x, y, z) {
       /* Empty */
@@ -15,6 +16,12 @@ namespace jerobins {
     float Vec3::Y() const { return Get(1); }
 
     float Vec3::Z() const { return Get(2); }
+
+    void Vec3::SetX(float newX) { return Set(0, newX); }
+
+    void Vec3::SetY(float newY) { return Set(1, newY); }
+
+    void Vec3::SetZ(float newZ) { return Set(2, newZ); }
 
     // Cross Product
     Vec3 Vec3::Cross(const Vec3 &&other) const {

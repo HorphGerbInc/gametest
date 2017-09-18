@@ -15,6 +15,9 @@ namespace jerobins {
       float X() const;
       float Y() const;
 
+      void SetX(float newX);
+      void SetY(float newY);
+
     };
   }
 }
