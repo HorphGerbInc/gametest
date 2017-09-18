@@ -10,14 +10,8 @@ namespace jerobins {
     /// Base class for windows which drawing occurs
     class Window {
     public:
-      // Set all the parameters.
-      Window(std::string name, int height, int width, bool fullscreen,
-             bool borderless, bool resizable) {
-        this->height = height;
-        this->width = width;
-        this->fullscreen = fullscreen;
-        this->borderless = borderless;
-      }
+      static Window* Create(std::string name, int height = 1024, int width = 980,
+                           bool fullscreen = false, bool borderless = false, bool resizable = true);
 
       // Return title of window.
       std::string GetTitle() const { return name; }
@@ -47,7 +41,7 @@ namespace jerobins {
       int GetX() const { return x; }
 
       // returns the y position of the top left corner of the window.
-      int GetY() const { return y;}
+      int GetY() const { return y; }
 
       // Enables or disables borderless
       virtual void Borderless(bool isBorderless) = 0;
@@ -92,6 +86,15 @@ namespace jerobins {
       virtual void HandleEvents() = 0;
 
     protected:
+      // Set all the parameters.
+      Window(std::string name, int height, int width, bool fullscreen,
+             bool borderless, bool resizable) {
+        this->height = height;
+        this->width = width;
+        this->fullscreen = fullscreen;
+        this->borderless = borderless;
+      }
+
       bool fullscreen, borderless;
       bool resizable;
       bool hasFocus;

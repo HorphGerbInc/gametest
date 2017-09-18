@@ -74,7 +74,7 @@ namespace jerobins {
       }
 
       DerivedClass operator*(const float &scalar) {
-        DervicedClass result(*this);
+        DerivedClass result(*this);
         return result *= scalar;
       }
 

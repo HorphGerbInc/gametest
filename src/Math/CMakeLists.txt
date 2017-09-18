@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(Math CXX)
 
+
 file(GLOB CPP_FILES
 "*.cpp"
 )
@@ -8,6 +9,11 @@ file(GLOB CPP_FILES
 file(GLOB HPP_FILES
 "${CMAKE_HOME_DIRECTORY}/include/${PROJECT_NAME}/*.hpp"
 )
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+SET(CMAKE_CXX_FALGS -msse4.1)
+endif()
+
 
 include_directories(${PROJECT_NAME}
     PUBLIC "${CMAKE_HOME_DIRECTORY}/include"

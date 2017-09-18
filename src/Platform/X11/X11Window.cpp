@@ -4,9 +4,9 @@
 namespace jerobins {
   namespace platform {
 
-    void X11Window::X11Window(std::string name, int height, int width,
-                              bool fullscreen, bool borderless)
-        : Window(name, height, width, fullscreen, borderless, bool resizable) {
+    X11Window::X11Window(std::string name, int height, int width,
+                              bool fullscreen, bool borderless, bool resizable)
+        : Window(name, height, width, fullscreen, borderless, resizable) {
 
       // I think everyone probably does this
       SetGeometry(x, y, height, width);
@@ -19,38 +19,39 @@ namespace jerobins {
     void X11Window::SetY(int y) { SetPosition(GetX(), y); }
 
     void X11Window::SetPosition(int x, int y) {
-      SetGeometry(x, y, GetWidth(), GetHeight());
+      SetGeometry(x, y, Width(), Height());
     }
 
-    void X11Window::Show() { ShowWindow(hwnd, SW_SHOW); }
+    void X11Window::Show() { }
 
-    void X11Window::Hide() { ShowWindow(hwnd, SW_HIDE); }
+    void X11Window::HandleEvents() {
+      
+    }
 
-    void X11Window::SetHeight(int height) { SetSize(height, GetWidth()); }
+    void X11Window::Hide() {  }
 
-    void X11Window::SetWidth(int width) { SetSize(GetHeight(), width); }
+    void X11Window::SetHeight(int height) { SetSize(height, Width()); }
+
+    void X11Window::SetWidth(int width) { SetSize(Height(), width); }
 
     void X11Window::SetSize(int height, int width) {
       SetGeometry(GetX(), GetY(), height, width);
     }
 
+    bool X11Window::HasMouseFocus() const {
+      return true;
+    }
+
     void X11Window::SetGeometry(int x, int y, int height, int width) {
       // Just don't do it
       if (!Resizable()) {
-        height = GetHeight();
-        width = GetWidth();
+        height = Height();
+        width = Width();
       }
 
-      if (OS_DEPENDENT_CALL(x, y, width, height)) {
-        this->x = x;
-        this->y = y;
-        this->height = height;
-        this->width = width;
-      }
     }
 
     void X11Window::Repaint() {
-      OS_DEPENDENT_CALL();      
     }
 
     void X11Window::FullScreen(bool setFullScreen) {
@@ -59,13 +60,16 @@ namespace jerobins {
         return;
 
       if (setFullScreen) {
-        OS_DEPENDENT_CALL();
       } else if (Resizable()) {
-        OS_DEPENDENT_CALL();
         Repaint();
       } else {
-        OS_DEPENDENT_CALL();
         Repaint();
+      }
+    }
+
+    void X11Window::Borderless(bool border) {
+      if(border == borderless) {
+        return;
       }
     }
   }

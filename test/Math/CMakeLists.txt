@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
 project(MathTest CXX)
 
+if(CMAKE_COMPILER_IS_GNUCXX)
+SET(CMAKE_CXX_FALGS -msse4.1)
+endif()
+
+
 file(GLOB CPP_FILES
 "*.cpp"
 )
