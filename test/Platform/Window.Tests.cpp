@@ -35,11 +35,10 @@ TEST_CASE("WindowsWindow", "Create object") {
 
   jerobins::common::Timer timer;
   timer.Start();
-  while (timer.Duration() < 5 * Seconds) {
+  while (timer.Duration() < 2 * Seconds) {
     window.HandleEvents();
   }
   timer.Stop();
-  std::cout << timer.Duration() << std::endl;
 
   delete ptrWindow;
 }

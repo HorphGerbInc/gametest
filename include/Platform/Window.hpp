@@ -3,6 +3,12 @@
 #define _WINDOW_HPP
 
 #include <string>
+// jerobins: This MUST be before GL/gl.h
+
+#include <GL/glew.h>
+
+#include <GL/gl.h>
+#include <GL/glext.h>
 
 namespace jerobins {
   namespace platform {
@@ -85,6 +91,8 @@ namespace jerobins {
       // This will handle all current events.
       virtual void HandleEvents() = 0;
 
+      virtual void BindOpenGL(GLint* glAttributes) = 0;
+      
     protected:
       // Set all the parameters.
       Window(std::string name, int height, int width, bool fullscreen,

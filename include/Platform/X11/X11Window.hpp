@@ -64,6 +64,8 @@ namespace jerobins {
       // Enables or disables fullscreen
       virtual void FullScreen(bool fullscreen);
 
+      virtual void BindOpenGL(GLint* glAttributes);
+
     private:
       // X11 dependent code
       X11Wrapper::X11Screen *screen;

@@ -3,7 +3,12 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <X11/X.h>
+#include <X11/Xutil.h>
+
 #include <Platform/X11/X11Window.hpp>
+
+#include <GL/glx.h>
 
 namespace jerobins {
   namespace platform {
@@ -56,7 +61,6 @@ namespace jerobins {
     void X11Window::SetY(int y) { SetPosition(GetX(), y); }
 
     void X11Window::SetPosition(int x, int y) {
-      std::cout << x << " " << y << std::endl;
       if (XMoveWindow(this->display, this->window, x, y) == 0) {
         this->x = x;
         this->y = y;
@@ -120,6 +124,12 @@ namespace jerobins {
       } else {
         Repaint();
       }
+    }
+
+    void X11Window::BindOpenGL(GLint* glAttributes) {
+      XVisualInfo* vi = glXChooseVisual(this->display, XScreenNumberOfScreen(this->screen), glAttributes);
+      auto glc = glXCreateContext(this->display, vi, NULL, GL_TRUE);
+      glXMakeCurrent(this->display, this->window, glc);
     }
 
     void X11Window::Borderless(bool border) {
