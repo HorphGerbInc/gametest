@@ -5,7 +5,14 @@ cmake_minimum_required(VERSION 3.0)
 project(Jerobins)
 
 set(CMAKE_CXX_STANDARD 14)
+if(UNIX AND NOT APPLE)
 set(CMAKE_CXX_FLAGS -msse4.1)
+FIND_PACKAGE ( X11 REQUIRED )
+IF ( X11_FOUND )
+      INCLUDE_DIRECTORIES ( ${X11_INCLUDE_DIR} )
+      LINK_LIBRARIES ( ${X11_LIBRARIES} )
+ENDIF ( X11_FOUND )
+endif()
 
 # Output directories
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)

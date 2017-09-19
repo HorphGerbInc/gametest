@@ -1,16 +1,28 @@
 
+#ifndef _X11WINDOW_HPP_
+#define _X11WINDOW_HPP_
+
+#include <X11/Xlib.h>
+
+namespace X11Wrapper {
+  typedef Screen X11Screen;
+  typedef Window X11Window;
+  typedef Display X11Display;
+};
 #include <Platform/Window.hpp>
 
 // X11 includes?
 
 namespace jerobins {
   namespace platform {
-    class X11Window : public Window {
+    class X11Window : public jerobins::platform::Window {
 
     public:
       X11Window(const std::string name, int height = 1080, int width = 1920,
                 bool fullscreen = false, bool borderless = false,
                 bool resizable = true);
+
+      ~X11Window();
 
       // Enables or disables borderless
       virtual void Borderless(bool isBorderless);
@@ -54,6 +66,11 @@ namespace jerobins {
 
     private:
       // X11 dependent code
+      X11Wrapper::X11Screen *screen;
+      X11Wrapper::X11Display *display;
+      X11Wrapper::X11Window window;
     };
   }
 }
+
+#endif

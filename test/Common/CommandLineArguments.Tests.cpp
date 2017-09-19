@@ -8,6 +8,8 @@
 // Project
 #include <Common/CommandLineArguments.hpp>
 
+char* CStr(char *c ) { return c; }
+
 TEST_CASE("Can create on heap", "[CommandLineArguments]") {
   jerobins::common::CommandLineArguments *cli_ptr =
       new jerobins::common::CommandLineArguments();
@@ -21,7 +23,7 @@ TEST_CASE("Can create on stack", "[CommandLineArguments]") {
 
 TEST_CASE("Can create flags", "[CommandLineArguments]") {
   int argc = 2;
-  char *argv[] = {"ERROR", "-debug"};
+  char *argv[] = {(char*)"ERROR", (char*)"-debug"};
 
   jerobins::common::CommandLineArguments cli;
   cli.AddFlag("debug");
@@ -43,42 +45,42 @@ TEST_CASE("Can create parameters", "[CommandLineArguements]") {
 
   std::vector<CLIRun> runs = {
       {
-          {"ERROR", "-Filename", "bob"}, // argv
+          {(char*)"ERROR", (char*)"-Filename", (char*)"bob"}, // argv
           {},                            // flags
           {"Filename"},                  // parameters
           {},                            // setFlags
           {{"Filename", "bob"}}          // kvps
       },
       {
-          {"ERROR", "-Filename", "bob"}, // argv
+          {(char*)"ERROR", (char*)"-Filename", (char*)"bob"}, // argv
           {"Debug"},                     // flags
           {"Filename", "Name"},          // parameters
           {},                            // setFlags
           {{"Filename", "bob"}}          // kvps
       },
       {
-          {"ERROR", "-Filename", "bob", "-debug"}, // argv
+          {(char*)"ERROR", (char*)"-Filename", (char*)"bob", (char*)"-debug"}, // argv
           {"debug"},                               // flags
           {"Filename", "Name"},                    // parameters
           {"debug"},                               // setFlags
           {{"Filename", "bob"}}                    // kvps
       },
       {
-          {"ERROR", "-Filename=bob", "debug"}, // argv
+          {(char*)"ERROR", (char*)"-Filename=bob", (char*)"debug"}, // argv
           {"debug"},                           // flags
           {"Filename", "Name"},                // parameters
           {"debug"},                           // setFlags
           {{"Filename", "bob"}}                // kvps
       },
       {
-          {"ERROR", "Filename", "bob"}, // argv
+          {(char*)"ERROR", (char*)"Filename", (char*)"bob"}, // argv
           {},                           // flags
           {"Filename", "Name"},         // parameters
           {},                           // setFlags
           {{"Filename", "bob"}}         // kvps
       },
       {
-          {"ERROR", "Filename=bob"}, // argv
+          {(char*)"ERROR", (char*)"Filename=bob"}, // argv
           {},                        // flags
           {"Filename", "Name"},      // parameters
           {},                        // setFlags

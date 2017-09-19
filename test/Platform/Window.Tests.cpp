@@ -1,4 +1,6 @@
 
+#include <iostream>
+
 #include <catch.hpp>
 
 #include <Common/Timer.hpp>
@@ -37,6 +39,7 @@ TEST_CASE("WindowsWindow", "Create object") {
     window.HandleEvents();
   }
   timer.Stop();
+  std::cout << timer.Duration() << std::endl;
 
   delete ptrWindow;
 }
