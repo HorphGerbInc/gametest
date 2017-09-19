@@ -1,4 +1,5 @@
 
+#include <functional>
 #include <iostream>
 #include <stdexcept>
 
@@ -15,28 +16,28 @@ namespace jerobins {
       if (this->display == NULL) {
         throw std::runtime_error("Could not create display.");
       }
-      
+
       this->screen = DefaultScreenOfDisplay(this->display);
 
       int sWidth = WidthOfScreen(this->screen);
       int sHeight = HeightOfScreen(this->screen);
-      
-      if(height > sHeight) height = sHeight;
-      if(width > sWidth) width = sWidth;
+
+      if (height > sHeight)
+        height = sHeight;
+      if (width > sWidth)
+        width = sWidth;
 
       this->x = sWidth / 2 - width / 2;
       this->y = sHeight / 2 - height / 2;
-
 
       X11Wrapper::X11Window root = RootWindowOfScreen(this->screen);
       auto bPixel = BlackPixelOfScreen(this->screen);
       auto wPixel = WhitePixelOfScreen(this->screen);
 
-      this->window = XCreateSimpleWindow(this->display, root, x, y, width,
-                                         height, 1, bPixel, wPixel);
+      this->window = XCreateSimpleWindow(this->display, root, x, y, height,
+                                         width, 1, bPixel, wPixel);
 
       XSelectInput(this->display, this->window, ExposureMask | KeyPressMask);
-      XMapWindow(this->display, this->window);
 
       // I think everyone probably does this
       SetGeometry(x, y, height, width);
@@ -55,40 +56,55 @@ namespace jerobins {
     void X11Window::SetY(int y) { SetPosition(GetX(), y); }
 
     void X11Window::SetPosition(int x, int y) {
-      SetGeometry(x, y, Width(), Height());
-    }
-
-    void X11Window::Show() {}
-
-    void X11Window::HandleEvents() {
-      XEvent event;
-      XNextEvent(this->display, &event);
-      switch (event.type) {
-      case Expose:
-        auto dgc = DefaultGCOfScreen(this->screen);
-        XFillRectangle(this->display, this->window, dgc, 20, 20, 10, 10);
-        break;
+      std::cout << x << " " << y << std::endl;
+      if (XMoveWindow(this->display, this->window, x, y) == 0) {
+        this->x = x;
+        this->y = y;
       }
     }
 
-    void X11Window::Hide() {}
+    typedef int (FunctionPtr)(Display*, XEvent*, XPointer);
+
+    template<int T>
+    Bool Checker(X11Wrapper::X11Display* disp, XEvent* event, XPointer arg) { return event->type == T; };
+
+    void X11Window::Show() { XMapWindow(this->display, this->window); }
+
+    void X11Window::HandleEvents() {
+      XEvent event;
+      if(XCheckIfEvent(this->display, &event, Checker<Expose>, NULL)) {
+        auto dgc = DefaultGCOfScreen(this->screen);
+        XFillRectangle(this->display, this->window, dgc, 20, 20, 10, 10);
+      }
+    }
+
+    void X11Window::Hide() { XUnmapWindow(this->display, this->window); }
 
     void X11Window::SetHeight(int height) { SetSize(height, Width()); }
 
     void X11Window::SetWidth(int width) { SetSize(Height(), width); }
 
     void X11Window::SetSize(int height, int width) {
-      SetGeometry(GetX(), GetY(), height, width);
+
+      if (!Resizable()) {
+        height = Height();
+        width = Width();
+      }
+
+      if (XResizeWindow(this->display, this->window, width, height) == 0) {
+        this->height = height;
+        this->width = width;
+      }
     }
 
     bool X11Window::HasMouseFocus() const { return true; }
 
     void X11Window::SetGeometry(int x, int y, int height, int width) {
       // Just don't do it
-      if (!Resizable()) {
-        height = Height();
-        width = Width();
-      }
+      SetSize(height, width);
+      SetPosition(x , y);
+
+      Repaint();
     }
 
     void X11Window::Repaint() {}
