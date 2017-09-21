@@ -8,12 +8,6 @@
 #include <Platform/Window.hpp>
 #include <Platform/Chooser.hpp>
 
-const int Milliseconds = 1;
-const int Seconds = 1000 * Milliseconds;
-const int Minutes = 60 * Seconds;
-const int Hours = 60 * Minutes;
-const int Days = 24 * Hours;
-
 TEST_CASE("WindowsWindow", "Create object") {
   int height = 800;
   int width = height * 16 / 10;

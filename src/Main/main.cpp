@@ -4,6 +4,7 @@
 #include <Common/CommandLineArguments.hpp>
 #include <Common/Configuration.hpp>
 #include <Common/Constants.hpp>
+#include <Common/Timer.hpp>
 
 #include <Platform/Window.hpp>
 
@@ -50,6 +51,8 @@ int main(int argc, char *argv[]) {
 
     while (window->IsVisible()) {
 
+      jerobins::common::Timer timer;
+      timer.Start();
       window->HandleEvents();
 
       // Clear the screen
@@ -74,6 +77,8 @@ int main(int argc, char *argv[]) {
       glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
 
       glDisableVertexAttribArray(0);
+
+      while(timer.Duration() < (1 * Seconds) / 30);
     }
 
     // Cleanup VBO
