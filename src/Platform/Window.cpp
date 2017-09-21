@@ -6,6 +6,16 @@
 namespace jerobins {
   namespace platform {
 
+    Window::Window(std::string name, int height, int width, bool fullscreen,
+                   bool borderless, bool resizable) {
+      this->name = name;
+      this->height = height;
+      this->width = width;
+      this->fullscreen = fullscreen;
+      this->borderless = borderless;
+      this->visible = false;
+    }
+
     Window *Window::Create(std::string name, int height, int width,
                            bool fullscreen, bool borderless, bool resizable) {
 

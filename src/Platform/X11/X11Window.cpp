@@ -1,6 +1,5 @@
 
 #include <functional>
-#include <iostream>
 #include <stdexcept>
 
 #include <X11/X.h>
@@ -8,7 +7,7 @@
 
 #include <Platform/X11/X11Window.hpp>
 
-#include <GL/glx.h>
+static Atom wm_delete_window;
 
 namespace jerobins {
   namespace platform {
@@ -39,10 +38,23 @@ namespace jerobins {
       auto bPixel = BlackPixelOfScreen(this->screen);
       auto wPixel = WhitePixelOfScreen(this->screen);
 
+      XSizeHints my_hints = {0};
+
+      my_hints.flags = PPosition | PSize;
+      my_hints.x = x;
+      my_hints.y = y;
+      my_hints.width = width;
+      my_hints.height = height;
+
       this->window = XCreateSimpleWindow(this->display, root, x, y, height,
                                          width, 1, bPixel, wPixel);
 
+      XSetNormalHints(this->display, this->window, &my_hints);
+
       XSelectInput(this->display, this->window, ExposureMask | KeyPressMask);
+
+      wm_delete_window = XInternAtom(this->display, "WM_DELETE_WINDOW", False);
+      XSetWMProtocols(this->display, this->window, &wm_delete_window, 1);
 
       // I think everyone probably does this
       SetGeometry(x, y, height, width);
@@ -67,22 +79,42 @@ namespace jerobins {
       }
     }
 
-    typedef int (FunctionPtr)(Display*, XEvent*, XPointer);
+    typedef int(FunctionPtr)(Display *, XEvent *, XPointer);
 
-    template<int T>
-    Bool Checker(X11Wrapper::X11Display* disp, XEvent* event, XPointer arg) { return event->type == T; };
+    template <int T>
+    Bool Checker(X11Wrapper::X11Display *disp, XEvent *event, XPointer arg) {
+      return event->type == T;
+    };
 
-    void X11Window::Show() { XMapWindow(this->display, this->window); }
+    void X11Window::Show() {
+      XMapWindow(this->display, this->window);
+      this->visible = true;
+    }
 
     void X11Window::HandleEvents() {
+
       XEvent event;
-      if(XCheckIfEvent(this->display, &event, Checker<Expose>, NULL)) {
-        auto dgc = DefaultGCOfScreen(this->screen);
-        XFillRectangle(this->display, this->window, dgc, 20, 20, 10, 10);
+      while (XPending(this->display)) {
+        XNextEvent(display, &event);
+        switch (event.type) {
+          {
+          case ClientMessage:
+            if ((Atom)event.xclient.data.l[0] == wm_delete_window) {
+              this->visible = false;
+            }
+            break;
+          case Expose:
+            glXSwapBuffers(this->display, this->window);
+            break;
+          }
+        }
       }
     }
 
-    void X11Window::Hide() { XUnmapWindow(this->display, this->window); }
+    void X11Window::Hide() {
+      XUnmapWindow(this->display, this->window);
+      this->visible = false;
+    }
 
     void X11Window::SetHeight(int height) { SetSize(height, Width()); }
 
@@ -106,7 +138,7 @@ namespace jerobins {
     void X11Window::SetGeometry(int x, int y, int height, int width) {
       // Just don't do it
       SetSize(height, width);
-      SetPosition(x , y);
+      SetPosition(x, y);
 
       Repaint();
     }
@@ -126,10 +158,30 @@ namespace jerobins {
       }
     }
 
-    void X11Window::BindOpenGL(GLint* glAttributes) {
-      XVisualInfo* vi = glXChooseVisual(this->display, XScreenNumberOfScreen(this->screen), glAttributes);
-      auto glc = glXCreateContext(this->display, vi, NULL, GL_TRUE);
-      glXMakeCurrent(this->display, this->window, glc);
+    static GLint defaultAttributes[] = {GLX_RGBA, GLX_DEPTH_SIZE, 24,
+                                        GLX_DOUBLEBUFFER, None};
+
+    void X11Window::BindOpenGL(GLint *glAttributes) {
+      if (glAttributes == NULL) {
+        glAttributes = defaultAttributes;
+      }
+
+      if (glContext != NULL) {
+        UnbindOpenGL();
+      }
+
+      XVisualInfo *vi = glXChooseVisual(
+          this->display, XScreenNumberOfScreen(this->screen), glAttributes);
+      glContext = glXCreateContext(this->display, vi, NULL, GL_TRUE);
+      glXMakeCurrent(this->display, this->window, glContext);
+    }
+
+    void X11Window::UnbindOpenGL() {
+      if (this->glContext) {
+        glXMakeCurrent( this->display, 0, 0 );
+        glXDestroyContext(this->display, this->glContext);
+        this->glContext = NULL;
+      }
     }
 
     void X11Window::Borderless(bool border) {

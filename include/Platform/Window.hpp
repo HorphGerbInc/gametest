@@ -16,7 +16,7 @@ namespace jerobins {
     /// Base class for windows which drawing occurs
     class Window {
     public:
-      static Window* Create(std::string name, int height = 1024, int width = 980,
+      static Window* Create(std::string name, int height = 720, int width = 1280,
                            bool fullscreen = false, bool borderless = false, bool resizable = true);
 
       // Return title of window.
@@ -48,6 +48,9 @@ namespace jerobins {
 
       // returns the y position of the top left corner of the window.
       int GetY() const { return y; }
+
+      // Returns true if window is visible, false otherwise.
+      bool IsVisible() const { return visible; }
 
       // Enables or disables borderless
       virtual void Borderless(bool isBorderless) = 0;
@@ -91,21 +94,21 @@ namespace jerobins {
       // This will handle all current events.
       virtual void HandleEvents() = 0;
 
+      // Create the OpenGL context
       virtual void BindOpenGL(GLint* glAttributes) = 0;
+
+      // Remove the OpenGL context
+      virtual void UnbindOpenGL() = 0;
       
     protected:
       // Set all the parameters.
       Window(std::string name, int height, int width, bool fullscreen,
-             bool borderless, bool resizable) {
-        this->height = height;
-        this->width = width;
-        this->fullscreen = fullscreen;
-        this->borderless = borderless;
-      }
+             bool borderless, bool resizable);
 
       bool fullscreen, borderless;
       bool resizable;
       bool hasFocus;
+      bool visible;
       std::string name;
       int x, y, height, width;
     };

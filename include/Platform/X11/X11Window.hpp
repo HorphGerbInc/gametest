@@ -11,6 +11,8 @@ namespace X11Wrapper {
 };
 #include <Platform/Window.hpp>
 
+#include <GL/glx.h>
+
 // X11 includes?
 
 namespace jerobins {
@@ -66,11 +68,15 @@ namespace jerobins {
 
       virtual void BindOpenGL(GLint* glAttributes);
 
+      virtual void UnbindOpenGL();
+      
+
     private:
       // X11 dependent code
       X11Wrapper::X11Screen *screen;
       X11Wrapper::X11Display *display;
       X11Wrapper::X11Window window;
+      GLXContext glContext = 0;      
     };
   }
 }
