@@ -9,6 +9,12 @@
 
 static Atom wm_delete_window;
 
+static bool ctxErrorOccurred = false;
+static int ctxErrorHandler(Display *dpy, XErrorEvent *ev) {
+  ctxErrorOccurred = true;
+  return 0;
+}
+
 namespace jerobins {
   namespace platform {
 
@@ -158,10 +164,18 @@ namespace jerobins {
       }
     }
 
-    static GLint defaultAttributes[] = {GLX_RGBA, GLX_DEPTH_SIZE, 24,
-                                        GLX_DOUBLEBUFFER, None};
+    static GLint defaultAttributes[] = {GLX_RGBA,
+                                        GLX_DEPTH_SIZE,
+                                        24,
+                                        GLX_DOUBLEBUFFER,
+                                        GLX_CONTEXT_MAJOR_VERSION_ARB,
+                                        3,
+                                        GLX_CONTEXT_MINOR_VERSION_ARB,
+                                        0,
+                                        None};
 
     void X11Window::BindOpenGL(GLint *glAttributes) {
+
       if (glAttributes == NULL) {
         glAttributes = defaultAttributes;
       }
@@ -169,6 +183,8 @@ namespace jerobins {
       if (glContext != NULL) {
         UnbindOpenGL();
       }
+
+      XSync(display, False);
 
       XVisualInfo *vi = glXChooseVisual(
           this->display, XScreenNumberOfScreen(this->screen), glAttributes);
@@ -178,7 +194,7 @@ namespace jerobins {
 
     void X11Window::UnbindOpenGL() {
       if (this->glContext) {
-        glXMakeCurrent( this->display, 0, 0 );
+        glXMakeCurrent(this->display, 0, 0);
         glXDestroyContext(this->display, this->glContext);
         this->glContext = NULL;
       }
