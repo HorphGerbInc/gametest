@@ -69,6 +69,8 @@ namespace jerobins {
       virtual void BindOpenGL(GLint* glAttributes);
 
       virtual void UnbindOpenGL();
+
+      virtual void SwapBuffers();
       
 
     private:

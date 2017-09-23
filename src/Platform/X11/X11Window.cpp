@@ -100,6 +100,8 @@ namespace jerobins {
     void X11Window::HandleEvents() {
 
       XEvent event;
+      XConfigureEvent *xc;
+      
       while (XPending(this->display)) {
         XNextEvent(display, &event);
         switch (event.type) {
@@ -109,9 +111,11 @@ namespace jerobins {
               this->visible = false;
             }
             break;
-          case Expose:
-            glXSwapBuffers(this->display, this->window);
-            break;
+            case ConfigureNotify:
+            xc = &(event.xconfigure);
+            this->width = xc->width;
+            this->height = xc->height;
+            break;            
           }
         }
       }
@@ -204,6 +208,10 @@ namespace jerobins {
       if (border == borderless) {
         return;
       }
+    }
+
+    void X11Window::SwapBuffers() {
+      glXSwapBuffers(this->display, this->window);
     }
   }
 }

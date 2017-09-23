@@ -54,6 +54,10 @@ add_subdirectory(src/Resource)
 add_subdirectory(src/Main)
 add_subdirectory(src/Platform)
 
+
+file(COPY shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+
 # Tests
 enable_testing ()
 add_subdirectory(test/Common)
