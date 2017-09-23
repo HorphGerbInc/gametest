@@ -1,4 +1,6 @@
 
+#ifdef __APPLE__
+
 #include <Platform/OXS/OSXWindow.hpp>
 
 namespace jerobins {
@@ -70,3 +72,5 @@ namespace jerobins {
     }
   }
 }
+
+#endif

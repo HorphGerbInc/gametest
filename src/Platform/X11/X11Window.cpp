@@ -1,4 +1,6 @@
 
+#ifdef __linux__
+
 #include <functional>
 #include <stdexcept>
 
@@ -215,3 +217,5 @@ namespace jerobins {
     }
   }
 }
+
+#endif

@@ -5,11 +5,11 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 SET(CMAKE_CXX_FALGS -msse4.1 -m64)
 endif()
 
-file(GLOB CPP_FILES
+file(GLOB_RECURSE CPP_FILES
 "*.cpp"
 )
 
-file(GLOB HPP_FILES
+file(GLOB_RECURSE HPP_FILES
 "${CMAKE_HOME_DIRECTORY}/include/${PROJECT_NAME}/*.hpp"
 )
 
@@ -24,4 +24,4 @@ set_target_properties(${PROJET_NAME}
     PROPERTIES POSITION_INDEPENDENT_CODE ON
 )
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})

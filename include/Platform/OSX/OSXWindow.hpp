@@ -1,8 +1,10 @@
 
+#ifdef _APPLE_
+
+#ifndef _OSXWINDOW_HPP_
+#define _OSXWINDOW_HPP_
+
 #include <Platform/Window.hpp>
-
-// include OSX header?
-
 
 namespace jerobins {
   namespace platform {
@@ -10,7 +12,8 @@ namespace jerobins {
 
     public:
       OSXWindow(const std::string name, int height = 1080, int width = 1920,
-                    bool fullscreen = false, bool windowless = false, bool resizable = true);
+                bool fullscreen = false, bool windowless = false,
+                bool resizable = true);
 
       // Enables or disables borderless
       virtual void Borderless(bool isBorderless) = 0;
@@ -53,6 +56,12 @@ namespace jerobins {
 
     private:
       // OSX dependent stuff
-    }
+    };
   }
 }
+
+// Header guard
+#endif
+
+// if osx
+#endif

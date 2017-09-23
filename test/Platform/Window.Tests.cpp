@@ -1,12 +1,13 @@
 
+// StdLib
 #include <iostream>
 
+// Test framework
 #include <catch.hpp>
 
+// Jerobins
 #include <Common/Timer.hpp>
-
 #include <Platform/Window.hpp>
-#include <Platform/Chooser.hpp>
 
 TEST_CASE("WindowsWindow", "Create object") {
   int height = 800;

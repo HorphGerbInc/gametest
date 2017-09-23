@@ -1,8 +1,14 @@
 
 #include <Platform/Window.hpp>
-
-#include <Platform/Chooser.hpp>
-
+#ifdef __linux__
+#include <Platform/X11/X11Window.hpp>
+#elif _WIN32
+#include <Platform/Windows/WindowsWindow.hpp>
+#elif __APPLE__
+#include <Platform/OSX/OSXWindow.hpp>
+#else
+#error "Unsupported Operating System"
+#endif
 namespace jerobins {
   namespace platform {
 
@@ -20,13 +26,13 @@ namespace jerobins {
                            bool fullscreen, bool borderless, bool resizable) {
 
 #ifdef __linux__
-      return new X11Window(name, height, width, fullscreen, borderless,
+      return new jerobins::platform::X11Window(name, height, width, fullscreen, borderless,
                            resizable);
 #elif _WIN32
-      return new WindowsWindow(name, height, width, fullscreen, borderless,
+      return new jerobins::platform::WindowsWindow(NULL, name, height, width, fullscreen, borderless,
                                resizable);
 #elif __APPLE__
-      return new OSXWindow(name, height, width, fullscreen, borderless,
+      return new jerobins::platform::OSXWindow(name, height, width, fullscreen, borderless,
                            resizable);
 #else
 #error "Unsupported operating system."

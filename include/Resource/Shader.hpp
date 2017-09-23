@@ -3,18 +3,12 @@
 #define _SHADER_HPP_
 
 #if defined(_WIN32)
-#include <windows.h>
+// #include <windows.h>
 #endif
-#define GL_GLEXT_PROTOTYPES 1
-
-// jerobins: This MUST be before GL/gl.h
-#include <GL/glew.h>
-
-#include <GL/gl.h>
-#include <GL/glext.h>
 
 #include <vector>
 
+#include <Render/OpenGL.hpp>
 #include <Common/IString.hpp>
 #include <Common/Version.hpp>
 #include <Resource/IResource.hpp>

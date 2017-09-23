@@ -4,12 +4,6 @@
 
 #include <array>
 
-#ifdef WIN32
-#include <intrin.h>
-#else
-#include <x86intrin.h>
-#endif
-
 #include <Common/ArgumentCheck.hpp>
 #include <Math/Vec4.hpp>
 
@@ -85,9 +79,12 @@ namespace jerobins {
       }
 
       Matrix4 Transpose() const {
-        Matrix4 result(*this);
-        _MM_TRANSPOSE4_PS(result.data[0].xmm_, result.data[1].xmm_,
-                          result.data[2].xmm_, result.data[3].xmm_);
+        Matrix4 result;
+        for(int row = 0 ; row < 4; ++row) {
+          for(int col = 0; col < 4; ++col) {
+            result.Set(row, col, Get(col, row));
+          }
+        }
         return result;
       }
 

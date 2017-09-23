@@ -4,10 +4,10 @@
 namespace jerobins {
   namespace math {
 
-    Vec2::Vec2() : VectorBase(2) { /*Empty */
+    Vec2::Vec2() { /*Empty */
     }
 
-    Vec2::Vec2(float x, float y) : VectorBase(2, x, y) { /* Empty */
+    Vec2::Vec2(float x, float y) : ArrayVector(x, y) { /* Empty */
     }
 
     float Vec2::X() const { return Get(0); }

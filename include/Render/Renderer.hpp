@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include <Render/OpenGL.hpp>
+
 #include <Render/IRenderable.hpp>
 
 namespace jerobins {

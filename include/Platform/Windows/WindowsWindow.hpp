@@ -1,13 +1,20 @@
+#ifdef _WIN32
+
+#ifndef _WINDOWSWINDOW_HPP_
+#define _WINDOWSWINDOW_HPP_
 
 #ifndef UNICODE
 #define UNICODE
 #endif
 
-#include <Platform/Window.hpp>
+// StdLib
+#include <string>
 
+// Win32
 #include <windows.h>
 
-#include <string>
+// Jerobins
+#include <Platform/Window.hpp>
 
 namespace jerobins {
   namespace platform {
@@ -61,8 +68,25 @@ namespace jerobins {
       // Set the position and size of the window.
       virtual void SetGeometry(int x, int y, int height, int width);
 
+      // Create the OpenGL context
+      virtual void BindOpenGL(GLint *glAttributes);
+
+      // Remove the OpenGL context
+      virtual void UnbindOpenGL();
+
+      // Swap the buffers
+      virtual void SwapBuffers();
+
     private:
-      HWND windowHandle;
+      HGLRC context = NULL;
+      HDC hardwareDescriptor = NULL;
+      HWND windowHandle = NULL;
     };
   }
 }
+
+// header guard
+#endif
+
+// if windows
+#endif

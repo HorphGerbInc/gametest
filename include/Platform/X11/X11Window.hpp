@@ -1,4 +1,6 @@
 
+#ifdef _linux_
+
 #ifndef _X11WINDOW_HPP_
 #define _X11WINDOW_HPP_
 
@@ -83,4 +85,8 @@ namespace jerobins {
   }
 }
 
+// header guard
+#endif
+
+// if linux
 #endif

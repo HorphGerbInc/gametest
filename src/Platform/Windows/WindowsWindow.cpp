@@ -1,6 +1,10 @@
 
+#ifdef _WIN32
+
+// StdLib
 #include <iostream>
 
+// Jerobins
 #include <Platform/Windows/WindowsWindow.hpp>
 
 struct Point2D {
@@ -13,10 +17,7 @@ HMONITOR GetPrimaryMonitorHandle() {
   return MonitorFromPoint(ptZero, MONITOR_DEFAULTTOPRIMARY);
 }
 
-Point2D GetScreenSize() {
-  return {};
-}
-
+Point2D GetScreenSize() { return {}; }
 
 std::string GetLastErrorAsString() {
   // Get the error message, if any.
@@ -44,20 +45,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam,
   switch (uMsg) {
   case WM_DESTROY:
     PostQuitMessage(0);
-    return 0;
-
-  case WM_PAINT: {
-    PAINTSTRUCT ps;
-    HDC hdc = BeginPaint(hwnd, &ps);
-    FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-    EndPaint(hwnd, &ps);
+    break;
+  default:
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
   }
-    return 0;
-  }
-  return DefWindowProc(hwnd, uMsg, wParam, lParam);
+  return 0;
 }
-
-
 
 namespace jerobins {
   namespace platform {
@@ -234,5 +227,22 @@ namespace jerobins {
         }
       }
     }
+
+    // Create the OpenGL context
+    void WindowsWindow::BindOpenGL(GLint *glAttributes) {
+      this->context = wglCreateContext(this->hardwareDescriptor);
+    }
+
+    // Remove the OpenGL context
+    void WindowsWindow::UnbindOpenGL() {
+      if (this->context) {
+        wglDeleteContext(this->context);
+      }
+    }
+
+    // Swap the buffers
+    void WindowsWindow::SwapBuffers() { SwapBuffers(); }
   }
 }
+
+#endif

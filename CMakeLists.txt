@@ -35,15 +35,24 @@ include_directories("${PROJECT_SOURCE_DIR}/lib/json")
 # GLEW
 set(GLEW_ROOT "${CMAKE_HOME_DIRECTORY}/lib/glew")
 set(GLEW_INCLUDE "${CMAKE_HOME_DIRECTORY}/lib/glew")
-set(GLEW_LIB "${CMAKE_HOME_DIRECTORY}/lib/glew/lib/Release/Win32")
-set(GLEW_DLL "${CMAKE_HOME_DIRECTORY}/lib/glew/bin/Release/Win32/")
 
-# Remove 'lib' prefix for shared libraries on Windows
 if (WIN32)
+    set(GLEW_LIB_PATH "${CMAKE_HOME_DIRECTORY}/lib/glew/lib/Release/x64")
+    set(GLEW_DLL_PATH "${CMAKE_HOME_DIRECTORY}/lib/glew/bin/Release/x64")
+
+    set(GLEW_LIB "${GLEW_LIB_PATH}/glew32.lib")
+    set(GLEW_LIB_STATIC "${GLEW_LIB_PATH}/glew32s.lib")
+    set(GLEW_DLL "${GLEW_DLL_PATH}/glew32.dll")
+
     set(APPEND CMAKE_SHARED_LIBRARY_PREFIX "")
-    list(APPEND CMAKE_PREFIX_PATH ${GLEW_LIB} ${GLEW_INCLUDE} ${GLEW_DLL})
-    list(APPEND CMAKE_LIBRARY_PATH ${GLEW_LIB} ${GLEW_INCLUDE} ${GLEW_DLL})
-endif ()
+    list(APPEND CMAKE_PREFIX_PATH ${GLEW_ROOT} ${GLEW_INCLUDE} ${GLEW_LIB_PATH} ${GLEW_DLL_PATH} )
+    list(APPEND CMAKE_LIBRARY_PATH ${GLEW_INCLUDE} ${GLEW_LIB_PATH} ${GLEW_DLL_PATH})
+
+    find_package(GLEW REQUIRED)
+    IF ( GLEW_FOUND )
+        LINK_LIBRARIES ( ${GLEW_LIBRARIES} )
+    ENDIF ( GLEW_FOUND)     
+ENDIF ()
 
 
 add_subdirectory(src/Common)

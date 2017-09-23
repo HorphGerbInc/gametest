@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.0)
 project(Math CXX)
 
 
-file(GLOB CPP_FILES
+file(GLOB_RECURSE CPP_FILES
 "*.cpp"
 )
 
-file(GLOB HPP_FILES
+file(GLOB_RECURSE HPP_FILES
 "${CMAKE_HOME_DIRECTORY}/include/${PROJECT_NAME}/*.hpp"
 )
 

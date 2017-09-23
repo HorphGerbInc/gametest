@@ -4,11 +4,10 @@
 namespace jerobins {
   namespace math {
 
-    Vec3::Vec3() : VectorBase(3) { /*Empty */
+    Vec3::Vec3()  { /*Empty */
     }
 
-    Vec3::Vec3(float x, float y, float z) : VectorBase(3, x, y, z) {
-      /* Empty */
+    Vec3::Vec3(float x, float y, float z) : ArrayVector(x, y, z) { /* Empty */
     }
 
     float Vec3::X() const { return Get(0); }
@@ -25,17 +24,10 @@ namespace jerobins {
 
     // Cross Product
     Vec3 Vec3::Cross(const Vec3 &&other) const {
-      __m128 a =
-          _mm_mul_ps(other.xmm_, _mm_shuffle_ps(this->xmm_, this->xmm_,
-                                                _MM_SHUFFLE(3, 0, 2, 1)));
-      __m128 b =
-          _mm_mul_ps(this->xmm_, _mm_shuffle_ps(other.xmm_, other.xmm_,
-                                                _MM_SHUFFLE(3, 0, 2, 1)));
-      __m128 tmp = _mm_sub_ps(a, b);
-      tmp = _mm_shuffle_ps(tmp, tmp, _MM_SHUFFLE(3, 0, 2, 1));
-
-      Vec3 result;
-      result.xmm_ = tmp;
+      float x = Y() * other.Z() - other.Z() * Y();
+      float y = Z() * other.X() - other.X() * Z();
+      float z = X() * other.Y() - other.Y() * X();
+      Vec3 result(x, y, z);
       return result;
     }
   }

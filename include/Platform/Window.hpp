@@ -3,12 +3,8 @@
 #define _WINDOW_HPP
 
 #include <string>
-// jerobins: This MUST be before GL/gl.h
 
-#include <GL/glew.h>
-
-#include <GL/gl.h>
-#include <GL/glext.h>
+#include <Render/OpenGL.hpp>
 
 namespace jerobins {
   namespace platform {

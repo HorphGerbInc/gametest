@@ -2,13 +2,12 @@
 #ifndef _VEC4_HPP_
 #define _VEC4_HPP_
 
-#include <Common/ArgumentCheck.hpp>
-#include <Math/VectorBase.hpp>
+#include <Math/ArrayVector.hpp>
 
 namespace jerobins {
   namespace math {
 
-    class Vec4 : public VectorBase<Vec4> {
+    class Vec4 : public ArrayVector<Vec4,4> {
     public:
       Vec4();
       Vec4(float x, float y, float z, float w);

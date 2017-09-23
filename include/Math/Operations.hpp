@@ -16,14 +16,15 @@ namespace jerobins {
             return start + (end - start) * percent;
         }
 
-        Vec2 LERP2D(Vec2 start, Vec2 end, float percent) {
-            float dx = end.X - start.X;
-            float x = start.X + dx * percent;
+        template<class V2>
+        V2 LERP2D(const V2 & start, const V2 & end, float percent) {
+            float dx = end.X() - start.X();
+            float x = start.X() + dx * percent;
 
-            float dy = end.Y - start.Y;
-            float y = start.y + dy * percent;
+            float dy = end.Y() - start.Y();
+            float y = start.Y() + dy * percent;
 
-            return Vec2(x , y);
+            return V2(x , y);
         }
     }
 }

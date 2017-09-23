@@ -4,49 +4,46 @@
 
 #include <stdexcept>
 
-#ifdef WIN32
-#include <intrin.h>
-#else
-#include <x86intrin.h>
-#endif
-
 namespace jerobins {
   namespace math {
 
-    template <class DerivedClass> class VectorBase {
+    template <bool B> using EnableIfB = typename std::enable_if<B, int>::type;
 
+    template <class DerivedClass, int Dim> class VectorBase {
     public:
-      VectorBase(int dim, float x = 0, float y = 0, float z = 0, float w = 0)
-          : dim(dim) {
-        this->data_[0] = x;
-        this->data_[1] = y;
-        this->data_[2] = z;
-        this->data_[3] = w;
+      template <size_t D1 = Dim, EnableIfB<D1 == 2> = 0>
+      VectorBase(float x = 0, float y = 0) {
+        Set(0, x);
+        Set(1, y);
       }
 
-      VectorBase(const DerivedClass &other) {
-        for (int i = 0; i < dim; ++i) {
-          Set(i, other.Get(i));
-        }
+      template <size_t D1 = Dim, EnableIfB<D1 == 3> = 0>
+      VectorBase(float x = 0, float y = 0, float z = 0) {
+        Set(0, x);
+        Set(1, y);
+        Set(2, z);
       }
 
-      VectorBase(const DerivedClass &&other) : VectorBase(other) { /* Empty */
+      template <size_t D1 = Dim, EnableIfB<D1 == 4> = 0>
+      VectorBase(float x = 0, float y = 0, float z = 0, float w = 0) {
+        Set(0, x);
+        Set(1, y);
+        Set(2, z);
+        Set(3, w);
       }
 
       DerivedClass &operator=(const DerivedClass &other) {
-        this->xmm_ = other.xmm_;
-        return *this;
-      }
-
-      DerivedClass &operator=(const DerivedClass &&other) {
-        return *this = other;
-      }
-
-      // Pairwise multiplication
-      DerivedClass &operator*=(const DerivedClass &other) {
-        xmm_ = _mm_mul_ps(this->xmm_, other.xmm_);
+        for (int i = 0; i < Dim; ++i)
+          Set(i, other.Get(i));
         return CastToDerived();
       }
+      DerivedClass &operator=(const DerivedClass &&other) {
+        for (int i = 0; i < Dim; ++i)
+          Set(i, other.Get(i));
+        return CastToDerived();
+      }
+      // Pairwise multiplication
+      virtual DerivedClass &operator*=(const DerivedClass &other) = 0;
 
       DerivedClass &operator*=(const DerivedClass &&other) {
         return *this *= other;
@@ -54,7 +51,10 @@ namespace jerobins {
 
       DerivedClass operator*(const DerivedClass &other) const {
         DerivedClass result;
-        result.xmm_ = _mm_mul_ps(this->xmm_, other.xmm_);
+        for (int i = 0; i < Dim; ++i) {
+          result.Set(i, Get(i));
+        }
+        result *= other;
         return result;
       }
 
@@ -63,11 +63,7 @@ namespace jerobins {
       }
 
       // Scalar multiplication
-      DerivedClass &operator*=(const float &scalar) {
-        __m128 scalarVector = _mm_set1_ps(scalar);
-        this->xmm_ = _mm_mul_ps(this->xmm_, scalarVector);
-        return CastToDerived();
-      }
+      virtual DerivedClass &operator*=(const float &scalar) = 0;
 
       DerivedClass &operator*=(const float &&scalar) {
         return (*this *= scalar);
@@ -81,18 +77,15 @@ namespace jerobins {
       DerivedClass operator*(const float &&scalar) { return *this * scalar; }
 
       // Pairwise Addition
-      DerivedClass &operator+=(const DerivedClass &other) {
-        xmm_ = _mm_add_ps(this->xmm_, other.xmm_);
-        return CastToDerived();
-      }
+      virtual DerivedClass &operator+=(const DerivedClass &other) = 0;
 
       DerivedClass &operator+=(const DerivedClass &&other) {
         return *this += other;
       }
 
       DerivedClass operator+(const DerivedClass &other) const {
-        DerivedClass result;
-        result.xmm_ = _mm_add_ps(this->xmm_, other.xmm_);
+        DerivedClass result = Clone();
+        result += other;
         return result;
       }
 
@@ -101,18 +94,15 @@ namespace jerobins {
       }
 
       // Pairwise Subtraction
-      DerivedClass &operator-=(const DerivedClass &other) {
-        this->xmm_ = _mm_sub_ps(this->xmm_, other.xmm_);
-        return CastToDerived();
-      }
+      virtual DerivedClass &operator-=(const DerivedClass &other) = 0;
 
       DerivedClass &operator-=(const DerivedClass &&other) {
         return *this -= other;
       }
 
       DerivedClass operator-(const DerivedClass &other) const {
-        DerivedClass result;
-        result.xmm_ = _mm_sub_ps(this->xmm_, other.xmm_);
+        DerivedClass result = Clone();
+        result -= other;
         return result;
       }
 
@@ -121,41 +111,37 @@ namespace jerobins {
       }
 
       // Dot
-      float Dot(const VectorBase &&other) const {
-		  return Dot(other);
-      }
+      virtual float Dot(const DerivedClass &other) const = 0;
 
-      float Dot(const VectorBase &other) const {
-        float data[4];
-        auto result = _mm_dp_ps(xmm_, other.xmm_, 255);
-        _mm_storeu_ps(data, result);
-        return data[0];
-      }
+      float Dot(const DerivedClass &&other) const { return Dot(other); }
 
-      float Get(int pos) const {
-        if (pos < 0 || pos > 3) {
-          throw std::runtime_error("Out of bounds");
-        }
-        return data_[pos];
-      }
+      // Mutators
+      virtual float Get(int) const = 0;
+      virtual void Set(int, float) = 0;
 
-      void Set(int pos, float value) {
-        if (pos < 0 || pos > 3) {
-          throw std::runtime_error("Out of bounds");
-        }
-        data_[pos] = value;
-      }
+      virtual const float *Raw() const = 0;
 
     protected:
-      int dim;
-      union {
-        __m128 xmm_;
-        float data_[4];
-      };
+      void BoundsCheck(int pos) const {
+        if (pos < 0 || pos > Dim) {
+          throw std::runtime_error("Out of bounds");
+        }
+      }
 
-    private:
       DerivedClass &CastToDerived() {
         return *static_cast<DerivedClass *>(this);
+      }
+
+      const DerivedClass &CastToDerived() const {
+        return *static_cast<DerivedClass *>(this);
+      }
+
+    private:
+      DerivedClass Clone() const {
+        DerivedClass result;
+        for (int i = 0; i < Dim; ++i)
+          result.Set(i, Get(i));
+        return result;
       }
     };
   }

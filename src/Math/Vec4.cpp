@@ -4,10 +4,10 @@
 namespace jerobins {
   namespace math {
 
-    Vec4::Vec4() : VectorBase(4) { /* Empty */
+    Vec4::Vec4() { /* Empty */
     }
 
-    Vec4::Vec4(float x, float y, float z, float w) : VectorBase(4, x, y, z, w) {
+    Vec4::Vec4(float x, float y, float z, float w) : ArrayVector(x, y, z, w) {
       /* Empty */
     }
 
