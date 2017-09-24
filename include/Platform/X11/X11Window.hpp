@@ -1,5 +1,5 @@
 
-#ifdef _linux_
+#ifdef __linux__
 
 #ifndef _X11WINDOW_HPP_
 #define _X11WINDOW_HPP_
@@ -19,6 +19,7 @@ namespace X11Wrapper {
 
 namespace jerobins {
   namespace platform {
+
     class X11Window : public jerobins::platform::Window {
 
     public:

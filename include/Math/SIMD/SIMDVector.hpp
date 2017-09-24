@@ -43,26 +43,26 @@ namespace jerobins {
         // Pairwise multiplication
         virtual DerivedClass &operator*=(const DerivedClass &other) {
           xmm_ = _mm_mul_ps(this->xmm_, other.xmm_);
-          return CastToDerived();
+          return this->CastToDerived();
         }
 
         // Scalar multiplication
         virtual DerivedClass &operator*=(const float &scalar) {
           __m128 scalarVector = _mm_set1_ps(scalar);
           this->xmm_ = _mm_mul_ps(this->xmm_, scalarVector);
-          return CastToDerived();
+          return this->CastToDerived();
         }
 
         // Pairwise Addition
         virtual DerivedClass &operator+=(const DerivedClass &other) {
           xmm_ = _mm_add_ps(this->xmm_, other.xmm_);
-          return CastToDerived();
+          return this->CastToDerived();
         }
 
         // Pairwise Subtraction
         virtual DerivedClass &operator-=(const DerivedClass &other) {
           this->xmm_ = _mm_sub_ps(this->xmm_, other.xmm_);
-          return CastToDerived();
+          return this->CastToDerived();
         }
 
         // Dot
@@ -76,12 +76,12 @@ namespace jerobins {
         virtual const float *Raw() const { return data_; }
 
         virtual float Get(int pos) const {
-          BoundsCheck(pos);
+          this->BoundsCheck(pos);
           return data_[pos];
         }
 
         virtual void Set(int pos, float value) {
-          BoundsCheck(pos);
+          this->BoundsCheck(pos);
           data_[pos] = value;
         }
 

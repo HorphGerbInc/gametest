@@ -37,7 +37,7 @@ namespace jerobins {
         for (int i = 0; i < Dim; ++i) {
           this->Set(i, Get(i) * other.Get(i));
         }
-        return CastToDerived();
+        return this->CastToDerived();
       }
 
       // Pairwise Addition
@@ -45,7 +45,7 @@ namespace jerobins {
         for (int i = 0; i < Dim; ++i) {
           this->Set(i, Get(i) + other.Get(i));
         }
-        return CastToDerived();
+        return this->CastToDerived();
       }
 
       // Pairwise Subtraction
@@ -53,7 +53,7 @@ namespace jerobins {
         for (int i = 0; i < Dim; ++i) {
           this->Set(i, Get(i) - other.Get(i));
         }
-        return CastToDerived();
+        return this->CastToDerived();
       }
 
       // Scalar multiplication
@@ -61,7 +61,7 @@ namespace jerobins {
         for (int i = 0; i < Dim; ++i) {
           Set(i, Get(i) * scalar);
         }
-        return CastToDerived();
+        return this->CastToDerived();
       }
 
       virtual float Dot(const DerivedClass &other) const {
@@ -73,12 +73,12 @@ namespace jerobins {
       }
 
       virtual float Get(int i) const {
-        BoundsCheck(i);
+        this->BoundsCheck(i);
         return data_[i];
       }
 
       virtual void Set(int pos, float value) {
-        BoundsCheck(pos);
+        this->BoundsCheck(pos);
         data_[pos] = value;
       }
 
