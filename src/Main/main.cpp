@@ -247,7 +247,7 @@ int main(int argc, char *argv[]) {
         break;
       }
 
-      CapFramesPerSeconds(60, timer);
+      CapFramesPerSeconds(64, timer);
       timer.Stop();
       std::cout << "FPS: " << DurationToFPS(timer.Duration()) << std::endl;
     }
