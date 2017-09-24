@@ -7,23 +7,26 @@
 
 namespace jerobins {
   namespace resource {
-
-    ShaderProgram::ShaderProgram(std::string name) {
-        this->name = name;
-    }
     
     ShaderProgram ShaderProgram::Load(std::string filename) {
       std::ifstream input(filename);
       nlohmann::json program;
       input >> program;
-      std::cout << program["version"] << std::endl;
-      std::cout << program["name"] << std::endl;
-      std::cout << program["description"] << std::endl;
-      std::cout << program["vertexShaders"] << std::endl;
-      std::cout << program["fragmentShaders"] << std::endl;
 
+      std::string version = program["version"];
       std::string name = program["name"];
-      ShaderProgram result(name);
+      std::string description = program["description"];
+      std::vector<std::string> vertexShaders = program["vertexShaders"];
+      std::vector<std::string> fragmentShaders = program["fragmentShaders"];
+ 
+      ShaderProgram result;
+      result.version = version;
+      result.name = name;
+      result.description = description;
+      result.vertexShaders = vertexShaders;
+      result.fragmentShaders = fragmentShaders;
+      result.name = name;
+      
       return result;
     }
 
