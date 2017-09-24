@@ -3,9 +3,11 @@
 #include <catch.hpp>
 
 #include <Math/Vec2.hpp>
+#include <Math/SIMD/Vec2.hpp>
 
 TEST_CASE("[Vec2] : Create empty vector") {
     jerobins::math::Vec2 vec;
+    jerobins::math::simd::Vec2 simdVec;
     REQUIRE(vec.X() == 0);
     REQUIRE(vec.Y() == 0);
     REQUIRE(vec.Get(0) == vec.X());

@@ -10,28 +10,8 @@ namespace jerobins {
     template <bool B> using EnableIfB = typename std::enable_if<B, int>::type;
 
     template <class DerivedClass, int Dim> class VectorBase {
+
     public:
-      template <size_t D1 = Dim, EnableIfB<D1 == 2> = 0>
-      VectorBase(float x = 0, float y = 0) {
-        Set(0, x);
-        Set(1, y);
-      }
-
-      template <size_t D1 = Dim, EnableIfB<D1 == 3> = 0>
-      VectorBase(float x = 0, float y = 0, float z = 0) {
-        Set(0, x);
-        Set(1, y);
-        Set(2, z);
-      }
-
-      template <size_t D1 = Dim, EnableIfB<D1 == 4> = 0>
-      VectorBase(float x = 0, float y = 0, float z = 0, float w = 0) {
-        Set(0, x);
-        Set(1, y);
-        Set(2, z);
-        Set(3, w);
-      }
-
       DerivedClass &operator=(const DerivedClass &other) {
         for (int i = 0; i < Dim; ++i)
           Set(i, other.Get(i));
@@ -42,9 +22,29 @@ namespace jerobins {
           Set(i, other.Get(i));
         return CastToDerived();
       }
+
+      // Pure Virtual
+
       // Pairwise multiplication
       virtual DerivedClass &operator*=(const DerivedClass &other) = 0;
+      // Scalar multiplication
+      virtual DerivedClass &operator*=(const float &scalar) = 0;
+      // Pairwise Addition
+      virtual DerivedClass &operator+=(const DerivedClass &other) = 0;
+      // Pairwise Subtraction
+      virtual DerivedClass &operator-=(const DerivedClass &other) = 0;
+      // Dot
+      virtual float Dot(const DerivedClass &other) const = 0;
+      // Get the value at a position
+      virtual float Get(int) const = 0;
+      // Set the value at a position
+      virtual void Set(int, float) = 0;
+      // Return the raw pointer
+      virtual const float *Raw() const = 0;
 
+      // Implementations
+
+      // Pairwise Multiplication
       DerivedClass &operator*=(const DerivedClass &&other) {
         return *this *= other;
       }
@@ -62,13 +62,11 @@ namespace jerobins {
         return *this * other;
       }
 
-      // Scalar multiplication
-      virtual DerivedClass &operator*=(const float &scalar) = 0;
-
       DerivedClass &operator*=(const float &&scalar) {
         return (*this *= scalar);
       }
 
+      // Scalar multiplication
       DerivedClass operator*(const float &scalar) {
         DerivedClass result(*this);
         return result *= scalar;
@@ -77,8 +75,6 @@ namespace jerobins {
       DerivedClass operator*(const float &&scalar) { return *this * scalar; }
 
       // Pairwise Addition
-      virtual DerivedClass &operator+=(const DerivedClass &other) = 0;
-
       DerivedClass &operator+=(const DerivedClass &&other) {
         return *this += other;
       }
@@ -93,9 +89,7 @@ namespace jerobins {
         return *this + other;
       }
 
-      // Pairwise Subtraction
-      virtual DerivedClass &operator-=(const DerivedClass &other) = 0;
-
+      // Pairwise subtraction
       DerivedClass &operator-=(const DerivedClass &&other) {
         return *this -= other;
       }
@@ -106,20 +100,13 @@ namespace jerobins {
         return result;
       }
 
+
       DerivedClass operator-(const DerivedClass &&other) const {
         return (*this - other);
       }
 
-      // Dot
-      virtual float Dot(const DerivedClass &other) const = 0;
-
+      // Dot product
       float Dot(const DerivedClass &&other) const { return Dot(other); }
-
-      // Mutators
-      virtual float Get(int) const = 0;
-      virtual void Set(int, float) = 0;
-
-      virtual const float *Raw() const = 0;
 
     protected:
       void BoundsCheck(int pos) const {

@@ -22,16 +22,24 @@ namespace jerobins {
 
       public:
         template <size_t D1 = Dim, EnableIfB<D1 == 2> = 0>
-        SIMDVector(float x = 0, float y = 0) : VectorBase(x, y) {}
-
+        SIMDVector(float x = 0, float y = 0)  {
+          Set(0, x);
+          Set(1, y);
+        }
+  
         template <size_t D1 = Dim, EnableIfB<D1 == 3> = 0>
-        SIMDVector(float x = 0, float y = 0, float z = 0)
-            : VectorBase(x, y, z) {}
-
+        SIMDVector(float x = 0, float y = 0, float z = 0) {
+          Set(0, x);
+          Set(1, y);
+          Set(2, z);
+        }
         template <size_t D1 = Dim, EnableIfB<D1 == 4> = 0>
-        SIMDVector(float x = 0, float y = 0, float z = 0, float w = 0)
-            : VectorBase(x, y, z, w) {}
-
+        SIMDVector(float x = 0, float y = 0, float z = 0, float w = 0) {
+          Set(0, x);
+          Set(1, y);
+          Set(2, z);
+          Set(3, w);
+        }
         // Pairwise multiplication
         virtual DerivedClass &operator*=(const DerivedClass &other) {
           xmm_ = _mm_mul_ps(this->xmm_, other.xmm_);
