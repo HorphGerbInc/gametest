@@ -8,9 +8,9 @@
 
 #include <vector>
 
-#include <Render/OpenGL.hpp>
 #include <Common/IString.hpp>
 #include <Common/Version.hpp>
+#include <Render/OpenGL.hpp>
 #include <Resource/IResource.hpp>
 
 namespace jerobins {
@@ -18,36 +18,56 @@ namespace jerobins {
 
     enum ShaderType { Vertex, Fragment };
 
-    class Shader : public jerobins::resource::IResource<Shader> {
+    template <class Derived, ShaderType type>
+    class Shader : public jerobins::resource::IResource<Derived> {
     public:
-      Shader(const Shader &&other);
+      // Return shader name
+      std::string Name() const { return name; }
+
+      // Return shader description
+      std::string Description() const { return description; }
 
       // Return shader contents
-      std::string Content() const;
+      std::string Content() const { return content; }
+
       // Length of the shader
-      std::size_t Length() const;
+      std::size_t Length() const { return content.size(); }
 
       // Compile the shader
-      bool Compile(ShaderType type);
+      virtual bool Compile() = 0;
+
+      ShaderType GetType() const { return type; };
 
       // Return a string representation
-      virtual std::string ToString() const;
+      virtual std::string ToString() const { return description; }
 
-      // Load the shader from a file.
-      static Shader Load(std::string filename);
+    protected:
+      bool compile(GLenum shaderType) {
+        // create shader
+        shaderId = glCreateShader(shaderType);
+        const char *str = content.c_str();
+        glShaderSource(shaderId, 1, &str, NULL);
 
-      // Save the shader to a file
-      void Save(std::string filename);
+        // compile shader
+        glCompileShader(shaderId);
 
-      Shader &operator=(Shader &&other);
+        // check shader
+        int success = 0;
+        glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
+        if (!success) {
+          char error[512];
+          glGetShaderInfoLog(shaderId, 512, NULL, error);
+          throw std::runtime_error(std::string(error));
+        }
+
+        return true;
+      }
 
     private:
-      std::vector<std::string> dependencies;
-      Shader(jerobins::common::Version, std::string, std::vector<std::string>);
-      jerobins::common::Version version;
+      GLuint shaderId;
+      std::string name;
+      std::string description;
       std::string content;
-      unsigned int shaderId;
-      bool active = false;
     };
   }
 }
