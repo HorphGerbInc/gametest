@@ -1,3 +1,4 @@
+
 #ifdef _WIN32
 
 #ifndef _WINDOWSWINDOW_HPP_
@@ -78,6 +79,7 @@ namespace jerobins {
       virtual void SwapBuffers();
 
     private:
+      unsigned int pixel_format;
       HGLRC context = NULL;
       HDC hardwareDescriptor = NULL;
       HWND windowHandle = NULL;

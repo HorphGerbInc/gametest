@@ -4,6 +4,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(Jerobins)
 
+find_package(OpenGL REQUIRED)
+
 set(CMAKE_CXX_STANDARD 14)
 if(UNIX AND NOT APPLE)
 set(CMAKE_CXX_FLAGS -msse4.1)
@@ -31,6 +33,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 include_directories("${PROJECT_INCLUDE_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/lib/json")
+include_directories("${PROJECT_SOURCE_DIR}/lib/glad/include")
 
 # GLEW
 set(GLEW_ROOT "${CMAKE_HOME_DIRECTORY}/lib/glew")
@@ -54,15 +57,17 @@ if (WIN32)
     ENDIF ( GLEW_FOUND)     
 ENDIF ()
 
+# External first
+add_subdirectory(lib/glad)
 
+# Add in order of dependency
 add_subdirectory(src/Common)
-add_subdirectory(src/Engine)
 add_subdirectory(src/Math)
-add_subdirectory(src/Render)
 add_subdirectory(src/Resource)
-add_subdirectory(src/Main)
 add_subdirectory(src/Platform)
-
+add_subdirectory(src/Render)
+add_subdirectory(src/Engine)
+add_subdirectory(src/Main)
 
 file(COPY shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 

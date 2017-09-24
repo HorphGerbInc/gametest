@@ -146,14 +146,7 @@ namespace jerobins {
 
     void WindowsWindow::Show() {
       ShowWindow(windowHandle, SW_SHOW);
-      /*
-      SetForegroundWindow(windowHandle);
-      SetCapture(windowHandle);
-      SetFocus(windowHandle);
-      SetActiveWindow(windowHandle);
-      EnableWindow(windowHandle, TRUE);
-      SetForegroundWindow(windowHandle);
-      */
+      this->visible = true;
     }
 
     void WindowsWindow::HandleEvents() {
@@ -230,13 +223,59 @@ namespace jerobins {
 
     // Create the OpenGL context
     void WindowsWindow::BindOpenGL(GLint *glAttributes) {
-      this->context = wglCreateContext(this->hardwareDescriptor);
+
+      if (this->context) {
+        return;
+      }
+
+      static PIXELFORMATDESCRIPTOR pfd = {0};
+      pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+      pfd.nVersion = 1;
+      pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+      pfd.iPixelType = PFD_TYPE_RGBA;
+      pfd.cColorBits = 24;
+      pfd.cDepthBits = 24;
+      pfd.iLayerType = PFD_MAIN_PLANE;
+
+      if (!(hardwareDescriptor = GetDC(windowHandle))) {
+        MessageBox(NULL, L"Can't Create A GL Device Context.", L"ERROR",
+                   MB_OK | MB_ICONEXCLAMATION);
+        return; // Return FALSE
+      }
+
+      if (!(this->pixel_format = ChoosePixelFormat(
+                hardwareDescriptor,
+                &pfd))) // Did Windows Find A Matching Pixel Format?
+      {
+        MessageBox(NULL, L"Can't Find A Suitable pixel_format.", L"ERROR",
+                   MB_OK | MB_ICONEXCLAMATION);
+        return; // Return FALSE
+      }
+
+      if (!SetPixelFormat(hardwareDescriptor, pixel_format,
+                          &pfd)) // Are We Able To Set The Pixel Format?
+      {
+        MessageBox(NULL, L"Can't Set The pixel_format.", L"ERROR",
+                   MB_OK | MB_ICONEXCLAMATION);
+        return; // Return FALSE
+      }
+
+      if (!(context = wglCreateContext(
+                hardwareDescriptor))) // Are We Able To Get A Rendering Context?
+      {
+        MessageBox(NULL, L"Can't Create A Temporary GL Rendering Context.",
+                   L"ERROR", MB_OK | MB_ICONEXCLAMATION);
+        return; // Return FALSE
+      }
+
+      wglMakeCurrent(hardwareDescriptor, context);
     }
 
     // Remove the OpenGL context
     void WindowsWindow::UnbindOpenGL() {
       if (this->context) {
         wglDeleteContext(this->context);
+        this->context = NULL;
       }
     }
 

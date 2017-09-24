@@ -14,6 +14,8 @@ namespace jerobins {
     public:
 
       Renderer();
+
+	  void Init();
       /*
        *  Given a list of polygons we render them
        */

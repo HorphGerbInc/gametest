@@ -7,6 +7,11 @@ namespace jerobins {
       
     Renderer::Renderer() {}
 
+	void Renderer::Init() {
+		if (!gladLoadGL()) { exit(-1); }
+		printf("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
+	}
+
     void Renderer::Render(std::vector<jerobins::render::IRenderable> objects) {
       auto iter = objects.begin();
       while (iter != objects.end()) {

@@ -24,4 +24,4 @@ set_target_properties(${PROJET_NAME}
     PROPERTIES POSITION_INDEPENDENT_CODE ON
 )
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} Glad ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
