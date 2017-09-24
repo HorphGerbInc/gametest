@@ -47,6 +47,7 @@ namespace jerobins {
       jerobins::common::Version version;
       std::string content;
       unsigned int shaderId;
+      bool active = false;
     };
   }
 }

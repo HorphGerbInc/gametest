@@ -141,7 +141,7 @@ void setupOpenGL() {
   }
 
   // OpenGL items
-  programID = LoadShaders("shaders/passthrough.vert", "shaders/red.frag");
+  programID = LoadShaders("shaders/vertex/passthrough.vert", "shaders/fragment/red.frag");
 
   // black background
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

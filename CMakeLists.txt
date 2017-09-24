@@ -76,5 +76,6 @@ enable_testing ()
 add_subdirectory(test/Common)
 add_subdirectory(test/Math)
 add_subdirectory(test/Platform)
+add_subdirectory(test/Resource)
 
 add_test(NAME Common COMMAND CommonTests)

@@ -1,0 +1,11 @@
+{
+    "version" : "0.1.0",
+    "name" : "default",
+    "description" : "Default program which just passes through the vertices and uses a default color of red.",
+    "vertexShaders" : [
+        "passthrough.vert"
+    ],
+    "fragmentShaders" : [
+        "red.frag"
+    ]
+}
