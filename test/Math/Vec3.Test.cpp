@@ -5,7 +5,7 @@
 #include <Math/Vec3.hpp>
 
 TEST_CASE("[Vec3]: Create an empty vector") {
-    jerobins::math::Vec3 vec;
+    jerobins::math::Vec3<> vec;
     REQUIRE(vec.X() == 0);
     REQUIRE(vec.Y() == 0);
     REQUIRE(vec.Z() == 0);
@@ -23,7 +23,7 @@ TEST_CASE("[Vec3]: Create an empty vector") {
 }
 
 TEST_CASE("[Vec3] : Cross Product") {
-    jerobins::math::Vec3 vec;
+    jerobins::math::Vec3<> vec;
     REQUIRE(vec.X() == 0);
     REQUIRE(vec.Y() == 0);
     REQUIRE(vec.Z() == 0);

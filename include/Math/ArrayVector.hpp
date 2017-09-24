@@ -9,24 +9,24 @@ namespace jerobins {
 
     template <bool B> using EnableIfB = typename std::enable_if<B, int>::type;
 
-    template <class DerivedClass, int Dim>
-    class ArrayVector : public VectorBase<DerivedClass, Dim> {
+    template <class DerivedClass, int Dim, typename ElementType>
+    class ArrayVector : public VectorBase<DerivedClass, Dim, ElementType> {
 
     public:
       template <size_t D1 = Dim, EnableIfB<D1 == 2> = 0>
-      ArrayVector(float x = 0, float y = 0) {
+      ArrayVector(ElementType x = 0, ElementType y = 0) {
         Set(0, x);
         Set(1, y);
       }
 
       template <size_t D1 = Dim, EnableIfB<D1 == 3> = 0>
-      ArrayVector(float x = 0, float y = 0, float z = 0) {
+      ArrayVector(ElementType x = 0, ElementType y = 0, ElementType z = 0) {
         Set(0, x);
         Set(1, y);
         Set(2, z);
       }
       template <size_t D1 = Dim, EnableIfB<D1 == 4> = 0>
-      ArrayVector(float x = 0, float y = 0, float z = 0, float w = 0) {
+      ArrayVector(ElementType x = 0, ElementType y = 0, ElementType z = 0, ElementType w = 0) {
         Set(0, x);
         Set(1, y);
         Set(2, z);
@@ -57,35 +57,35 @@ namespace jerobins {
       }
 
       // Scalar multiplication
-      virtual DerivedClass &operator*=(const float &scalar) {
+      virtual DerivedClass &operator*=(const ElementType &scalar) {
         for (int i = 0; i < Dim; ++i) {
           Set(i, Get(i) * scalar);
         }
         return this->CastToDerived();
       }
 
-      virtual float Dot(const DerivedClass &other) const {
-        float result = 0;
+      virtual ElementType Dot(const DerivedClass &other) const {
+        ElementType result = 0;
         for (int i = 0; i < Dim; ++i) {
           result += this->Get(i) * other.Get(i);
         }
         return result;
       }
 
-      virtual float Get(int i) const {
+      virtual ElementType Get(int i) const {
         this->BoundsCheck(i);
         return data_[i];
       }
 
-      virtual void Set(int pos, float value) {
+      virtual void Set(int pos, ElementType value) {
         this->BoundsCheck(pos);
         data_[pos] = value;
       }
 
-      virtual const float *Raw() const { return data_; }
+      virtual const ElementType *Raw() const { return data_; }
 
     private:
-      float data_[Dim];
+      ElementType data_[Dim];
     };
   }
 }

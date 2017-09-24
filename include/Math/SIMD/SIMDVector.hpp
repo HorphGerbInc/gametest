@@ -18,7 +18,7 @@ namespace jerobins {
       template <bool B> using EnableIfB = typename std::enable_if<B, int>::type;
 
       template <class DerivedClass, int Dim>
-      class SIMDVector : public VectorBase<DerivedClass, Dim> {
+      class SIMDVector : public VectorBase<DerivedClass, Dim, float> {
 
       public:
         template <size_t D1 = Dim, EnableIfB<D1 == 2> = 0>

@@ -6,7 +6,7 @@
 const float x = 1.0;
 const float y = 1.0;
 
-class Vec: public jerobins::math::ArrayVector<Vec,2> {
+class Vec: public jerobins::math::ArrayVector<Vec,2, float> {
 
 };
 

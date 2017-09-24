@@ -7,17 +7,20 @@
 namespace jerobins {
   namespace math {
 
-    class Vec2 : public ArrayVector<Vec2,2> {
+    template <typename ElementType = float>
+    class Vec2 : public ArrayVector<Vec2<ElementType>, 2, ElementType> {
     public:
-      Vec2();
-      Vec2(float x, float y);
+      Vec2() : Vec2(0, 0) {}
+      Vec2(ElementType x, ElementType y) {
+        SetX(x);
+        SetY(y);
+      }
 
-      float X() const;
-      float Y() const;
+      ElementType X() const { return this->Get(0); }
+      ElementType Y() const { return this->Get(1); }
 
-      void SetX(float newX);
-      void SetY(float newY);
-
+      void SetX(ElementType value) { this->Set(0, value); }
+      void SetY(ElementType value) { this->Set(1, value); }
     };
   }
 }

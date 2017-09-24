@@ -14,7 +14,7 @@ const float values[4] = {x, y, z, w};
 const float scale = 1252.5;
 
 TEST_CASE("[Vec4] : Create empty vector") {
-  jerobins::math::Vec4 vec;
+  jerobins::math::Vec4<> vec;
   REQUIRE(vec.X() == 0);
   REQUIRE(vec.Y() == 0);
   REQUIRE(vec.Z() == 0);
@@ -26,7 +26,7 @@ TEST_CASE("[Vec4] : Create empty vector") {
 }
 
 TEST_CASE("[Vec4] : Set and Get works") {
-  jerobins::math::Vec4 vec;
+  jerobins::math::Vec4<> vec;
   vec.SetX(x);
   REQUIRE(vec.X() == x);
   vec.SetY(y);
@@ -35,8 +35,8 @@ TEST_CASE("[Vec4] : Set and Get works") {
 
 TEST_CASE("[Vec4] : Can assign") {
 
-  jerobins::math::Vec4 from(x, y, z, w);
-  jerobins::math::Vec4 to;
+  jerobins::math::Vec4<> from(x, y, z, w);
+  jerobins::math::Vec4<> to;
 
   to = from;
   REQUIRE(from.X() == x);
@@ -48,8 +48,8 @@ TEST_CASE("[Vec4] : Can assign") {
 
 TEST_CASE("[Vec4] : Copy constructor") {
 
-  jerobins::math::Vec4 from(x, y, z, w);
-  jerobins::math::Vec4 to(from);
+  jerobins::math::Vec4<> from(x, y, z, w);
+  jerobins::math::Vec4<> to(from);
 
   REQUIRE(from.X() == to.X());
   REQUIRE(from.Y() == to.Y());
@@ -68,7 +68,7 @@ TEST_CASE("[Vec4] : Copy constructor") {
 
 TEST_CASE("[vec4] : Scalar multiple") {
 
-  jerobins::math::Vec4 vec(x, y, z, w);
+  jerobins::math::Vec4<> vec(x, y, z, w);
   vec *= scale;
   REQUIRE(vec.X() == x * scale);
   REQUIRE(vec.Y() == y * scale);
@@ -78,9 +78,9 @@ TEST_CASE("[vec4] : Scalar multiple") {
 
 TEST_CASE("[vec4] : Vector addition") {
 
-  jerobins::math::Vec4 vec1(x, y, z, w);
-  jerobins::math::Vec4 vec2(x * scale, y * scale, z * scale, w * scale);
-  jerobins::math::Vec4 vec3 = vec1 + vec2;
+  jerobins::math::Vec4<> vec1(x, y, z, w);
+  jerobins::math::Vec4<> vec2(x * scale, y * scale, z * scale, w * scale);
+  jerobins::math::Vec4<> vec3 = vec1 + vec2;
 
   for (int i = 0; i < 4; ++i) {
     REQUIRE(vec1.Get(i) == values[i]);
@@ -91,9 +91,9 @@ TEST_CASE("[vec4] : Vector addition") {
 
 TEST_CASE("[vec4] : Vector subtraction") {
 
-  jerobins::math::Vec4 vec1(x, y, z, w);
-  jerobins::math::Vec4 vec2(x * scale, y * scale, z * scale, w * scale);
-  jerobins::math::Vec4 vec3 = vec1 - vec2;
+  jerobins::math::Vec4<> vec1(x, y, z, w);
+  jerobins::math::Vec4<> vec2(x * scale, y * scale, z * scale, w * scale);
+  jerobins::math::Vec4<> vec3 = vec1 - vec2;
 
   for (int i = 0; i < 4; ++i) {
     REQUIRE(vec1.Get(i) == values[i]);
@@ -104,8 +104,8 @@ TEST_CASE("[vec4] : Vector subtraction") {
 
 TEST_CASE("[vec4] : Dot product") {
 
-	jerobins::math::Vec4 vec1(x, y, z, w);
-	jerobins::math::Vec4 vec2(x * scale, y * scale, z * scale, w * scale);
+	jerobins::math::Vec4<> vec1(x, y, z, w);
+	jerobins::math::Vec4<> vec2(x * scale, y * scale, z * scale, w * scale);
 	float dot = vec1.Dot(vec2);
 	float answer = 0;
 	for (int i = 0; i < 4; ++i)
@@ -115,8 +115,8 @@ TEST_CASE("[vec4] : Dot product") {
 
 TEST_CASE("[vec4] : Dot product performance") {
 
-	jerobins::math::Vec4 vec1(x, y, z, w);
-	jerobins::math::Vec4 vec2(x * scale, y * scale, z * scale, w * scale);
+	jerobins::math::Vec4<> vec1(x, y, z, w);
+	jerobins::math::Vec4<> vec2(x * scale, y * scale, z * scale, w * scale);
 	for (int i = 0; i < 1000000; ++i) {
 		float dot = vec1.Dot(vec2);
 	}

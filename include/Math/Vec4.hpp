@@ -7,22 +7,26 @@
 namespace jerobins {
   namespace math {
 
-    class Vec4 : public ArrayVector<Vec4,4> {
+    template <typename ElementType = float>
+    class Vec4 : public ArrayVector<Vec4<ElementType>, 4, ElementType> {
     public:
-      Vec4();
-      Vec4(float x, float y, float z, float w);
+      Vec4() : Vec4(0, 0, 0, 0) {}
+      Vec4(ElementType x, ElementType y, ElementType z, ElementType w) {
+        SetX(x);
+        SetY(y);
+        SetZ(z);
+        SetW(w);
+      }
 
-      float X() const;
-      float Y() const;
-      float Z() const;
-      float W() const;
-      
-      void SetX(float);
-      void SetY(float);
-      void SetZ(float);
-      void SetW(float);
+      ElementType X() const { return this->Get(0); }
+      ElementType Y() const { return this->Get(1); }
+      ElementType Z() const { return this->Get(2); }
+      ElementType W() const { return this->Get(3); }
 
-      friend class Matrix4;
+      void SetX(ElementType value) { this->Set(0, value); }
+      void SetY(ElementType value) { this->Set(1, value); }
+      void SetZ(ElementType value) { this->Set(2, value); }
+      void SetW(ElementType value) { this->Set(3, value); }
     };
   }
 }

@@ -4,27 +4,39 @@
 
 #include <Render/RenderType.hpp>
 
+#include <Math/Vec2.hpp>
+#include <Math/Vec3.hpp>
+#include <Math/Vec4.hpp>
+#include <Render/Color.hpp>
+
 namespace jerobins {
   namespace render {
     class IRenderable {
     public:
       // Raw underlying data
-      virtual const float *GetVertices() const = 0;
+      virtual const jerobins::math::Vec3<float> *GetVertices() const = 0;
       virtual std::size_t VertexCount() const = 0;
 
-      // Indices, if specified, null if not.
-      virtual const std::size_t *Indices() const = 0;
-      virtual std::size_t IndicesCount() const = 0;
+      // Color of vertices
+      virtual const Color *GetColors() const = 0;
+      virtual std::size_t ColorCount() const = 0;
 
-	  int GetVertexArray() { return vertexArray; }
-	  int GetBuffer() { return buffer; }
+      // normal of vertices
+      virtual const jerobins::math::Vec3<float> *GetNormals() const = 0;
+      virtual std::size_t NormalCount() const = 0;
+
+      // Textures
+      virtual const jerobins::math::Vec2<int> *GetTexureCoords() const = 0;
+      virtual std::size_t TextureCount() const = 0;
+
+      // Indices
+      virtual const int *GetIndices() const = 0;
+      virtual std::size_t IndicesCount() const = 0;
 
       // The structure of the data
       virtual RenderType Type() const = 0;
-	protected:
-		int vertexArray;
-		int buffer;
-	};
+
+    };
   }
 }
 

@@ -6,7 +6,7 @@
 #include <Math/SIMD/Vec2.hpp>
 
 TEST_CASE("[Vec2] : Create empty vector") {
-    jerobins::math::Vec2 vec;
+    jerobins::math::Vec2<> vec;
     jerobins::math::simd::Vec2 simdVec;
     REQUIRE(vec.X() == 0);
     REQUIRE(vec.Y() == 0);
@@ -26,8 +26,8 @@ TEST_CASE("[Vec2] : Can assign") {
     float x = 1.0;
     float y = 2.0;
 
-    jerobins::math::Vec2 from(x , y);
-    jerobins::math::Vec2 to;
+    jerobins::math::Vec2<> from(x , y);
+    jerobins::math::Vec2<> to;
 
     to = from;
     REQUIRE(from.X() == x);
@@ -41,8 +41,8 @@ TEST_CASE("[Vec2] : Copy constructor") {
     float x = 1.0;
     float y = 2.0;
 
-    jerobins::math::Vec2 from(x , y);
-    jerobins::math::Vec2 to(from);
+    jerobins::math::Vec2<> from(x , y);
+    jerobins::math::Vec2<> to(from);
 
     REQUIRE(from.X() == to.X());
     REQUIRE(from.Y() == to.Y());

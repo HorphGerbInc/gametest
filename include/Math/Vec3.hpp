@@ -6,22 +6,32 @@
 
 namespace jerobins {
   namespace math {
-
-    class Vec3 : public ArrayVector<Vec3, 3> {
+    template <typename ElementType = float>
+    class Vec3 : public ArrayVector<Vec3<ElementType>, 3, ElementType> {
     public:
-      Vec3();
-      Vec3(float x, float y, float z);
+      Vec3() : Vec3(0, 0, 0) {}
+      
+      Vec3(ElementType x, ElementType y, ElementType z) {
+        SetX(x);
+        SetX(y);
+        SetX(z);
+      }
 
-      float X() const;
-      float Y() const;
-      float Z() const;
+      ElementType X() const { return this->Get(0); }
+      ElementType Y() const { return this->Get(1); }
+      ElementType Z() const { return this->Get(2); }
 
-      void SetX(float);
-      void SetY(float);
-      void SetZ(float);
+      void SetX(ElementType value) { this->Set(0, value); }
+      void SetY(ElementType value) { this->Set(1, value); }
+      void SetZ(ElementType value) { this->Set(2, value); }
 
       // Cross Product
-      Vec3 Cross(const Vec3 &&other) const;
+      Vec3 Cross(const Vec3 &&other) const {
+        ElementType x;
+        ElementType y;
+        ElementType z;
+        return Vec3(x, y, z);
+      }
     };
   }
 }

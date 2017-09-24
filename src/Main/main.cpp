@@ -12,6 +12,23 @@
 
 #include <Render/OpenGL.hpp>
 
+
+// Convert a frame duration to frames per seconds
+float DurationToFPS(float milliseconds) {
+  return (1.0 * Seconds) / milliseconds;
+}
+
+// Convert frames per second to duration of single frame.
+float FPSToDuration(float fps) {
+  return (1.0 * Seconds) / fps;
+}
+
+// Cap the duration to a certain frames per second
+void CapFramesPerSeconds(float fps, jerobins::common::Timer & timer) {
+  while (timer.Duration() <= FPSToDuration(fps) ) {
+  }
+}
+
 GLuint LoadShaders(const char *vertex_file_path,
                    const char *fragment_file_path) {
 
@@ -113,11 +130,15 @@ static GLuint programID;
 
 void setupOpenGL() {
 
-  if (!gladLoadGL) {
+  if (!gladLoadGL()) {
     std::cout << "could not load opengl" << std::endl;
     exit(-1);
   }
-  printf("OpenGL Version %d.%d loaded", GLVersion.major, GLVersion.minor);
+
+  if(GLVersion.major == 0) {
+    std::cout << "Invalid OpenGL Version " << GLVersion.major << "." << GLVersion.minor << std::endl;
+    exit(-1);
+  }
 
   // OpenGL items
   programID = LoadShaders("shaders/passthrough.vert", "shaders/red.frag");
@@ -226,16 +247,12 @@ int main(int argc, char *argv[]) {
         break;
       }
 
-      // Cap FPS
-      while (timer.Duration() < (1 * Seconds) / 30) {
-      }
+      CapFramesPerSeconds(60, timer);
       timer.Stop();
-      std::cout << "FPS: " << (1000.0f / timer.Duration()) << std::endl;
+      std::cout << "FPS: " << DurationToFPS(timer.Duration()) << std::endl;
     }
 
     cleanupOpenGL();
-
-    std::cout << window->IsVisible() << std::endl;
 
     window->UnbindOpenGL();
     window->Hide();

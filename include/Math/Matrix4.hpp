@@ -20,7 +20,7 @@ namespace jerobins {
 
       Matrix4(const Matrix4 &other) : data(other.data) { /* Empty */ }
 
-      Vec4 GetRow(uint8_t row) const {
+      Vec4<> GetRow(uint8_t row) const {
         jerobins::common::ArgumentCheck<uint8_t>(row <= 3,
                                                  "Row is out of range", row);
         return data[row];
@@ -49,7 +49,7 @@ namespace jerobins {
       Matrix4 &operator*=(const Matrix4 &other) {
         Matrix4 trans = other.Transpose();
         for (int row = 0; row < 4; ++row) {
-          Vec4 tmp;
+          Vec4<> tmp;
           for (uint8_t col = 0; col < 4; ++col) {
             tmp += data[row] * trans.GetRow(col);
           }
@@ -70,8 +70,8 @@ namespace jerobins {
 
       Matrix4 operator*(const Matrix4 &&other) const { return *this * other; }
 
-      Vec4 operator*(const Vec4 &&other) const {
-        Vec4 result;
+      Vec4<> operator*(const Vec4<> &&other) const {
+        Vec4<> result;
         for (uint8_t row = 0; row < 4; ++row) {
           result.Set(row, data[row].Dot(other));
         }
@@ -89,7 +89,7 @@ namespace jerobins {
       }
 
     private:
-      std::array<Vec4, 4> data;
+      std::array<Vec4<float>, 4> data;
     };
   }
 }

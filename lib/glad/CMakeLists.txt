@@ -15,4 +15,8 @@ set_target_properties(${PROJET_NAME}
     PROPERTIES POSITION_INDEPENDENT_CODE ON
 )
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY})
+if(UNIX)
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY} ${CMAKE_DL_LIBS})
+else()
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY} )
+endif()

@@ -12,10 +12,10 @@ namespace jerobins {
   namespace render {
     class Renderer {
     public:
-
       Renderer();
 
-	  void Init();
+      // Initialize OpenGL, create buffers, load programs.
+      void Init();
       /*
        *  Given a list of polygons we render them
        */
@@ -25,6 +25,12 @@ namespace jerobins {
        *  Given a polygon we want to render it to the screen
        */
       void Render(jerobins::render::IRenderable &poly);
+
+    protected:
+      GLint vertexAttrPtr;
+      GLint colorAttrPtr;
+      GLint normalAttrPtr;
+      GLint textureAttrPtr;
     };
   }
 }
