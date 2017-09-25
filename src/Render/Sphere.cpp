@@ -4,7 +4,7 @@
 namespace jerobins {
   namespace render {
 
-    Sphere::Sphere(float radius, std::size_t subdivisions) {
+    Sphere::Sphere(float radius, unsigned int subdivisions) {
       if (subdivisions == 0) {
         // square
       }
@@ -12,11 +12,11 @@ namespace jerobins {
 
     const float *Sphere::Data() const { return &this->data[0]; }
 
-    std::size_t Sphere::DataCount() const { return this->data.size(); }
+	unsigned int Sphere::DataCount() const { return (unsigned int)this->data.size(); }
 
-    const std::size_t *Sphere::Indices() const { return &this->indices[0]; }
+    const unsigned int *Sphere::Indices() const { return &this->indices[0]; }
 
-    std::size_t Sphere::IndicesCount() const { return this->indices.size(); }
+	unsigned int Sphere::IndicesCount() const { return (unsigned int)this->indices.size(); }
 
     RenderType Sphere::Type() const { return RenderType::Triangles; }
   }

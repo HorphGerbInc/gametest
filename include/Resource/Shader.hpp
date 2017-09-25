@@ -31,7 +31,7 @@ namespace jerobins {
       std::string Content() const { return content; }
 
       // Length of the shader
-      std::size_t Length() const { return content.size(); }
+      unsigned int Length() const { return content.size(); }
 
       // Compile the shader
       virtual bool Compile() = 0;

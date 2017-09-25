@@ -7,7 +7,7 @@
 #include <Common/StringUtil.hpp>
 #include <Resource/ShaderProgram.hpp>
 // Lib
-#include <json.hpp>
+#include <Common/Json.hpp>
 
 namespace jerobins {
   namespace resource {

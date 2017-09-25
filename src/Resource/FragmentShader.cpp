@@ -5,7 +5,7 @@
 #include <streambuf>
 
 // lib
-#include <json.hpp>
+#include <Common/Json.hpp>
 
 // Mine
 #include <Resource/FragmentShader.hpp>
@@ -19,7 +19,7 @@ namespace jerobins {
     }
 
     bool FragmentShader::Compile() {
-      compile(GL_FRAGMENT_SHADER);      
+      return compile(GL_FRAGMENT_SHADER);      
     }
 
     FragmentShader FragmentShader::Load(std::string filename) {

@@ -4,24 +4,13 @@
 cmake_minimum_required(VERSION 3.0)
 project(Jerobins)
 
-find_package(OpenGL REQUIRED)
+# C++ properties
+set(CMAKE_CXX_STANDARD 11) # C++11...
+set(CMAKE_CXX_STANDARD_REQUIRED ON) #...is required...
+set(CMAKE_CXX_EXTENSIONS OFF) #.
 
-set(CMAKE_CXX_STANDARD 14)
-if(UNIX AND NOT APPLE)
-    set(CMAKE_CXX_FLAGS -msse4.1)
-
-    FIND_PACKAGE ( X11 REQUIRED )
-    IF ( X11_FOUND )
-          INCLUDE_DIRECTORIES ( ${X11_INCLUDE_DIR} )
-          LINK_LIBRARIES ( ${X11_LIBRARIES} )
-    ENDIF ( X11_FOUND )
-
-    FIND_PACKAGE ( OpenGL REQUIRED )
-    IF ( OPENGL_FOUND )
-        INCLUDE_DIRECTORIES ( ${OPENGL_INCLUDE_DIR} )
-        LINK_LIBRARIES ( ${OPENGL_LIBRARIES} )
-    endif( OPENGL_FOUND )
-endif()
+# Find modules
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 
 # Output directories
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
@@ -33,28 +22,39 @@ set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 include_directories("${PROJECT_INCLUDE_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/lib/json")
 include_directories("${PROJECT_SOURCE_DIR}/lib/glad/include")
+include_directories("${PROJECT_SOURCE_DIR}/lib/irrXML/include")
 
-# GLEW
-set(GLEW_ROOT "${CMAKE_HOME_DIRECTORY}/lib/glew")
-set(GLEW_INCLUDE "${CMAKE_HOME_DIRECTORY}/lib/glew")
+# Include libraries
+find_package(ASSIMP REQUIRED)
+IF ( ASSIMP_FOUND )
+    LINK_LIBRARIES ( ${ASSIMP_LIBRARIES} )
+ENDIF ( ASSIMP_FOUND)     
 
-if (WIN32)
-    set(GLEW_LIB_PATH "${CMAKE_HOME_DIRECTORY}/lib/glew/lib/Release/x64")
-    set(GLEW_DLL_PATH "${CMAKE_HOME_DIRECTORY}/lib/glew/bin/Release/x64")
+find_package ( OpenGL REQUIRED )
+if ( OPENGL_FOUND )
+    INCLUDE_DIRECTORIES ( ${OPENGL_INCLUDE_DIR} )
+    LINK_LIBRARIES ( ${OPENGL_LIBRARIES} )
+endif( OPENGL_FOUND )
 
-    set(GLEW_LIB "${GLEW_LIB_PATH}/glew32.lib")
-    set(GLEW_LIB_STATIC "${GLEW_LIB_PATH}/glew32s.lib")
-    set(GLEW_DLL "${GLEW_DLL_PATH}/glew32.dll")
+find_package(IRRXML REQUIRED)
+if ( IRRXML_FOUND )
+    LINK_LIBRARIES ( ${IRRXML_LIBRARIES} )
+ENDIF ( IRRXML_FOUND)
 
-    set(APPEND CMAKE_SHARED_LIBRARY_PREFIX "")
-    list(APPEND CMAKE_PREFIX_PATH ${GLEW_ROOT} ${GLEW_INCLUDE} ${GLEW_LIB_PATH} ${GLEW_DLL_PATH} )
-    list(APPEND CMAKE_LIBRARY_PATH ${GLEW_INCLUDE} ${GLEW_LIB_PATH} ${GLEW_DLL_PATH})
+# if linux
+if(UNIX AND NOT APPLE)
+    set(CMAKE_CXX_FLAGS -msse4.1)
 
-    find_package(GLEW REQUIRED)
-    IF ( GLEW_FOUND )
-        LINK_LIBRARIES ( ${GLEW_LIBRARIES} )
-    ENDIF ( GLEW_FOUND)     
-ENDIF ()
+    FIND_PACKAGE ( X11 REQUIRED )
+    IF ( X11_FOUND )
+          INCLUDE_DIRECTORIES ( ${X11_INCLUDE_DIR} )
+          LINK_LIBRARIES ( ${X11_LIBRARIES} )
+    ENDIF ( X11_FOUND )
+
+endif()
+
+
+# add projects
 
 # External first
 add_subdirectory(lib/glad)
@@ -69,6 +69,7 @@ add_subdirectory(src/Engine)
 add_subdirectory(src/Main)
 
 file(COPY shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY models DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 
 # Tests

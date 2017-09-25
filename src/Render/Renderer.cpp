@@ -49,7 +49,7 @@ namespace jerobins {
       uint32_t subBufferOffset = 0;
 
       // Vertices
-      size_t elementSize = sizeof(jerobins::math::Vec3<float>);
+      GLsizei elementSize = sizeof(jerobins::math::Vec3<float>);
 
       // Target type, first index, how many (bytes), data
       glBufferSubData(GL_VERTEX_ARRAY, subBufferOffset,

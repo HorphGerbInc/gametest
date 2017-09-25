@@ -7,7 +7,7 @@
 #include <Resource/VertexShader.hpp>
 
 // Lib
-#include <json.hpp>
+#include <Common/Json.hpp>
 
 std::string ReadFile(std::string filename) {
   std::ifstream input(filename);
@@ -19,15 +19,20 @@ std::string ReadFile(std::string filename) {
 namespace jerobins {
   namespace resource {
 
-    template <class T> struct Prefix { std::string Prefix = ""; };
-    template <> struct Prefix<VertexShader> {
-      std::string Prefix = "shaders/vertex/";
-    };
-    template <> struct Prefix<FragmentShader> {
-      std::string Prefix = "shaders/fragment/";
-    };
+	  template <typename T>
+	  std::string Prefix() {
+		  return std::string("");
+	  }
+	  template <>
+	  std::string Prefix<VertexShader>() {
+		  return std::string("");
+	  }
+	  template <>
+	  std::string Prefix<FragmentShader>() {
+		  return std::string("");
+	  }
 
-    class ShaderFactory {
+	  class ShaderFactory {
 
     public:
       template <class ShaderType>
@@ -42,7 +47,7 @@ namespace jerobins {
         std::string type = j["type"];
 
 
-        std::string file = Prefix<ShaderType>().Prefix + name;
+        std::string file = Prefix<ShaderType>() + name;
         std::string contents = ReadFile(file);
         
         return ShaderType(name, description, version, contents);

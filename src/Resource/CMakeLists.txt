@@ -12,13 +12,8 @@ file(GLOB HPP_FILES
 include_directories(${PROJECT_NAME}
     PUBLIC "${CMAKE_HOME_DIRECTORY}/include"
     PUBLIC "${CMAKE_HOME_DIRECTORY}/lib/json"
+    PUBLIC "${ASSIMP_INCLUDE_DIR}"
 )
-
-find_package(GLEW REQUIRED)
-if (GLEW_FOUND)
-    include_directories(${GLEW_INCLUDE_DIRS})
-    link_libraries(${GLEW_LIBRARIES})
-endif()
 
 add_library(${PROJECT_NAME} STATIC ${CPP_FILES} ${HPP_FILES})
 
@@ -26,4 +21,6 @@ set_target_properties(${PROJET_NAME}
     PROPERTIES POSITION_INDEPENDENT_CODE ON
 )
 
-target_link_libraries(${PROJECT_NAME} Glad ${OPENGL_LIBRARIES} )
+target_link_libraries(${PROJECT_NAME} Glad ${OPENGL_LIBRARIES} ${ASSIMP_LIBRARIES} ${IRRXML_LIBRARIES} )
+
+

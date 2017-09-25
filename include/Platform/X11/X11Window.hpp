@@ -13,7 +13,7 @@ namespace X11Wrapper {
 };
 #include <Platform/Window.hpp>
 
-#include <GL/glx.h>
+// #include <GL/glx.h>
 
 // X11 includes?
 
@@ -73,7 +73,7 @@ namespace jerobins {
 
       virtual void UnbindOpenGL();
 
-      virtual void SwapBuffers();
+      virtual void SwapBuffer();
       
 
     private:

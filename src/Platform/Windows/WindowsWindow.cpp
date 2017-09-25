@@ -40,16 +40,12 @@ std::string GetLastErrorAsString() {
   return message;
 }
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam,
+static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam,
                             LPARAM lParam) {
-  switch (uMsg) {
-  case WM_DESTROY:
-    PostQuitMessage(0);
-    break;
-  default:
-    return DefWindowProc(hwnd, uMsg, wParam, lParam);
-  }
-  return 0;
+
+	jerobins::platform::WindowsWindow* me = (jerobins::platform::WindowsWindow*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+	if (me) return me->WindowsProc(hwnd, uMsg, wParam, lParam);
+	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
 namespace jerobins {
@@ -85,7 +81,7 @@ namespace jerobins {
                                  GetLastErrorAsString());
       }
 
-      WNDCLASS wc = {};
+      WNDCLASS wc = {0};
 
       wc.lpfnWndProc = WindowProc;
       wc.hInstance = hInstance;
@@ -131,6 +127,9 @@ namespace jerobins {
         throw std::runtime_error("Could not create the window: " + msg);
       }
 
+	  SetWindowLongPtr(this->windowHandle, GWLP_USERDATA, (LONG_PTR)this);
+
+
       SetSize(height, width);
       FullScreen(fullscreen);
       Borderless(borderless);
@@ -151,7 +150,7 @@ namespace jerobins {
 
     void WindowsWindow::HandleEvents() {
       MSG msg;
-      if (GetMessage(&msg, 0, 0, 0)) {
+      if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
       }
@@ -159,7 +158,7 @@ namespace jerobins {
 
     bool WindowsWindow::HasMouseFocus() const { return true; }
 
-    void WindowsWindow::Hide() { ShowWindow(windowHandle, SW_HIDE); }
+	void WindowsWindow::Hide() { ShowWindow(windowHandle, SW_HIDE); this->visible = false; }
 
     void WindowsWindow::SetHeight(int height) { SetSize(height, Width()); }
 
@@ -280,7 +279,20 @@ namespace jerobins {
     }
 
     // Swap the buffers
-    void WindowsWindow::SwapBuffers() { SwapBuffers(); }
+    void WindowsWindow::SwapBuffer() { SwapBuffers(this->hardwareDescriptor); }
+
+	LRESULT CALLBACK WindowsWindow::WindowsProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+		switch (msg) {
+		case WM_DESTROY:
+			std::cout << "Destroy" << std::endl;
+			this->Hide();
+			PostQuitMessage(0);
+			break;
+		default:
+			return DefWindowProc(hwnd, msg, wParam, lParam);
+		}
+		return 0;
+	}
   }
 }
 

@@ -97,7 +97,7 @@ namespace jerobins {
       virtual void UnbindOpenGL() = 0;
 
       // Swap the buffers
-      virtual void SwapBuffers() = 0;
+      virtual void SwapBuffer() = 0;
       
     protected:
       // Set all the parameters.

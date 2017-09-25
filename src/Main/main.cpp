@@ -1,26 +1,25 @@
 
+// StdLib
 #include <iostream>
+#include <fstream>
 
+// Jerobins
 #include <Common/CommandLineArguments.hpp>
 #include <Common/Configuration.hpp>
 #include <Common/Constants.hpp>
 #include <Common/Timer.hpp>
-
-#include <fstream>
-
 #include <Platform/Window.hpp>
-
 #include <Render/OpenGL.hpp>
-
+#include <Resource/BlenderLoader.hpp>
 
 // Convert a frame duration to frames per seconds
-float DurationToFPS(float milliseconds) {
-  return (1.0 * Seconds) / milliseconds;
+float DurationToFPS(double milliseconds) {
+  return (float)((1.0 * Seconds) / milliseconds);
 }
 
 // Convert frames per second to duration of single frame.
-float FPSToDuration(float fps) {
-  return (1.0 * Seconds) / fps;
+float FPSToDuration(double fps) {
+  return (float)((1.0 * Seconds) / fps);
 }
 
 // Cap the duration to a certain frames per second
@@ -193,6 +192,12 @@ void cleanupOpenGL() {
 /**/
 int main(int argc, char *argv[]) {
 
+  jerobins::resource::BlenderLoader::LoaderTest();
+
+  char pBuf[1000];
+	int len = 1000;
+	int bytes = GetModuleFileName(NULL, pBuf, len);
+	printf("%s\n", pBuf);
   try {
     // Handle command line arguemnts
     jerobins::common::CommandLineArguments cli;
@@ -216,7 +221,7 @@ int main(int argc, char *argv[]) {
 
       drawOpenGL();
 
-      window->SwapBuffers();
+      window->SwapBuffer();
 
       switch (glGetError()) {
       case GL_NO_ERROR:
@@ -249,7 +254,7 @@ int main(int argc, char *argv[]) {
 
       CapFramesPerSeconds(64, timer);
       timer.Stop();
-      std::cout << "FPS: " << DurationToFPS(timer.Duration()) << std::endl;
+      std::cout << "FPS: " << DurationToFPS((double)timer.Duration()) << std::endl;
     }
 
     cleanupOpenGL();

@@ -76,7 +76,9 @@ namespace jerobins {
       virtual void UnbindOpenGL();
 
       // Swap the buffers
-      virtual void SwapBuffers();
+      virtual void SwapBuffer();
+
+	  LRESULT CALLBACK WindowsProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
     private:
       unsigned int pixel_format;

@@ -5,7 +5,7 @@
 #include <streambuf>
 
 // lib
-#include <json.hpp>
+#include <Common/Json.hpp>
 
 // Mine
 #include <Resource/VertexShader.hpp>
@@ -19,7 +19,7 @@ namespace jerobins {
     }
 
     bool VertexShader::Compile() {
-      compile(GL_VERTEX_SHADER);
+      return compile(GL_VERTEX_SHADER);
     }
 
     VertexShader VertexShader::Load(std::string filename) {

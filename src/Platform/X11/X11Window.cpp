@@ -212,7 +212,7 @@ namespace jerobins {
       }
     }
 
-    void X11Window::SwapBuffers() {
+    void X11Window::SwapBuffer() {
       glXSwapBuffers(this->display, this->window);
     }
   }
