@@ -6,6 +6,7 @@
 
 #include <X11/X.h>
 #include <X11/Xutil.h>
+#include <glad/glad_glx.h>
 
 #include <Platform/X11/X11Window.hpp>
 

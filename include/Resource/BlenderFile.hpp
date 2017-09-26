@@ -12,7 +12,7 @@ namespace jerobins {
         public:
 
             int PointerSize;
-			Endianess Endianess;
+			Endianess WordEndianess;
             std::string Version;
         };
     }

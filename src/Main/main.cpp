@@ -194,10 +194,6 @@ int main(int argc, char *argv[]) {
 
   jerobins::resource::BlenderLoader::LoaderTest();
 
-  char pBuf[1000];
-	int len = 1000;
-	int bytes = GetModuleFileName(NULL, pBuf, len);
-	printf("%s\n", pBuf);
   try {
     // Handle command line arguemnts
     jerobins::common::CommandLineArguments cli;

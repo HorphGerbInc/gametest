@@ -6,6 +6,8 @@
 
 #include <X11/Xlib.h>
 
+#include <Render/OpenGL.hpp>
+
 namespace X11Wrapper {
   typedef Screen X11Screen;
   typedef Window X11Window;
