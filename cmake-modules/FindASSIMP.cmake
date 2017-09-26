@@ -8,7 +8,7 @@ if(WIN32)
 	set(ASSIMP_ROOT_DIR "${CMAKE_HOME_DIRECTORY}/lib/assimp")
 
 	# Find path of each library
-	find_path(ASSIMP_INCLUDE_DIR
+	find_path(ASSIMP_INCLUDE_DIRS
 		NAMES
 			assimp/anim.h
 		HINTS
@@ -50,29 +50,29 @@ if(WIN32)
 else(WIN32)
 
 	find_path(
-	  assimp_INCLUDE_DIRS
+	  ASSIMP_INCLUDE_DIRS
 	  NAMES postprocess.h scene.h version.h config.h cimport.h
-	  PATHS /usr/local/include/
+	  HINTS /usr/local/include/assimp /usr/include/assimp
 	)
 
 	find_library(
-	  assimp_LIBRARIES
+	  ASSIMP_LIBRARIES
 	  NAMES assimp
-	  PATHS /usr/local/lib/
+	  HINTS /usr/local/lib/ /usr/lib/ /usr/lib/x86_64-linux-gnu
 	)
+	
+	if (ASSIMP_INCLUDE_DIRS AND ASSIMP_LIBRARIES)
+	  SET(ASSIMP_FOUND TRUE)
+	ENDIF (ASSIMP_INCLUDE_DIRS AND ASSIMP_LIBRARIES)
 
-	if (assimp_INCLUDE_DIRS AND assimp_LIBRARIES)
-	  SET(assimp_FOUND TRUE)
-	ENDIF (assimp_INCLUDE_DIRS AND assimp_LIBRARIES)
-
-	if (assimp_FOUND)
-	  if (NOT assimp_FIND_QUIETLY)
-		message(STATUS "Found asset importer library: ${assimp_LIBRARIES}")
-	  endif (NOT assimp_FIND_QUIETLY)
-	else (assimp_FOUND)
-	  if (assimp_FIND_REQUIRED)
+	if (ASSIMP_FOUND)
+	  if (NOT ASSIMP_FIND_QUIETLY)
+		message(STATUS "Found asset importer library: ${ASSIMP_LIBRARIES}")
+	  endif (NOT ASSIMP_FIND_QUIETLY)
+	else (ASSIMP_FOUND)
+	  if (ASSIMP_FIND_REQUIRED)
 		message(FATAL_ERROR "Could not find asset importer library")
-	  endif (assimp_FIND_REQUIRED)
-	endif (assimp_FOUND)
+	  endif (ASSIMP_FIND_REQUIRED)
+	endif (ASSIMP_FOUND)
 	
 endif(WIN32)
