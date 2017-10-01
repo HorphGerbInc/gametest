@@ -596,10 +596,14 @@
         Too many extensions
 */
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glad/glad.h>
+
+#define LOG(MSG) printf("%s", #MSG)
+
 
 static void* get_proc(const char *namez);
 
@@ -8423,9 +8427,18 @@ static void find_coreGL(void) {
 
 int gladLoadGLLoader(GLADloadproc load) {
 	GLVersion.major = 0; GLVersion.minor = 0;
+	
 	glGetString = (PFNGLGETSTRINGPROC)load("glGetString");
-	if(glGetString == NULL) return 0;
-	if(glGetString(GL_VERSION) == NULL) return 0;
+	if(glGetString == NULL) {
+		LOG(glGetString);
+		return 0;
+	}
+
+	if(glGetString(GL_VERSION) == NULL) {
+		LOG(GL_VERSION);		
+		return 0;
+	}
+	
 	find_coreGL();
 	load_GL_VERSION_1_0(load);
 	load_GL_VERSION_1_1(load);

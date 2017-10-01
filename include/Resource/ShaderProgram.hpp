@@ -5,7 +5,8 @@
 #include <vector>
 #include <Render/OpenGL.hpp>
 #include <Resource/IResource.hpp>
-#include <Resource/Shader.hpp>
+#include <Resource/VertexShader.hpp>
+#include <Resource/FragmentShader.hpp>
 
 namespace jerobins {
   namespace resource {
@@ -13,20 +14,23 @@ namespace jerobins {
     public:
       static ShaderProgram Load(std::string filename);
 
-      bool Compile();
-
       // Activate program on GPU
       void Attach();
       // Deactivate program on GPU
       void Detach();
+
+      void Link();
 
       virtual std::string ToString() const;
 
       std::string version;
       std::string name;
       std::string description;
-      //std::vector<Shader> shaders;
+      std::vector<VertexShader> vertexShaders;
+      std::vector<FragmentShader> fragmentShaders;
 
+      ShaderProgram();
+      
     private: 
       bool active = false;
       GLint programID;

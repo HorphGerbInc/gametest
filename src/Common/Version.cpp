@@ -2,7 +2,7 @@
 #include <vector>
 
 // LIB
-#include <Common/Json.hpp>
+#include <Resource/Json.hpp>
 
 // Mine
 #include <Common/Version.hpp>

@@ -2,6 +2,8 @@
 #ifndef COLOR_HPP_
 #define COLOR_HPP_
 
+#include <json.hpp>
+
 namespace jerobins {
   namespace render {
     class Color {
@@ -14,8 +16,10 @@ namespace jerobins {
       float Green = 0.0;
       float Blue = 0.0;
       float Alpha = 0.0;
-
     };
+
+    void to_json(nlohmann::json &j, const Color &input);
+    void from_json(const nlohmann::json &j, Color &output);
   }
 }
 

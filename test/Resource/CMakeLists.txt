@@ -13,4 +13,4 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC "${CMAKE_HOME_DIRECTORY}/lib/catch"
     )
 
-target_link_libraries(${PROJECT_NAME} Resource Common)
+target_link_libraries(${PROJECT_NAME} Resource Common Render Platform)

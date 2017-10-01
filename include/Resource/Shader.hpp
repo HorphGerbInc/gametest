@@ -41,6 +41,10 @@ namespace jerobins {
       // Return a string representation
       virtual std::string ToString() const { return description; }
 
+      GLuint ShaderId() const {
+        return shaderId;
+      }
+
     protected:
       bool compile(GLenum shaderType) {
         // create shader
@@ -59,12 +63,11 @@ namespace jerobins {
           glGetShaderInfoLog(shaderId, 512, NULL, error);
           throw std::runtime_error(std::string(error));
         }
-
         return true;
       }
 
     private:
-      GLuint shaderId;
+      GLuint shaderId = -1;
       std::string name;
       std::string description;
       std::string content;

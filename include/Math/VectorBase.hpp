@@ -2,6 +2,11 @@
 #ifndef _VECTORBASE_HPP_
 #define _VECTORBASE_HPP_
 
+#include <iostream>
+#include <map>
+
+// Conversion
+#include <json.hpp>
 #include <stdexcept>
 
 namespace jerobins {
@@ -9,12 +14,15 @@ namespace jerobins {
 
     template <bool B> using EnableIfB = typename std::enable_if<B, int>::type;
 
-    template <class DerivedClass, int Dim, typename ElementType> class VectorBase {
+    template <class DerivedClass, int Dim, typename ElementType>
+    class VectorBase {
 
     public:
       DerivedClass &operator=(const DerivedClass &other) {
-        for (int i = 0; i < Dim; ++i)
-          Set(i, other.Get(i));
+        if (this != *other) {
+          for (int i = 0; i < Dim; ++i)
+            Set(i, other.Get(i));
+        }
         return CastToDerived();
       }
       DerivedClass &operator=(const DerivedClass &&other) {
@@ -72,7 +80,9 @@ namespace jerobins {
         return result *= scalar;
       }
 
-      DerivedClass operator*(const ElementType &&scalar) { return *this * scalar; }
+      DerivedClass operator*(const ElementType &&scalar) {
+        return *this * scalar;
+      }
 
       // Pairwise Addition
       DerivedClass &operator+=(const DerivedClass &&other) {
@@ -130,6 +140,28 @@ namespace jerobins {
         return result;
       }
     };
+
+    template <class DerivedClass, int Dim, typename ElementType>
+    void to_json(nlohmann::json &j,
+                 const VectorBase<DerivedClass, Dim, ElementType> &input) {
+      std::map<int, std::string> mapping = {
+          {0, "x"}, {1, "y"}, {2, "z"}, {3, "w"}};
+
+      for (int i = 0; i < Dim; ++i) {
+        j[mapping[i]] = input.Get(i);
+      }
+    }
+
+    template <class DerivedClass, int Dim, typename ElementType>
+    void from_json(const nlohmann::json &j,
+                   VectorBase<DerivedClass, Dim, ElementType> &output) {
+      std::map<int, std::string> mapping = {
+          {0, "x"}, {1, "y"}, {2, "z"}, {3, "w"}};
+
+      for (int i = 0; i < Dim; ++i) {
+        output.Set(i, j[mapping[i]]);
+      }
+    }
   }
 }
 

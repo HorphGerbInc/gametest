@@ -2,12 +2,17 @@
 #ifdef __linux__
 
 #include <functional>
+#include <iostream>
 #include <stdexcept>
 
 #include <X11/X.h>
 #include <X11/Xutil.h>
-#include <glad/glad_glx.h>
 
+// This should include everything needed for using glx functions
+// BROKEN
+
+#include <Common/ArgumentCheck.hpp>
+#include <Math/Operations.hpp>
 #include <Platform/X11/X11Window.hpp>
 
 static Atom wm_delete_window;
@@ -18,6 +23,31 @@ static int ctxErrorHandler(Display *dpy, XErrorEvent *ev) {
   return 0;
 }
 
+// Found this in Godot, thanks!
+static GLint attributes[] = {None};
+// Found this in Godot, thanks!
+static GLint backup[] = {GLX_RENDER_TYPE,
+                         GLX_RGBA_BIT,
+                         GLX_DRAWABLE_TYPE,
+                         GLX_WINDOW_BIT,
+                         GLX_DOUBLEBUFFER,
+                         true,
+                         GLX_RED_SIZE,
+                         1,
+                         GLX_GREEN_SIZE,
+                         1,
+                         GLX_BLUE_SIZE,
+                         1,
+                         GLX_DEPTH_SIZE,
+                         24,
+                         None};
+
+template <class T> void NullCheck(const std::string &msg, T *ptr) {
+  if (ptr == NULL || ptr == nullptr) {
+    throw std::runtime_error(msg);
+  }
+}
+
 namespace jerobins {
   namespace platform {
 
@@ -26,40 +56,66 @@ namespace jerobins {
         : Window(name, height, width, fullscreen, borderless, resizable) {
 
       this->display = XOpenDisplay(NULL);
-      if (this->display == NULL) {
-        throw std::runtime_error("Could not create display.");
-      }
+      NullCheck("Could not create display.", display);
+
+      int defaultScreen = DefaultScreen(this->display);
 
       this->screen = DefaultScreenOfDisplay(this->display);
+      NullCheck("Could not create screen.", screen);
 
+      // Screen dimensions
       int sWidth = WidthOfScreen(this->screen);
       int sHeight = HeightOfScreen(this->screen);
 
-      if (height > sHeight)
-        height = sHeight;
-      if (width > sWidth)
-        width = sWidth;
+      // Clamp
+      height = jerobins::math::Clamp(0, sHeight, height);
+      width = jerobins::math::Clamp(0, sWidth, width);
 
+      // Place in the middle
       this->x = sWidth / 2 - width / 2;
       this->y = sHeight / 2 - height / 2;
 
-      X11Wrapper::X11Window root = RootWindowOfScreen(this->screen);
-      auto bPixel = BlackPixelOfScreen(this->screen);
-      auto wPixel = WhitePixelOfScreen(this->screen);
+      NullCheck("glXChooseFBConfig is null!", glXChooseFBConfig);
+      int fbcount;
+      GLXFBConfig *frameBuffers =
+          glXChooseFBConfig(this->display, defaultScreen, attributes, &fbcount);
+      NullCheck("Could not find a framebuffer configuration", frameBuffers);
 
-      XSizeHints my_hints = {0};
+      // Just take the first framebuffer
+      XVisualInfo *vi =
+          glXGetVisualFromFBConfig(this->display, frameBuffers[0]);
 
-      my_hints.flags = PPosition | PSize;
-      my_hints.x = x;
-      my_hints.y = y;
-      my_hints.width = width;
-      my_hints.height = height;
+      // Window attributes
+      XSetWindowAttributes swa;
 
-      this->window = XCreateSimpleWindow(this->display, root, x, y, height,
-                                         width, 1, bPixel, wPixel);
+      swa.colormap =
+          XCreateColormap(this->display, RootWindow(this->display, vi->screen),
+                          vi->visual, AllocNone);
+      swa.border_pixel = 0;
+      swa.event_mask = StructureNotifyMask;
 
-      XSetNormalHints(this->display, this->window, &my_hints);
+      // XCreateWindow parameters
+      auto rootWindow = RootWindow(this->display, vi->screen);
+      int borderWidth = (borderless) ? 0 : 1;
+      unsigned long valueMask = CWBorderPixel | CWColormap | CWEventMask;
 
+      this->window = XCreateWindow(this->display, rootWindow, x, y, width,
+                                   height, borderWidth, vi->depth, InputOutput,
+                                   vi->visual, valueMask, &swa);
+      NullCheck("Could not create XWindow", (void *)this->window);
+
+      XClassHint *hints;
+      hints = XAllocClassHint();
+      if (hints) {
+        hints->res_name = (char *)"Jerobins_Engine";
+        hints->res_class = (char *)"Jerobins";
+      }
+      XSetClassHint(this->display, this->window, hints);
+      XFree(hints);
+
+      this->glContext = glXCreateContext(this->display, vi, NULL, GL_TRUE);
+      NullCheck("OpenGL Context is null", this->glContext);
+          
       XSelectInput(this->display, this->window, ExposureMask | KeyPressMask);
 
       wm_delete_window = XInternAtom(this->display, "WM_DELETE_WINDOW", False);
@@ -69,6 +125,16 @@ namespace jerobins {
       SetGeometry(x, y, height, width);
       FullScreen(fullscreen);
       Borderless(borderless);
+
+      this->BindOpenGL(NULL);
+      XFree(vi);
+      XFree(frameBuffers);
+
+      // make sure everything is okay before we leave
+      jerobins::common::ArgumentCheck<X11Wrapper::X11Screen>::IsNotNull(
+          "screen", screen);
+      jerobins::common::ArgumentCheck<X11Wrapper::X11Display>::IsNotNull(
+          "display", display);
     }
 
     X11Window::~X11Window() {
@@ -104,7 +170,7 @@ namespace jerobins {
 
       XEvent event;
       XConfigureEvent *xc;
-      
+
       while (XPending(this->display)) {
         XNextEvent(display, &event);
         switch (event.type) {
@@ -114,11 +180,11 @@ namespace jerobins {
               this->visible = false;
             }
             break;
-            case ConfigureNotify:
+          case ConfigureNotify:
             xc = &(event.xconfigure);
             this->width = xc->width;
             this->height = xc->height;
-            break;            
+            break;
           }
         }
       }
@@ -171,46 +237,19 @@ namespace jerobins {
       }
     }
 
-    static GLint defaultAttributes[] = {GLX_RGBA,
-                                        GLX_DEPTH_SIZE,
-                                        24,
-                                        GLX_DOUBLEBUFFER,
-                                        GLX_CONTEXT_MAJOR_VERSION_ARB,
-                                        3,
-                                        GLX_CONTEXT_MINOR_VERSION_ARB,
-                                        0,
-                                        None};
-
     void X11Window::BindOpenGL(GLint *glAttributes) {
-
-      if (glAttributes == NULL) {
-        glAttributes = defaultAttributes;
-      }
-
-      if (glContext != NULL) {
-        UnbindOpenGL();
-      }
-
-      XSync(display, False);
-
-      XVisualInfo *vi = glXChooseVisual(
-          this->display, XScreenNumberOfScreen(this->screen), glAttributes);
-      glContext = glXCreateContext(this->display, vi, NULL, GL_TRUE);
       glXMakeCurrent(this->display, this->window, glContext);
     }
 
     void X11Window::UnbindOpenGL() {
-      if (this->glContext) {
-        glXMakeCurrent(this->display, 0, 0);
-        glXDestroyContext(this->display, this->glContext);
-        this->glContext = NULL;
-      }
+      glXMakeCurrent(this->display, None, NULL);
     }
 
     void X11Window::Borderless(bool border) {
       if (border == borderless) {
         return;
       }
+      // TODO: enable borderless
     }
 
     void X11Window::SwapBuffer() {

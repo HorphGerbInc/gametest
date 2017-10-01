@@ -7,41 +7,48 @@
 #include <Common/StringUtil.hpp>
 #include <Resource/ShaderProgram.hpp>
 // Lib
-#include <Common/Json.hpp>
+#include <Resource/Json.hpp>
 
 namespace jerobins {
   namespace resource {
 
     ShaderProgram ShaderProgram::Load(std::string filename) {
-      std::ifstream input(filename);
-      nlohmann::json program;
-      input >> program;
+      nlohmann::json program = LoadJson(filename);
+      ShaderProgram result;
+
+      jerobins::resource::ThrowIfFieldNotSet(program, "version");
+      jerobins::resource::ThrowIfFieldNotSet(program, "name");
+      jerobins::resource::ThrowIfFieldNotSet(program, "description");
+      jerobins::resource::ThrowIfFieldNotSet(program, "vertexShaders");
+      jerobins::resource::ThrowIfFieldNotSet(program, "fragmentShaders");
 
       std::string version = program["version"];
       std::string name = program["name"];
       std::string description = program["description"];
-      std::vector<std::string> vertexShaders = program["vertexShaders"];
-      std::vector<std::string> fragmentShaders = program["fragmentShaders"];
+      std::vector<std::string> vertexShaders = program["vertexShaders"].get<std::vector<std::string>>();
+      std::vector<std::string> fragmentShaders = program["fragmentShaders"].get<std::vector<std::string>>();
 
-      ShaderProgram result;
       result.version = version;
       result.name = name;
       result.description = description;
-      //result.vertexShaders = vertexShaders;
-      //result.fragmentShaders = fragmentShaders;
       result.name = name;
 
-      /*
       for (auto fragShader : fragmentShaders) {
-        result.AddFragmentShader(fragShader);
+        result.fragmentShaders.push_back(
+            jerobins::resource::FragmentShader::Load(fragShader));
       }
       for (auto vertShader : vertexShaders) {
-        result.AddVertexShader(vertShader);
+        result.vertexShaders.push_back(
+            jerobins::resource::VertexShader::Load(vertShader));
       }
-      */
 
       return result;
     }
+
+    ShaderProgram::ShaderProgram() {
+      programID = glCreateProgram();
+    }
+    
 
     std::string ShaderProgram::ToString() const { return this->name; }
 
@@ -57,5 +64,17 @@ namespace jerobins {
       active = false;
     }
 
+    void ShaderProgram::Link() {
+      if(programID) return;
+      for(auto vert : vertexShaders) {
+        vert.Compile();
+        glAttachShader(programID, vert.ShaderId());        
+      }
+      for(auto frag : fragmentShaders) {
+        frag.Compile();
+        glAttachShader(programID, frag.ShaderId());        
+      }
+      glLinkProgram(programID);      
+    }
   }
 }

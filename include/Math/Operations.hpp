@@ -5,7 +5,7 @@
 namespace jerobins {
     namespace math {
         template<typename T>
-        Clamp(T min, T max, T value) {
+        T Clamp(T min, T max, T value) {
             if(value < min) return min;
             if(value > max) return max;
             return value;

@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.0)
 project(Glad CXX)
 
 file(GLOB_RECURSE CPP_FILES
-"*.c"
+"glad.c"
 )
 
 file(GLOB_RECURSE HPP_FILES
-"*.hpp"
+"glad.hpp"
 )
 
 add_library(${PROJECT_NAME} STATIC ${CPP_FILES} ${HPP_FILES})

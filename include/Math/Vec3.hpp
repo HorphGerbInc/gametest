@@ -13,8 +13,8 @@ namespace jerobins {
       
       Vec3(ElementType x, ElementType y, ElementType z) {
         SetX(x);
-        SetX(y);
-        SetX(z);
+        SetY(y);
+        SetZ(z);
       }
 
       ElementType X() const { return this->Get(0); }

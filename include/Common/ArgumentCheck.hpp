@@ -10,6 +10,7 @@ namespace jerobins {
     template <typename T> class ArgumentCheck {
 
     public:
+        
       ArgumentCheck(bool check, std::string msg, T object) {
         if (!check) {
           std::stringstream ss;
@@ -22,6 +23,12 @@ namespace jerobins {
         if (!check) {
           throw std::runtime_error(msg);
         }
+      }
+
+      static void IsNotNull(const std::string name, const T * argument) {
+          if(argument == NULL || argument == nullptr) {
+              throw new std::runtime_error(name + " is null");
+          }
       }
     };
   }
