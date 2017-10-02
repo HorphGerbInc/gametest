@@ -9,6 +9,7 @@
 #include <vector>
 
 #include <Common/IString.hpp>
+#include <Common/Logger.hpp>
 #include <Common/Version.hpp>
 #include <Render/OpenGL.hpp>
 #include <Resource/IResource.hpp>
@@ -28,10 +29,10 @@ namespace jerobins {
       std::string Description() const { return description; }
 
       // Return shader contents
-      std::string Content() const { return content; }
+      std::string Content() const { return contents; }
 
       // Length of the shader
-      unsigned int Length() const { return content.size(); }
+      unsigned int Length() const { return contents.size(); }
 
       // Compile the shader
       virtual bool Compile() = 0;
@@ -41,15 +42,15 @@ namespace jerobins {
       // Return a string representation
       virtual std::string ToString() const { return description; }
 
-      GLuint ShaderId() const {
-        return shaderId;
-      }
+      GLuint ShaderId() const { return shaderId; }
 
     protected:
       bool compile(GLenum shaderType) {
+        jerobins::common::Logger::GetLogger()->Log("Compiling shader for " +
+                                                   Name());
         // create shader
         shaderId = glCreateShader(shaderType);
-        const char *str = content.c_str();
+        const char *str = contents.c_str();
         glShaderSource(shaderId, 1, &str, NULL);
 
         // compile shader
@@ -63,14 +64,17 @@ namespace jerobins {
           glGetShaderInfoLog(shaderId, 512, NULL, error);
           throw std::runtime_error(std::string(error));
         }
+        jerobins::common::Logger::GetLogger()->Log(
+            "sucess compiling shader for " + Name());
         return true;
       }
 
-    private:
+    protected:
       GLuint shaderId = -1;
       std::string name;
       std::string description;
-      std::string content;
+      std::string contents;
+      std::string version;
     };
   }
 }

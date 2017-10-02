@@ -1,7 +1,8 @@
+#include <sstream>
 
+#include <Common/Logger.hpp>
 #include <Math/Vec2.hpp>
 #include <Render/Renderer.hpp>
-#include <sstream>
 
 namespace jerobins {
   namespace render {
@@ -10,8 +11,10 @@ namespace jerobins {
 
     // Load opengl
     void Renderer::Init() {
+
       // Initialize OpenGL
       if (!gladLoadGL()) {
+        jerobins::common::Logger::GetLogger()->Log("Could not load opengl", jerobins::common::LoggingLevel::Fatal);
         exit(-1);
       }
 

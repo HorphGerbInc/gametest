@@ -46,26 +46,22 @@ namespace jerobins {
     }
 
     ShaderProgram::ShaderProgram() {
-      programID = glCreateProgram();
     }
     
 
     std::string ShaderProgram::ToString() const { return this->name; }
 
     void ShaderProgram::Attach() {
-      if (active)
-        return;
       glUseProgram(programID);
-      active = true;
     }
 
     void ShaderProgram::Detach() {
       glUseProgram(0);
-      active = false;
     }
 
     void ShaderProgram::Link() {
       if(programID) return;
+      programID = glCreateProgram();      
       for(auto vert : vertexShaders) {
         vert.Compile();
         glAttachShader(programID, vert.ShaderId());        
