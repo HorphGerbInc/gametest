@@ -2,11 +2,12 @@
 #ifndef MODEL_HPP_
 #define MODEL_HPP_
 
+// StdLib
 #include <vector>
 
+// Jerobins
 #include <Common/ISerializable.hpp>
 #include <Render/IRenderable.hpp>
-#include <Resource/ShaderProgram.hpp>
 
 namespace jerobins {
   namespace resource {
@@ -48,6 +49,10 @@ namespace jerobins {
 
       // The structure of the data
       virtual jerobins::render::RenderType Type() const { return type; }
+
+      virtual const jerobins::resource::ShaderProgram Program() const {
+        return program;
+      }
 
       /* ISerializable */
       virtual void

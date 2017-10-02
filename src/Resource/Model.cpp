@@ -1,8 +1,13 @@
 
+// Stdlib
 #include <fstream>
 
+// Jerobins
+#include <Common/Logger.hpp>
 #include <Resource/Model.hpp>
-#include <json.hpp>
+
+// Lib
+#include <Resource/Json.hpp>
 
 namespace jerobins {
   namespace resource {
@@ -35,41 +40,55 @@ namespace jerobins {
       output["colors"] = this->colors;
       output["normals"] = this->norms;
       output["textureCoordinates"] = this->textCoords;
-      output["program"] = this->program.name + ".json";
+      output["program"] = this->program.Name() + ".json";
 
       os << std::setw(4) << output;
     }
 
     Model Model::Deserialize(std::istream &is,
                              jerobins::common::SerializationFormat format) {
-
       nlohmann::json input;
       is >> input;
+
       Model result;
+
       // REQUIRED
       result.type = jerobins::render::StringToRenderType(input["type"]);
+
+      jerobins::common::Logger::GetLogger()->Log("type read");
       result.vertices =
           input.at("vertices").get<std::vector<jerobins::math::Vec3<float>>>();
-      result.program =
-          ShaderProgram::Load(("shaders/programs/" + input["program"].get<std::string>()));
+
+      jerobins::common::Logger::GetLogger()->Log("vertices read");
+      result.program = ShaderProgram::Load(
+          ("shaders/programs/" + input["program"].get<std::string>()));
+
+      jerobins::common::Logger::GetLogger()->Log("program read");
 
       // OPTIONAL
       if (!input.at("indices").is_null()) {
         result.indices = input.at("indices").get<std::vector<int>>();
+        jerobins::common::Logger::GetLogger()->Log("indices read");
       }
 
       if (!input.at("colors").is_null()) {
         result.colors =
             input.at("colors").get<std::vector<jerobins::render::Color>>();
+        jerobins::common::Logger::GetLogger()->Log("colors read");
       }
       if (!input.at("indices").is_null()) {
         result.norms =
             input.at("indices").get<std::vector<jerobins::math::Vec3<float>>>();
+        jerobins::common::Logger::GetLogger()->Log("norms read");
       }
+
       if (!input.at("textureCoordinates").is_null()) {
         result.textCoords = input.at("textureCoordinates")
                                 .get<std::vector<jerobins::math::Vec2<int>>>();
+        jerobins::common::Logger::GetLogger()->Log("texture coordinates read");
       }
+      jerobins::common::Logger::GetLogger()->Log("model read");
+
       return result;
     }
 

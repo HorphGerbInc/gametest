@@ -13,12 +13,13 @@ namespace jerobins {
       return *dynamic_cast<T *>(input);
     }
 
+    // Returns tru e if a map contains a value
     template <class K, class V>
-    auto Contains(const std::map<K,V> &map, const K &value)
-    {
-        return map.find(value) != map.end();
+    auto Contains(const std::map<K, V> &map, const K &value) {
+      return map.find(value) != map.end();
     }
 
+    // Returns true if an enumerable contains a value
     template <class T, typename Y>
     auto Contains(const T &enumerable, const Y &value)
         -> decltype(end(enumerable), true) {

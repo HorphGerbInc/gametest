@@ -69,11 +69,11 @@ namespace jerobins {
       // Set the position and size of the window.
       virtual void SetGeometry(int x, int y, int height, int width);
 
-      // Create the OpenGL context
-      virtual void BindOpenGL(GLint *glAttributes);
+      // Bind the OpenGL context
+      virtual void BindContext();
 
-      // Remove the OpenGL context
-      virtual void UnbindOpenGL();
+      // Release the OpenGL context
+      virtual void ReleaseContext();
 
       // Swap the buffers
       virtual void SwapBuffer();

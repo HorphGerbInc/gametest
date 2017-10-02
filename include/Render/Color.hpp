@@ -2,15 +2,15 @@
 #ifndef COLOR_HPP_
 #define COLOR_HPP_
 
-#include <json.hpp>
+// Lib
+#include <Resource/Json.hpp>
 
 namespace jerobins {
   namespace render {
-    class Color {
-    public:
-      Color(float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 0.0f)
-          : Red(r), Green(g), Blue(b), Alpha(a) { /* Empty */
-      }
+    struct Color {
+
+      Color();
+      Color(float r, float g, float b, float a);
 
       float Red = 0.0;
       float Green = 0.0;
@@ -18,6 +18,7 @@ namespace jerobins {
       float Alpha = 0.0;
     };
 
+    // Json methods
     void to_json(nlohmann::json &j, const Color &input);
     void from_json(const nlohmann::json &j, Color &output);
   }

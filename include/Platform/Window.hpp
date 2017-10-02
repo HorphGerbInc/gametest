@@ -91,10 +91,10 @@ namespace jerobins {
       virtual void HandleEvents() = 0;
 
       // Create the OpenGL context
-      virtual void BindOpenGL(GLint* glAttributes) = 0;
+      virtual void BindContext() = 0;
 
       // Remove the OpenGL context
-      virtual void UnbindOpenGL() = 0;
+      virtual void ReleaseContext() = 0;
 
       // Swap the buffers
       virtual void SwapBuffer() = 0;

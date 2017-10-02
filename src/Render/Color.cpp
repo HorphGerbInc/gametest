@@ -4,6 +4,14 @@
 namespace jerobins {
   namespace render {
 
+    Color::Color() : Red(0), Green(0), Blue(0), Alpha(0) { /* Empty */
+    }
+
+    Color::Color(float r, float g, float b, float a)
+        : Red(r), Green(g), Blue(b), Alpha(a) {
+      /* Empty */
+    }
+
     void to_json(nlohmann::json &j, const Color &input) {
       j["red"] = input.Red;
       j["green"] = input.Green;

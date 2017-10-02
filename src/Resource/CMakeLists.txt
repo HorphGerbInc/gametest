@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(Resource CXX)
 
-file(GLOB CPP_FILES
+file(GLOB_RECURSE CPP_FILES
 "*.cpp"
 )
 
@@ -21,6 +21,6 @@ set_target_properties(${PROJET_NAME}
     PROPERTIES POSITION_INDEPENDENT_CODE ON
 )
 
-target_link_libraries(${PROJECT_NAME} Common Glad ${OPENGL_LIBRARIES} ${ASSIMP_LIBRARIES} ${IRRXML_LIBRARIES} )
+target_link_libraries(${PROJECT_NAME} Render Common Glad ${OPENGL_LIBRARIES} ${ASSIMP_LIBRARIES} ${IRRXML_LIBRARIES} )
 
 

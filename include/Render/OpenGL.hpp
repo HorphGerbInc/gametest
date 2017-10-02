@@ -9,6 +9,15 @@
 #ifdef __linux__
 #include <glad/glad.h>
 #else
-#include <glad/glad.h>    
+#include <glad/glad.h>
 #endif
+
+namespace jerobins {
+  namespace render {
+    namespace opengl {
+      void CheckError();
+    }
+  }
+}
+
 #endif

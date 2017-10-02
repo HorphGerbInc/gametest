@@ -12,6 +12,8 @@
 #include <Common/Timer.hpp>
 #include <Platform/Window.hpp>
 #include <Render/OpenGL.hpp>
+#include <Render/Renderer.hpp>
+#include <Resource/Model.hpp>
 #include <Resource/ShaderProgram.hpp>
 
 // Convert a frame duration to frames per seconds
@@ -36,26 +38,24 @@ jerobins::resource::ShaderProgram program;
 
 void setupOpenGL() {
 
-  if (!gladLoadGL()) {
-    jerobins::common::Logger::GetLogger()->Log(
-        "could not load opengl", jerobins::common::LoggingLevel::Fatal);
-    exit(-1);
-  }
-
-  if (GLVersion.major == 0) {
-    jerobins::common::Logger::GetLogger()->Log(
-        "could not load opengl", jerobins::common::LoggingLevel::Error);
-  }
-
   program =
       jerobins::resource::ShaderProgram::Load("shaders/programs/default.json");
   program.Link();
+  jerobins::common::Logger::GetLogger()->Log("after program link");
+  jerobins::render::opengl::CheckError();
 
   // black background
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  jerobins::common::Logger::GetLogger()->Log("glClearColor");
+  jerobins::render::opengl::CheckError();
 
   glGenVertexArrays(1, &VertexArrayID);
+  jerobins::common::Logger::GetLogger()->Log("glGenVertexArrays");
+  jerobins::render::opengl::CheckError();
+
   glBindVertexArray(VertexArrayID);
+  jerobins::common::Logger::GetLogger()->Log("glBindVertexArray");
+  jerobins::render::opengl::CheckError();
 
   static const GLfloat g_vertex_buffer_data[] = {
       -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f,
@@ -65,15 +65,21 @@ void setupOpenGL() {
   glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data),
                g_vertex_buffer_data, GL_STATIC_DRAW);
+
+  jerobins::common::Logger::GetLogger()->Log("glBufferData");
+  jerobins::render::opengl::CheckError();
 }
 
 void drawOpenGL() {
   // Clear the screen
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  jerobins::common::Logger::GetLogger()->Log("glClear");
+  jerobins::render::opengl::CheckError();
 
-  // Use our shader
-  // glUseProgram(programID);
+
   program.Attach();
+  jerobins::common::Logger::GetLogger()->Log("attach");
+  jerobins::render::opengl::CheckError();
 
   // 1rst attribute buffer : vertices
   glEnableVertexAttribArray(0);
@@ -111,12 +117,19 @@ int main(int argc, char *argv[]) {
         jerobins::platform::Window::Create("main");
 
     window->Show();
-    window->BindOpenGL(NULL);
+    window->BindContext();
+
+    jerobins::render::Renderer renderer;
+    renderer.Init();
+    jerobins::common::Logger::GetLogger()->Log("after window init");
+    jerobins::render::opengl::CheckError();
 
     setupOpenGL();
+    jerobins::common::Logger::GetLogger()->Log("after opengl setup");
+    jerobins::render::opengl::CheckError();
 
-    jerobins::common::Logger::GetLogger()->Log(
-        "After Setup OpenGl", jerobins::common::LoggingLevel::Info);
+    //    auto triangle =
+    //    jerobins::resource::Model::Load("models/red_triangle.json");
 
     while (window->IsVisible()) {
 
@@ -125,57 +138,21 @@ int main(int argc, char *argv[]) {
       window->HandleEvents();
 
       drawOpenGL();
+      jerobins::common::Logger::GetLogger()->Log("after drawOpenGl");
+      jerobins::render::opengl::CheckError();
 
       window->SwapBuffer();
 
-      switch (glGetError()) {
-      case GL_NO_ERROR:
-        break;
-      case GL_INVALID_ENUM:
-        jerobins::common::Logger::GetLogger()->Log(
-            "OpenGl Error: Invalid Enum", jerobins::common::LoggingLevel::Info);
-        exit(1);
-        break;
-      case GL_INVALID_VALUE:
-        jerobins::common::Logger::GetLogger()->Log(
-            "OpenGl Error: Invalid value.",
-            jerobins::common::LoggingLevel::Info);
-        exit(1);
-        break;
-      case GL_INVALID_OPERATION:
-        jerobins::common::Logger::GetLogger()->Log(
-            "OpenGl Error: Invalid operation.",
-            jerobins::common::LoggingLevel::Info);
-        exit(1);
-        break;
-      case GL_INVALID_FRAMEBUFFER_OPERATION:
-        jerobins::common::Logger::GetLogger()->Log(
-            "OpenGl Error: Invalid framebuffer operation.",
-            jerobins::common::LoggingLevel::Info);
-        exit(1);
-        break;
-      case GL_OUT_OF_MEMORY:
-        jerobins::common::Logger::GetLogger()->Log(
-            "OpenGl Error: Out of memory.",
-            jerobins::common::LoggingLevel::Info);
-        exit(1);
-        break;
-      default:
-        jerobins::common::Logger::GetLogger()->Log(
-            "OpenGl Error: Unkown.", jerobins::common::LoggingLevel::Info);
-        exit(1);
-        break;
-      }
-
       CapFramesPerSeconds(64, timer);
       timer.Stop();
-      jerobins::common::Logger::GetLogger()->Log(jerobins::common::Format(
-          "FPS: %f", DurationToFPS((double)timer.Duration())));
+      jerobins::common::Logger::GetLogger()->Log(
+          jerobins::common::StringUtil::Format(
+              "FPS: %f", DurationToFPS((double)timer.Duration())));
     }
 
     cleanupOpenGL();
 
-    window->UnbindOpenGL();
+    window->ReleaseContext();
     window->Hide();
     delete window;
 

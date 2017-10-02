@@ -19,7 +19,7 @@ namespace jerobins {
       }
 
       // Verify
-      if (GLVersion.major != 4 || GLVersion.minor != 0) {
+      if (GLVersion.major != 3 || GLVersion.minor != 0) {
         std::stringstream ss;
         ss << "Expected OpenGL version 4.0, found " << GLVersion.major << "."
            << GLVersion.minor;

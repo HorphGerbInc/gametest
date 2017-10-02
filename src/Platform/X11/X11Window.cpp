@@ -68,8 +68,8 @@ namespace jerobins {
       int sHeight = HeightOfScreen(this->screen);
 
       // Clamp
-      height = jerobins::math::Clamp(0, sHeight, height);
-      width = jerobins::math::Clamp(0, sWidth, width);
+      height = jerobins::math::Operations::Clamp(0, sHeight, height);
+      width = jerobins::math::Operations::Clamp(0, sWidth, width);
 
       // Place in the middle
       this->x = sWidth / 2 - width / 2;
@@ -126,7 +126,7 @@ namespace jerobins {
       FullScreen(fullscreen);
       Borderless(borderless);
 
-      this->BindOpenGL(NULL);
+      this->BindContext();
       XFree(vi);
       XFree(frameBuffers);
 
@@ -237,11 +237,11 @@ namespace jerobins {
       }
     }
 
-    void X11Window::BindOpenGL(GLint *glAttributes) {
+    void X11Window::BindContext() {
       glXMakeCurrent(this->display, this->window, glContext);
     }
 
-    void X11Window::UnbindOpenGL() {
+    void X11Window::ReleaseContext() {
       glXMakeCurrent(this->display, None, NULL);
     }
 

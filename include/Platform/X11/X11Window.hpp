@@ -71,9 +71,9 @@ namespace jerobins {
       // Enables or disables fullscreen
       virtual void FullScreen(bool fullscreen);
 
-      virtual void BindOpenGL(GLint* glAttributes);
+      virtual void BindContext();
 
-      virtual void UnbindOpenGL();
+      virtual void ReleaseContext();
 
       virtual void SwapBuffer();
       

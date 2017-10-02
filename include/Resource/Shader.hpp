@@ -2,12 +2,10 @@
 #ifndef _SHADER_HPP_
 #define _SHADER_HPP_
 
-#if defined(_WIN32)
-// #include <windows.h>
-#endif
-
+// StdLib
 #include <vector>
 
+// Jerobins
 #include <Common/IString.hpp>
 #include <Common/Logger.hpp>
 #include <Common/Version.hpp>
@@ -37,15 +35,18 @@ namespace jerobins {
       // Compile the shader
       virtual bool Compile() = 0;
 
+      // Type of Shader (vertex/fragment)
       ShaderType GetType() const { return type; };
 
       // Return a string representation
       virtual std::string ToString() const { return description; }
 
+      // Shader Id
       GLuint ShaderId() const { return shaderId; }
 
     protected:
       bool compile(GLenum shaderType) {
+
         jerobins::common::Logger::GetLogger()->Log("Compiling shader for " +
                                                    Name());
         // create shader
@@ -64,6 +65,7 @@ namespace jerobins {
           glGetShaderInfoLog(shaderId, 512, NULL, error);
           throw std::runtime_error(std::string(error));
         }
+        
         jerobins::common::Logger::GetLogger()->Log(
             "sucess compiling shader for " + Name());
         return true;

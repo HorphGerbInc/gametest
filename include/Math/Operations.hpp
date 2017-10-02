@@ -3,30 +3,39 @@
 #define _OPERATIONS_HPP
 
 namespace jerobins {
-    namespace math {
-        template<typename T>
-        T Clamp(T min, T max, T value) {
-            if(value < min) return min;
-            if(value > max) return max;
-            return value;
-        }
+  namespace math {
 
-        // Linear interpolation between two points
-        float LERP1D(float start, float end, float percent) {
-            return start + (end - start) * percent;
-        }
+    // Common math operations
+    class Operations {
+    public:
+      // Clamp a value between two other values
+      // assumes min <= max
+      template <typename T> static T Clamp(T min, T max, T value) {
+        if (value < min)
+          return min;
+        if (value > max)
+          return max;
+        return value;
+      }
 
-        template<class V2>
-        V2 LERP2D(const V2 & start, const V2 & end, float percent) {
-            float dx = end.X() - start.X();
-            float x = start.X() + dx * percent;
+      // Linear interpolation between two points in one dimension
+      float LERP1D(float start, float end, float percent) {
+        return start + (end - start) * percent;
+      }
 
-            float dy = end.Y() - start.Y();
-            float y = start.Y() + dy * percent;
+      // Linear interpolation between two points in two dimensions
+      template <class V2>
+      static V2 LERP2D(const V2 &start, const V2 &end, float percent) {
+        float dx = end.X() - start.X();
+        float x = start.X() + dx * percent;
 
-            return V2(x , y);
-        }
-    }
+        float dy = end.Y() - start.Y();
+        float y = start.Y() + dy * percent;
+
+        return V2(x, y);
+      }
+    };
+  }
 }
 
 #endif

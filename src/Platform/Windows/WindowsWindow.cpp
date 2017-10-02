@@ -221,7 +221,7 @@ namespace jerobins {
     }
 
     // Create the OpenGL context
-    void WindowsWindow::BindOpenGL(GLint *glAttributes) {
+    void WindowsWindow::BindContext() {
 
       if (this->context) {
         return;
@@ -271,7 +271,7 @@ namespace jerobins {
     }
 
     // Remove the OpenGL context
-    void WindowsWindow::UnbindOpenGL() {
+    void WindowsWindow::ReleaseContext() {
       if (this->context) {
         wglDeleteContext(this->context);
         this->context = NULL;

@@ -9,6 +9,8 @@
 #include <Math/Vec4.hpp>
 #include <Render/Color.hpp>
 
+#include <Resource/ShaderProgram.hpp>
+
 namespace jerobins {
   namespace render {
     class IRenderable {
@@ -35,6 +37,9 @@ namespace jerobins {
 
       // The structure of the data
       virtual RenderType Type() const = 0;
+
+      // The shader program
+      virtual const jerobins::resource::ShaderProgram Program() const = 0;
 
     };
   }

@@ -9,6 +9,8 @@
 
 namespace jerobins {
   namespace math {
+
+    // 4x4 Matrix class
     class Matrix4 {
     public:
       // Create the 0 matrix

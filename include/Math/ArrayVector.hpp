@@ -9,6 +9,7 @@ namespace jerobins {
 
     template <bool B> using EnableIfB = typename std::enable_if<B, int>::type;
 
+    // Array based vector class
     template <class DerivedClass, int Dim, typename ElementType>
     class ArrayVector : public VectorBase<DerivedClass, Dim, ElementType> {
 
@@ -26,12 +27,14 @@ namespace jerobins {
         Set(2, z);
       }
       template <size_t D1 = Dim, EnableIfB<D1 == 4> = 0>
-      ArrayVector(ElementType x = 0, ElementType y = 0, ElementType z = 0, ElementType w = 0) {
+      ArrayVector(ElementType x = 0, ElementType y = 0, ElementType z = 0,
+                  ElementType w = 0) {
         Set(0, x);
         Set(1, y);
         Set(2, z);
         Set(3, w);
       }
+
       // Pairwise Multiplication
       virtual DerivedClass &operator*=(const DerivedClass &other) {
         for (int i = 0; i < Dim; ++i) {

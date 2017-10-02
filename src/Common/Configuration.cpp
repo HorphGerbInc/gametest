@@ -34,7 +34,7 @@ namespace jerobins {
       Configuration config;
       std::string line;
       while (std::getline(input, line)) {
-        std::vector<std::string> lines = jerobins::common::Split(line, ":");
+        std::vector<std::string> lines = jerobins::common::StringUtil::Split(line, ":");
         if (lines.size() != 2) {
 
           throw std::runtime_error("Could not deserialize");

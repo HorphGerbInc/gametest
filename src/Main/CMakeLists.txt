@@ -12,5 +12,5 @@ include_directories(${PROJECT_NAME}
 
 add_executable(${PROJECT_NAME} ${CPP_FILES})
 
-target_link_libraries(${PROJECT_NAME} Common Math Engine Render Resource Platform ${OPENGL_LIBRARIES} )
+target_link_libraries(${PROJECT_NAME} Glad Common Math Engine Render Resource Platform ${OPENGL_LIBRARIES} )
 
