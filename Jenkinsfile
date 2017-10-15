@@ -13,6 +13,12 @@ pipeline {
 
         }
 
+        stage('Test') {
+            stes {
+                sh 'cd build; make test'
+            }
+        }
+
     }
 
 }
