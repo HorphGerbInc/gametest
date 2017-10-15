@@ -1,6 +1,6 @@
 pipeline {
 
-    agent {label 'Linux'}
+    agent {label 'Linux_OpenGL'}
 
     stages {
 
