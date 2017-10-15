@@ -14,7 +14,8 @@ namespace jerobins {
 
       // Initialize OpenGL
       if (!gladLoadGL()) {
-        jerobins::common::Logger::GetLogger()->Log("Could not load opengl", jerobins::common::LoggingLevel::Fatal);
+        jerobins::common::Logger::GetLogger()->Log(
+            "Could not load opengl", jerobins::common::LoggingLevel::Fatal);
         exit(-1);
       }
 
@@ -25,6 +26,14 @@ namespace jerobins {
            << GLVersion.minor;
         throw std::runtime_error(ss.str());
       }
+
+      glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+      glGenVertexArrays(1, &VertexArrayID);
+
+      glBindVertexArray(VertexArrayID);
+      glGenBuffers(1, &vertexbuffer);
+      
     }
 
     void Renderer::Render(std::vector<jerobins::render::IRenderable> objects) {
@@ -48,6 +57,10 @@ namespace jerobins {
      *
      */
     void Renderer::Render(jerobins::render::IRenderable &obj) {
+
+      obj.Program().Attach();
+      jerobins::common::Logger::GetLogger()->Log("after attach");
+      opengl::CheckError();
 
       uint32_t subBufferOffset = 0;
 
@@ -133,8 +146,8 @@ namespace jerobins {
 
       if (obj.IndicesCount()) {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(int) * obj.IndicesCount(),
-                        obj.GetIndices());
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0,
+                        sizeof(int) * obj.IndicesCount(), obj.GetIndices());
       }
 
       GLuint type = RenderTypeToGLType(obj.Type());
@@ -147,6 +160,8 @@ namespace jerobins {
       }
 
       glBindVertexArray(0);
+
+      obj.Program().Detach();
     }
   }
 }

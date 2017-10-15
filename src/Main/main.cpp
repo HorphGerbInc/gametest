@@ -41,21 +41,13 @@ void setupOpenGL() {
   program =
       jerobins::resource::ShaderProgram::Load("shaders/programs/default.json");
   program.Link();
-  jerobins::common::Logger::GetLogger()->Log("after program link");
-  jerobins::render::opengl::CheckError();
 
   // black background
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-  jerobins::common::Logger::GetLogger()->Log("glClearColor");
-  jerobins::render::opengl::CheckError();
 
   glGenVertexArrays(1, &VertexArrayID);
-  jerobins::common::Logger::GetLogger()->Log("glGenVertexArrays");
-  jerobins::render::opengl::CheckError();
 
   glBindVertexArray(VertexArrayID);
-  jerobins::common::Logger::GetLogger()->Log("glBindVertexArray");
-  jerobins::render::opengl::CheckError();
 
   static const GLfloat g_vertex_buffer_data[] = {
       -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f,
@@ -66,8 +58,6 @@ void setupOpenGL() {
   glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data),
                g_vertex_buffer_data, GL_STATIC_DRAW);
 
-  jerobins::common::Logger::GetLogger()->Log("glBufferData");
-  jerobins::render::opengl::CheckError();
 }
 
 void drawOpenGL() {
@@ -75,7 +65,6 @@ void drawOpenGL() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   jerobins::common::Logger::GetLogger()->Log("glClear");
   jerobins::render::opengl::CheckError();
-
 
   program.Attach();
   jerobins::common::Logger::GetLogger()->Log("attach");
@@ -124,12 +113,9 @@ int main(int argc, char *argv[]) {
     jerobins::common::Logger::GetLogger()->Log("after window init");
     jerobins::render::opengl::CheckError();
 
-    setupOpenGL();
-    jerobins::common::Logger::GetLogger()->Log("after opengl setup");
-    jerobins::render::opengl::CheckError();
+    //setupOpenGL();
 
-    //    auto triangle =
-    //    jerobins::resource::Model::Load("models/red_triangle.json");
+    auto triangle = jerobins::resource::Model::Load("models/red_triangle.json");
 
     while (window->IsVisible()) {
 
@@ -137,8 +123,9 @@ int main(int argc, char *argv[]) {
       timer.Start();
       window->HandleEvents();
 
-      drawOpenGL();
-      jerobins::common::Logger::GetLogger()->Log("after drawOpenGl");
+      renderer.Render(triangle);
+      //drawOpenGL();
+      jerobins::common::Logger::GetLogger()->Log("After Render call");
       jerobins::render::opengl::CheckError();
 
       window->SwapBuffer();

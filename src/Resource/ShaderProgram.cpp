@@ -51,11 +51,11 @@ namespace jerobins {
 
     std::string ShaderProgram::ToString() const { return this->name; }
 
-    void ShaderProgram::Attach() {
+    void ShaderProgram::Attach() const {
       glUseProgram(programID);
     }
 
-    void ShaderProgram::Detach() {
+    void ShaderProgram::Detach() const {
       glUseProgram(0);
     }
 

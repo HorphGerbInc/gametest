@@ -15,9 +15,9 @@ namespace jerobins {
       static ShaderProgram Load(std::string filename);
 
       // Activate program on GPU
-      void Attach();
+      void Attach() const;
       // Deactivate program on GPU
-      void Detach();
+      void Detach() const;
 
       // Link all shaders to the program
       void Link();
