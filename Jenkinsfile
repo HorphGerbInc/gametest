@@ -1,4 +1,4 @@
-node {
+pipeline {
     agent {label 'Linux'}
     stages {
         stage('Build') {
