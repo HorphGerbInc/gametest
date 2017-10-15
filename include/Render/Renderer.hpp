@@ -31,6 +31,10 @@ namespace jerobins {
       GLint colorAttrPtr;
       GLint normalAttrPtr;
       GLint textureAttrPtr;
+
+      GLuint VertexArrayID;
+      GLuint vertexbuffer;
+      
     };
   }
 }
