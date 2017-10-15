@@ -4,11 +4,6 @@ pipeline {
 
     stages {
 
-        stage('Setup') {
-            steps {
-                sh 'apt-get install cmake; apt-get install build-essential'
-            }
-        }
         stage('Build') {
 
             steps {
