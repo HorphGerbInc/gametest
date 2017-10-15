@@ -6,6 +6,10 @@
 
 Overview of the engine.
 
-## [Components](#components.md)
+## [Components](components.md)
 
 List of components and their status. 
+
+## Contributors
+
+List of contributors.
