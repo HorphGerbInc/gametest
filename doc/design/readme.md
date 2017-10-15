@@ -1,9 +1,9 @@
 # Design Documentation
 
-## Overview(overview.md)
+## [Overview](overview.md)
 
-Overview of the engine
+Overview of the engine.
 
-## Components(#components)
+## [Components](#components)
 
 List of components and their status. 
