@@ -8,7 +8,7 @@ pipeline {
 
             steps {
                 checkout scm
-                sh 'mkdir build; cd build; cmake ..; make'    
+                sh 'mkdir -p build; cd build; cmake ..; make'    
             }
 
         }
@@ -16,6 +16,12 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'cd build; ctest -V'
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                sh 'rm -r build'
             }
         }
 
