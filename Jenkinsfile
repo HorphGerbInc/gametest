@@ -1,11 +1,30 @@
-node {
-    agent {label 'Linux'}
+pipeline {
+
+    agent {label 'Linux_OpenGL'}
+
     stages {
+
         stage('Build') {
+
             steps {
                 checkout scm
-                sh 'mkdir build; cd build; cmake ..; make'    
+                sh 'mkdir -p build; cd build; cmake ..; make'    
+            }
+
+        }
+
+        stage('Test') {
+            steps {
+                sh 'cd build; ctest -V'
             }
         }
+
+        stage('Cleanup') {
+            steps {
+                sh 'rm -r build'
+            }
+        }
+
     }
+
 }
