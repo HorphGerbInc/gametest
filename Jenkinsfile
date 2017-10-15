@@ -15,7 +15,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'cd build; make test'
+                sh 'cd build; ctest -V'
             }
         }
 
