@@ -1,31 +1,11 @@
-node('node') {
-
-
-    currentBuild.result = "SUCCESS"
-
-    try {
-
-       stage('Checkout'){
-
-          checkout scm
-       }
-
-       stage('Build') {
-           env.NODE_ENV = "build"
-           sh 'mkdir build; cd build; cmake ..; make'
-       }
-
-       stage('Test'){
-         env.NODE_ENV = "test"
-       }
-
-       stage('Cleanup'){
-       }
+node {
+    agent {label 'Linux'}
+    stages {
+        stage('Build') {
+            steps {
+                checkout scm
+                sh 'mkdir build; cd build; cmake ..; make'    
+            }
+        }
     }
-    catch (err) {
-
-        currentBuild.result = "FAILURE"
-        throw err
-    }
-
 }
