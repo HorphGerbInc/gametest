@@ -73,8 +73,9 @@ namespace jerobins {
       auto numVertices = obj.VertexCount() * elementSize;
 
       jerobins::common::Logger::GetLogger()->Log("NumBytes: %zu", numVertices);
+      jerobins::common::Logger::GetLogger()->Log("NumBytes: %zu", subBufferOffset);
       if(vertices == nullptr || vertices == NULL) jerobins::common::Logger::GetLogger()->Log("null");
-       
+
       // Target type, first index, how many (bytes), data
       CheckGL(glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer));
       CheckGL(glBufferSubData(GL_ARRAY_BUFFER, subBufferOffset,

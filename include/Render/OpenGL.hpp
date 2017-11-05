@@ -12,14 +12,31 @@
 #include <glad/glad.h>
 #endif
 
-#define CheckOpenGLError()                                                     \
-  jerobins::render::opengl::CheckError(__FILE__, __LINE__)
+#define _F __FILE__
+#define _L __LINE__
+
+#define CheckOpenGLError_0_ARG() CheckOpenGLError_2_ARG(_F, _L)
+#define CheckOpenGLError_1_ARG(_F_) CheckOpenGLError_2_ARG(_F_, _L)
+
+#define CheckOpenGLError_2_ARG(_F_, _L_)                                       \
+  jerobins::render::opengl::CheckError(__FILE__, _L_)
+
+#define _3RD(arg1, arg2, arg3, ...) arg3
+
+#define CheckOpenGLChooser(...)                                                \
+                                                                               \
+  _3RD(__VA_ARGS__, CheckOpenGLError_2_ARG, CheckOpenGLError_1_ARG,            \
+       CheckOpenGLError_0_ARG, )
+
+#define CheckOpenGLError(...) CheckOpenGLChooser(__VA_ARGS__)(__VA_ARGS__)
 
 #define CheckGL(OP)                                                            \
-  \
-OP;                                                                            \
-  \
-CheckOpenGLError()
+do {                                                                           \
+    int MACRO_L = _L-2;                                                          \
+    OP;                                                                            \
+    CheckOpenGLError(_F, MACRO_L);                                                 \
+}                                                                           \
+  while (0)
 
 namespace jerobins {
   namespace render {
