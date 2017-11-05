@@ -27,10 +27,17 @@ namespace jerobins {
         throw std::runtime_error(ss.str());
       }
 
+      // Default background color
       glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+      // TODO(jerobins): Generated Arrays/Buffers for other components
+      // Create and bind a VBO for vertices
       glGenVertexArrays(1, &VertexArrayID);
       glBindVertexArray(VertexArrayID);
+      // Generate a buffer for vertices
       glGenBuffers(1, &vertexbuffer);
+      // TODO(jerobins): Default for now, determine best practices
+      glBufferData(GL_ARRAY_BUFFER, 4098 , NULL, GL_STATIC_DRAW);
       jerobins::common::Logger::GetLogger()->Log("renderer initialized");
     }
 
