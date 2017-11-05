@@ -28,11 +28,10 @@ namespace jerobins {
       }
 
       glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
       glGenVertexArrays(1, &VertexArrayID);
-
       glBindVertexArray(VertexArrayID);
       glGenBuffers(1, &vertexbuffer);
+      jerobins::common::Logger::GetLogger()->Log("renderer initialized");
     }
 
     void Renderer::Render(std::vector<jerobins::render::IRenderable> objects) {
