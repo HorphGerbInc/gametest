@@ -32,7 +32,7 @@
 
 #define CheckGL(OP)                                                            \
 do {                                                                           \
-    int MACRO_L = _L-2;                                                          \
+    int MACRO_L = _L;                                                          \
     OP;                                                                            \
     CheckOpenGLError(_F, MACRO_L);                                                 \
 }                                                                           \

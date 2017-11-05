@@ -73,19 +73,19 @@ namespace jerobins {
       auto numVertices = obj.VertexCount() * elementSize;
 
       jerobins::common::Logger::GetLogger()->Log("NumBytes: %zu", numVertices);
-      jerobins::common::Logger::GetLogger()->Log("NumBytes: %zu", subBufferOffset);
-      if(vertices == nullptr || vertices == NULL) jerobins::common::Logger::GetLogger()->Log("null");
+      jerobins::common::Logger::GetLogger()->Log("NumBytes: %zu",
+                                                 subBufferOffset);
+      if (vertices == nullptr || vertices == NULL)
+        jerobins::common::Logger::GetLogger()->Log("null");
 
       // Target type, first index, how many (bytes), data
-      CheckGL(glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer));
-      CheckGL(glBufferSubData(GL_ARRAY_BUFFER, subBufferOffset,
-                              numVertices,
+      CheckGL(glBindBuffer(GL_ARRAY_BUFFER, VertexArrayID));
+      CheckGL(glBufferSubData(GL_ARRAY_BUFFER, subBufferOffset, numVertices,
                               vertices));
 
       // index, sizeof of element, type, normalized, stride, start of data
-      CheckGL(glEnableVertexAttribArray(vertexAttrPtr));
-      CheckGL(glVertexAttribPointer(vertexAttrPtr, 3, GL_FLOAT, GL_FALSE,
-                                    elementSize,
+      CheckGL(glEnableVertexAttribArray(0));
+      CheckGL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, elementSize,
                                     (uint8_t *)0 + subBufferOffset));
 
       subBufferOffset += elementSize * obj.VertexCount();
@@ -162,26 +162,26 @@ namespace jerobins {
         CheckOpenGLError();
 
       } else {
-        glDisableVertexAttribArray(textureAttrPtr);
-        CheckOpenGLError();
+        // Check(glDisableVertexAttribArray(textureAttrPtr));
       }
 
       if (obj.IndicesCount()) {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0,
-                        sizeof(int) * obj.IndicesCount(), obj.GetIndices());
-        CheckOpenGLError();
+        CheckGL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+        CheckGL(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0,
+                                sizeof(int) * obj.IndicesCount(),
+                                obj.GetIndices()));
       }
 
       GLuint type = RenderTypeToGLType(obj.Type());
+      jerobins::common::Logger::GetLogger()->Log(RenderTypeToString(obj.Type()));
       if (type != GL_INVALID_ENUM) {
         if (obj.IndicesCount()) {
-          glDrawElements(type, obj.VertexCount(), GL_UNSIGNED_INT, 0);
+          CheckGL(glDrawElements(type, obj.VertexCount(), GL_UNSIGNED_INT, 0));
         } else {
-          glDrawArrays(type, 0, obj.VertexCount());
+          jerobins::common::Logger::GetLogger()->Log("%zu", obj.VertexCount());
+          CheckGL(glDrawArrays(type, 0, obj.VertexCount()));
         }
       }
-      CheckOpenGLError();
 
       glBindVertexArray(0);
       CheckOpenGLError();
