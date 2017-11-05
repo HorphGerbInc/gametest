@@ -55,6 +55,16 @@ namespace jerobins {
 
     Logger::~Logger() { out = nullptr; }
 
+    void Logger::Log(std::string file, int line, std::string &msg, LoggingLevel level) {
+      std::stringstream ss;
+      ss << "(" << file << ":" << line << ") " << msg;
+      Log(ss.str(), level);
+    }
+
+    void Logger::Log(std::string file, int line, std::string &&msg, LoggingLevel level) {
+      Log(file, line, msg, level);
+    }
+
     void Logger::Log(std::string &msg, LoggingLevel level) {
       auto now = std::chrono::system_clock::now();
       auto in_time_t = std::chrono::system_clock::to_time_t(now);

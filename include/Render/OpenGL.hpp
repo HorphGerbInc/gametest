@@ -12,10 +12,12 @@
 #include <glad/glad.h>
 #endif
 
+#define CheckOpenGLError() jerobins::render::opengl::CheckError(__FILE__, __LINE__)
+
 namespace jerobins {
   namespace render {
     namespace opengl {
-      void CheckError();
+      void CheckError(const char* file, int line);
     }
   }
 }

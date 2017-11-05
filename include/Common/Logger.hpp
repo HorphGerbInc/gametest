@@ -17,6 +17,8 @@ namespace jerobins {
             Logger(const Logger & other);
             ~Logger();
 
+            void Log(std::string file, int line, std::string & msg, LoggingLevel level = Info);            
+            void Log(std::string file, int line, std::string && msg, LoggingLevel level = Info);            
             void Log(std::string & msg, LoggingLevel level = Info);
             void Log(std::string && msg, LoggingLevel level = Info) {Log(msg, level);}
             

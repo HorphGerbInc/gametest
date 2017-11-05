@@ -64,11 +64,11 @@ void drawOpenGL() {
   // Clear the screen
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   jerobins::common::Logger::GetLogger()->Log("glClear");
-  jerobins::render::opengl::CheckError();
+  jerobins::render::opengl::CheckError(__FILE__, __LINE__);
 
   program.Attach();
   jerobins::common::Logger::GetLogger()->Log("attach");
-  jerobins::render::opengl::CheckError();
+  jerobins::render::opengl::CheckError(__FILE__, __LINE__);
 
   // 1rst attribute buffer : vertices
   glEnableVertexAttribArray(0);
@@ -111,9 +111,7 @@ int main(int argc, char *argv[]) {
     jerobins::render::Renderer renderer;
     renderer.Init();
     jerobins::common::Logger::GetLogger()->Log("after window init");
-    jerobins::render::opengl::CheckError();
-
-    //setupOpenGL();
+    jerobins::render::opengl::CheckError(__FILE__, __LINE__);
 
     auto triangle = jerobins::resource::Model::Load("models/red_triangle.json");
 
@@ -122,11 +120,10 @@ int main(int argc, char *argv[]) {
       jerobins::common::Timer timer;
       timer.Start();
       window->HandleEvents();
-
+      jerobins::common::Logger::GetLogger()->Log("Before Render call");      
       renderer.Render(triangle);
-      //drawOpenGL();
       jerobins::common::Logger::GetLogger()->Log("After Render call");
-      jerobins::render::opengl::CheckError();
+      jerobins::render::opengl::CheckError(__FILE__, __LINE__);
 
       window->SwapBuffer();
 

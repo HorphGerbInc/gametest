@@ -33,7 +33,6 @@ namespace jerobins {
 
       glBindVertexArray(VertexArrayID);
       glGenBuffers(1, &vertexbuffer);
-      
     }
 
     void Renderer::Render(std::vector<jerobins::render::IRenderable> objects) {
@@ -59,8 +58,7 @@ namespace jerobins {
     void Renderer::Render(jerobins::render::IRenderable &obj) {
 
       obj.Program().Attach();
-      jerobins::common::Logger::GetLogger()->Log("after attach");
-      opengl::CheckError();
+      CheckOpenGLError();
 
       uint32_t subBufferOffset = 0;
 
@@ -70,11 +68,13 @@ namespace jerobins {
       // Target type, first index, how many (bytes), data
       glBufferSubData(GL_VERTEX_ARRAY, subBufferOffset,
                       obj.VertexCount() * elementSize, obj.GetVertices());
+      CheckOpenGLError();
 
       // index, sizeof of element, type, normalized, stride, start of data
       glEnableVertexAttribArray(vertexAttrPtr);
       glVertexAttribPointer(vertexAttrPtr, 3, GL_FLOAT, GL_FALSE, elementSize,
                             (uint8_t *)0 + subBufferOffset);
+      CheckOpenGLError();
 
       subBufferOffset += elementSize * obj.VertexCount();
 
@@ -84,18 +84,21 @@ namespace jerobins {
         Color color = obj.GetColors()[0];
         glVertexAttrib4f(colorAttrPtr, color.Red, color.Green, color.Blue,
                          color.Alpha);
+        CheckOpenGLError();
       } else if (obj.ColorCount() == obj.VertexCount()) {
         elementSize = sizeof(Color);
         // Copy over color
         // Target type, first index, how many (bytes), data
         glBufferSubData(GL_VERTEX_ARRAY, subBufferOffset,
                         obj.ColorCount() * elementSize, obj.GetColors());
+        CheckOpenGLError();
 
         // Enable color attribute
         // index, sizeof of element, type, normalized, stride, start of data
         glEnableVertexAttribArray(colorAttrPtr);
         glVertexAttribPointer(colorAttrPtr, 3, GL_FLOAT, GL_FALSE, elementSize,
                               (uint8_t *)0 + subBufferOffset);
+        CheckOpenGLError();
         subBufferOffset += elementSize * obj.NormalCount();
       } else {
         glDisableVertexAttribArray(colorAttrPtr);
@@ -111,6 +114,7 @@ namespace jerobins {
         glBufferSubData(GL_VERTEX_ARRAY, subBufferOffset,
                         obj.NormalCount() * sizeof(jerobins::math::Vec3<float>),
                         obj.GetNormals());
+        CheckOpenGLError();
 
         // Enable normal attribute
         // index, sizeof of element, type, normalized, stride, start of data
@@ -118,6 +122,8 @@ namespace jerobins {
         glVertexAttribPointer(normalAttrPtr, 3, GL_FLOAT, GL_FALSE,
                               sizeof(jerobins::math::Vec3<float>),
                               (uint8_t *)0 + subBufferOffset);
+
+        CheckOpenGLError();
         subBufferOffset +=
             sizeof(jerobins::math::Vec3<float>) * obj.NormalCount();
       } else {
@@ -133,21 +139,26 @@ namespace jerobins {
                         obj.TextureCount() * elementSize,
                         obj.GetTexureCoords());
 
+        CheckOpenGLError();
+
         // Enable texture attribute
         // index, sizeof of element, type, normalized, stride, start of data
         glEnableVertexAttribArray(textureAttrPtr);
         glVertexAttribPointer(textureAttrPtr, 3, GL_FLOAT, GL_FALSE,
                               elementSize, (uint8_t *)0 + subBufferOffset);
         subBufferOffset += elementSize * obj.TextureCount();
+        CheckOpenGLError();
 
       } else {
         glDisableVertexAttribArray(textureAttrPtr);
+        CheckOpenGLError();
       }
 
       if (obj.IndicesCount()) {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0,
                         sizeof(int) * obj.IndicesCount(), obj.GetIndices());
+        CheckOpenGLError();
       }
 
       GLuint type = RenderTypeToGLType(obj.Type());
@@ -158,10 +169,13 @@ namespace jerobins {
           glDrawArrays(type, 0, obj.VertexCount());
         }
       }
+      CheckOpenGLError();
 
       glBindVertexArray(0);
+      CheckOpenGLError();
 
       obj.Program().Detach();
+      CheckOpenGLError();
     }
-  }
-}
+  } // namespace render
+} // namespace jerobins
