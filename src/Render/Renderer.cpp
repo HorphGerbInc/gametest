@@ -66,7 +66,9 @@ namespace jerobins {
       GLsizei elementSize = sizeof(jerobins::math::Vec3<float>);
 
       // Target type, first index, how many (bytes), data
-      glBufferSubData(GL_VERTEX_ARRAY, subBufferOffset,
+      glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+      CheckOpenGLError();
+      glBufferSubData(GL_ARRAY_BUFFER, subBufferOffset,
                       obj.VertexCount() * elementSize, obj.GetVertices());
       CheckOpenGLError();
 

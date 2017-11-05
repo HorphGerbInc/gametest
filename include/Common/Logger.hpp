@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include <sstream>
 
 namespace jerobins {
     namespace common {
@@ -16,6 +17,18 @@ namespace jerobins {
             Logger( Logger && other);
             Logger(const Logger & other);
             ~Logger();
+
+            template<class T>
+            void Log(T && obj, LoggingLevel level = Info) {
+                Log(obj , level);
+            }
+
+            template<class T>
+            void Log(T & obj, LoggingLevel level = Info) {
+                std::stringstream ss;
+                ss << obj;
+                Log(ss.str(), level);
+            }
 
             void Log(std::string file, int line, std::string & msg, LoggingLevel level = Info);            
             void Log(std::string file, int line, std::string && msg, LoggingLevel level = Info);            
