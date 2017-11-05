@@ -4,6 +4,10 @@
 #include <Math/Vec2.hpp>
 #include <Render/Renderer.hpp>
 
+#define CheckGL(OP)                                                            \
+  OP;                                                                          \
+  CheckOpenGLError()
+
 namespace jerobins {
   namespace render {
 
@@ -28,17 +32,18 @@ namespace jerobins {
       }
 
       // Default background color
-      glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+      CheckGL(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
 
       // TODO(jerobins): Generated Arrays/Buffers for other components
       // Create and bind a VBO for vertices
-      glGenVertexArrays(1, &VertexArrayID);
-      glBindVertexArray(VertexArrayID);
+      CheckGL(glGenVertexArrays(1, &VertexArrayID));
+      CheckGL(glBindVertexArray(VertexArrayID));
+
       // Generate a buffer for vertices
-      glGenBuffers(1, &vertexbuffer);
+      CheckGL(glGenBuffers(1, &vertexbuffer));
+
       // TODO(jerobins): Default for now, determine best practices
-      glBufferData(GL_ARRAY_BUFFER, 4098 , NULL, GL_STATIC_DRAW);
-      jerobins::common::Logger::GetLogger()->Log("renderer initialized");
+      CheckGL(glBufferData(GL_ARRAY_BUFFER, 4098, NULL, GL_STATIC_DRAW));
     }
 
     void Renderer::Render(std::vector<jerobins::render::IRenderable> objects) {

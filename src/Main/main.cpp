@@ -110,8 +110,7 @@ int main(int argc, char *argv[]) {
 
     jerobins::render::Renderer renderer;
     renderer.Init();
-    jerobins::common::Logger::GetLogger()->Log("after window init");
-    jerobins::render::opengl::CheckError(__FILE__, __LINE__);
+    CheckOpenGLError();
 
     auto triangle = jerobins::resource::Model::Load("models/red_triangle.json");
 
@@ -120,10 +119,10 @@ int main(int argc, char *argv[]) {
       jerobins::common::Timer timer;
       timer.Start();
       window->HandleEvents();
-      jerobins::common::Logger::GetLogger()->Log("Before Render call");      
+      CheckOpenGLError();
+
       renderer.Render(triangle);
-      jerobins::common::Logger::GetLogger()->Log("After Render call");
-      jerobins::render::opengl::CheckError(__FILE__, __LINE__);
+      CheckOpenGLError();
 
       window->SwapBuffer();
 
@@ -133,7 +132,6 @@ int main(int argc, char *argv[]) {
           jerobins::common::StringUtil::Format(
               "FPS: %f", DurationToFPS((double)timer.Duration())));
     }
-
     cleanupOpenGL();
 
     window->ReleaseContext();
