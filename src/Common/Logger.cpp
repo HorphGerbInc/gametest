@@ -1,5 +1,6 @@
 
 #include <chrono>
+#include <cstdarg>
 #include <ctime>
 #include <fstream>
 #include <iomanip>
@@ -55,27 +56,35 @@ namespace jerobins {
 
     Logger::~Logger() { out = nullptr; }
 
-    void Logger::Log(std::string file, int line, std::string &msg, LoggingLevel level) {
+    void log(std::shared_ptr<std::ostream> out, LoggingLevel level,
+             std::string format, std::va_list args) {
+
+      const int MaxBuffer = 1024;
+      char buffer[MaxBuffer];
+      std::vsnprintf(buffer, MaxBuffer, format.c_str(), args);
+
       std::stringstream ss;
-      ss << "(" << file << ":" << line << ") " << msg;
-      Log(ss.str(), level);
-    }
-
-    void Logger::Log(std::string file, int line, std::string &&msg, LoggingLevel level) {
-      Log(file, line, msg, level);
-    }
-
-    void Logger::Log(std::string &msg, LoggingLevel level) {
       auto now = std::chrono::system_clock::now();
       auto in_time_t = std::chrono::system_clock::to_time_t(now);
-      *out << "[" << mapping[level] << "]"
-           << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X") << ": "
-           << msg << std::endl;
+      ss << "[" << mapping[level] << "]"
+         << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X") << ": "
+         << std::string(buffer);
+
+      *out << ss.str() << std::endl;
     }
 
-    Logger &Logger::operator=(const Logger &other) {
-      this->out = other.out;
-      return *this;
+    void Logger::Log(std::string format, ...) {
+      std::va_list args;
+      va_start(args, format);
+      log(out, LoggingLevel::Info, format, args);
+      va_end(args);
+    }
+
+    void Logger::Log(LoggingLevel level, std::string format, ...) {
+      std::va_list args;
+      va_start(args, format);
+      log(out, level, format, args);
+      va_end(args);
     }
 
     Logger *Logger::GetLogger(std::string filename) {
@@ -88,5 +97,5 @@ namespace jerobins {
       }
       return &iter->second;
     }
-  }
-}
+  } // namespace common
+} // namespace jerobins

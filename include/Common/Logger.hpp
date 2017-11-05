@@ -18,23 +18,8 @@ namespace jerobins {
             Logger(const Logger & other);
             ~Logger();
 
-            template<class T>
-            void Log(T && obj, LoggingLevel level = Info) {
-                Log(obj , level);
-            }
-
-            template<class T>
-            void Log(T & obj, LoggingLevel level = Info) {
-                std::stringstream ss;
-                ss << obj;
-                Log(ss.str(), level);
-            }
-
-            void Log(std::string file, int line, std::string & msg, LoggingLevel level = Info);            
-            void Log(std::string file, int line, std::string && msg, LoggingLevel level = Info);            
-            void Log(std::string & msg, LoggingLevel level = Info);
-            void Log(std::string && msg, LoggingLevel level = Info) {Log(msg, level);}
-            
+            void Log(LoggingLevel level, std::string format, ...);            
+            void Log(std::string format, ...);            
             
             static Logger* GetLogger(std::string filename = "output.log");
             

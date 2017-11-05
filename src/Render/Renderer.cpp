@@ -4,10 +4,6 @@
 #include <Math/Vec2.hpp>
 #include <Render/Renderer.hpp>
 
-#define CheckGL(OP)                                                            \
-  OP;                                                                          \
-  CheckOpenGLError()
-
 namespace jerobins {
   namespace render {
 
@@ -36,11 +32,8 @@ namespace jerobins {
 
       // TODO(jerobins): Generated Arrays/Buffers for other components
       // Create and bind a VBO for vertices
-      CheckGL(glGenVertexArrays(1, &VertexArrayID));
-      CheckGL(glBindVertexArray(VertexArrayID));
-
-      // Generate a buffer for vertices
-      CheckGL(glGenBuffers(1, &vertexbuffer));
+      CheckGL(glGenBuffers(1, &VertexArrayID));
+      CheckGL(glBindBuffer(GL_ARRAY_BUFFER, VertexArrayID));
 
       // TODO(jerobins): Default for now, determine best practices
       CheckGL(glBufferData(GL_ARRAY_BUFFER, 4098, NULL, GL_STATIC_DRAW));
@@ -76,18 +69,23 @@ namespace jerobins {
       // Vertices
       GLsizei elementSize = sizeof(jerobins::math::Vec3<float>);
 
+      auto vertices = obj.GetVertices();
+      auto numVertices = obj.VertexCount() * elementSize;
+
+      jerobins::common::Logger::GetLogger()->Log("NumBytes: %zu", numVertices);
+      if(vertices == nullptr || vertices == NULL) jerobins::common::Logger::GetLogger()->Log("null");
+       
       // Target type, first index, how many (bytes), data
-      glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-      CheckOpenGLError();
-      glBufferSubData(GL_ARRAY_BUFFER, subBufferOffset,
-                      obj.VertexCount() * elementSize, obj.GetVertices());
-      CheckOpenGLError();
+      CheckGL(glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer));
+      CheckGL(glBufferSubData(GL_ARRAY_BUFFER, subBufferOffset,
+                              numVertices,
+                              vertices));
 
       // index, sizeof of element, type, normalized, stride, start of data
-      glEnableVertexAttribArray(vertexAttrPtr);
-      glVertexAttribPointer(vertexAttrPtr, 3, GL_FLOAT, GL_FALSE, elementSize,
-                            (uint8_t *)0 + subBufferOffset);
-      CheckOpenGLError();
+      CheckGL(glEnableVertexAttribArray(vertexAttrPtr));
+      CheckGL(glVertexAttribPointer(vertexAttrPtr, 3, GL_FLOAT, GL_FALSE,
+                                    elementSize,
+                                    (uint8_t *)0 + subBufferOffset));
 
       subBufferOffset += elementSize * obj.VertexCount();
 
