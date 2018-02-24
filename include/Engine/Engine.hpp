@@ -12,10 +12,14 @@ namespace jerobins {
       Engine();
 
     public:
+      /**
+       * @brief Create a new engine using the configuration file.
+       *
+       * @param configuration The configuration of the engine.
+       */
       Engine(jerobins::common::Configuration configuration);
-
     };
-  }
-}
+  } // namespace engine
+} // namespace jerobins
 
 #endif
