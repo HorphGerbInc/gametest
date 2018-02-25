@@ -41,15 +41,20 @@ void cleanupOpenGL() {
   glDeleteVertexArrays(1, &VertexArrayID);
 }
 
+jerobins::common::CommandLineArguments initCommandLine(int argc, char *argv[]) {
+  jerobins::common::CommandLineArguments cli;
+  cli.AddFlag("debug");
+  cli.AddParameter("test");
+  cli.Parse(argc, argv);
+  return cli;
+}
+
 /**/
 int main(int argc, char *argv[]) {
   jerobins::common::Logger::GetLogger()->Log("Starting");
   try {
     // Handle command line arguemnts
-    jerobins::common::CommandLineArguments cli;
-    cli.AddFlag("debug");
-    cli.AddParameter("test");
-    cli.Parse(argc, argv);
+    jerobins::common::CommandLineArguments cli = initCommandLine(argc, argv);
 
     jerobins::platform::Window *window =
         jerobins::platform::Window::Create("main");

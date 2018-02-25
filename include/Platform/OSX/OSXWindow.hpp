@@ -11,6 +11,16 @@ namespace jerobins {
     class OSXWindow : public Window {
 
     public:
+      /**
+       * @brief Create a new window with the given parameters.
+       *
+       * @param name        The name of the window as shown in the title bar.
+       * @param height      The height of the window.
+       * @param width       The width of the window.
+       * @param fullscreen  Specify if fullscreen.
+       * @param windowless  Specify if windowless.
+       * @param resizable   Specify if resizable.
+       */
       OSXWindow(const std::string name, int height = 1080, int width = 1920,
                 bool fullscreen = false, bool windowless = false,
                 bool resizable = true);
@@ -57,8 +67,8 @@ namespace jerobins {
     private:
       // OSX dependent stuff
     };
-  }
-}
+  } // namespace platform
+} // namespace jerobins
 
 // Header guard
 #endif

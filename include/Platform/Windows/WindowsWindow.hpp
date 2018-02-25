@@ -22,6 +22,17 @@ namespace jerobins {
     class WindowsWindow : public Window {
 
     public:
+      /**
+       * @brief Create a new window for Microsoft Windows environments.
+       *
+       * @param instance      The HInstance.
+       * @param name          Name which appears in the title bar.
+       * @param height        Height of the window.
+       * @param width         Width of the window.
+       * @param fullscreen    Specifies if fullscreen.
+       * @param borderless    Specifies if bordless.
+       * @param resizable     Specifies if resizable.
+       */
       WindowsWindow(HINSTANCE instance, const std::string name,
                     int height = 1080, int width = 1920,
                     bool fullscreen = false, bool borderless = false,
@@ -78,7 +89,8 @@ namespace jerobins {
       // Swap the buffers
       virtual void SwapBuffer();
 
-	  LRESULT CALLBACK WindowsProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+      LRESULT CALLBACK WindowsProc(HWND hwnd, UINT msg, WPARAM wParam,
+                                   LPARAM lParam);
 
     private:
       unsigned int pixel_format;
@@ -86,8 +98,8 @@ namespace jerobins {
       HDC hardwareDescriptor = NULL;
       HWND windowHandle = NULL;
     };
-  }
-}
+  } // namespace platform
+} // namespace jerobins
 
 // header guard
 #endif

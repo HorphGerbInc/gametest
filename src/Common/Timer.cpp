@@ -30,10 +30,11 @@ namespace jerobins {
     uint64_t Timer::Duration() {
       if (running) {
         auto now = high_resolution_clock::now();
-        auto ticks = duration_cast<milliseconds>(now.time_since_epoch()).count();
+        auto ticks =
+            duration_cast<milliseconds>(now.time_since_epoch()).count();
         duration = ticks - start;
       }
       return duration;
     }
-  }
-}
+  } // namespace common
+} // namespace jerobins

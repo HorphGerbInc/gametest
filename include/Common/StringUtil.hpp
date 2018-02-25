@@ -23,7 +23,7 @@ namespace jerobins {
        * @return std::vector<std::string> The list of split strings.
        */
       static std::vector<std::string> Split(std::string str, std::string delims,
-                                            bool keepEmpty = false);
+                                            bool keepEmptyStrings = false);
 
       /**
        * @brief Fill in a format string with values.

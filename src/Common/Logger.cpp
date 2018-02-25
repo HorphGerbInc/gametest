@@ -6,13 +6,17 @@
 #include <iomanip>
 #include <map>
 
+#include <Sync/Lock.hpp>
+
+// Static parameters.
 static const int BufferSize = 4096;
 static char Buffer[BufferSize];
+static std::mutex mutex_;
 
 #ifdef _WIN32
 #include <windows.h>
 std::string GetFullPath(std::string name) {
-  int len = GetFullPathName(name.c_str(), BufferSize, Buffer, NULL);
+  int len = GetFullPathNameA(name.c_str(), BufferSize, Buffer, NULL);
   Buffer[len] = 0;
   return std::string(Buffer);
 }
@@ -27,9 +31,7 @@ std::string GetFullPath(std::string name) {
 }
 
 #else
-
 #error "Unsupported OS"
-
 #endif
 
 #include <Common/Logger.hpp>
@@ -88,6 +90,7 @@ namespace jerobins {
     }
 
     Logger *Logger::GetLogger(std::string filename) {
+      jerobins::sync::Lock l(mutex_);
       filename = GetFullPath(filename);
       auto iter = loggers.find(filename);
       if (iter == loggers.end()) {

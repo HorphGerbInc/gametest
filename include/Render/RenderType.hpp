@@ -25,10 +25,30 @@ namespace jerobins {
       Invalid
     };
 
+    /**
+     * @brief Return a string representation of the enum.
+     *
+     * @param type          RenderType value.
+     * @return std::string  String representation of enum value.
+     */
     std::string RenderTypeToString(RenderType type);
+
+    /**
+     * @brief Convert a string representation of RenderType to its enum value..
+     *
+     * @param str           String representation of RenderType value.
+     * @return RenderType   RenderType value.
+     */
     RenderType StringToRenderType(const std::string &str);
+
+    /**
+     * @brief Convert RenderType to OpenGL type.
+     *
+     * @param type    RenderType value.
+     * @return GLint  OpenGL value.
+     */
     GLint RenderTypeToGLType(RenderType type);
-  }
-}
+  } // namespace render
+} // namespace jerobins
 
 #endif

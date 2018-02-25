@@ -14,10 +14,23 @@ namespace jerobins {
 
     template <bool B> using EnableIfB = typename std::enable_if<B, int>::type;
 
+    /**
+     * @brief Base class for all array based vectors.
+     *
+     * @tparam DerivedClass   The child class that inherits from us.
+     * @tparam Dim            How many dimensions.
+     * @tparam ElementType    The type of elements in the vector.
+     */
     template <class DerivedClass, int Dim, typename ElementType>
     class VectorBase {
 
     public:
+      /**
+       * @brief Assignment operator.
+       *
+       * @param other           Right hand side.
+       * @return DerivedClass&  This object.
+       */
       DerivedClass &operator=(const DerivedClass &other) {
         if (this != *other) {
           for (int i = 0; i < Dim; ++i)
@@ -25,6 +38,13 @@ namespace jerobins {
         }
         return CastToDerived();
       }
+
+      /**
+       * @brief Assignment operator.
+       *
+       * @param other           Right hand side.
+       * @return DerivedClass&  This object.
+       */
       DerivedClass &operator=(const DerivedClass &&other) {
         for (int i = 0; i < Dim; ++i)
           Set(i, other.Get(i));
@@ -33,30 +53,87 @@ namespace jerobins {
 
       // Pure Virtual
 
-      // Pairwise multiplication
+      /**
+       * @brief Pariwise multiplication.
+       *
+       * @param other             Right hand side.
+       * @return DerivedClass&    The left hand side.
+       */
       virtual DerivedClass &operator*=(const DerivedClass &other) = 0;
-      // Scalar multiplication
+
+      /**
+       * @brief Scalar multiplication.
+       *
+       * @param scalar          The right hand side scalar.
+       * @return DerivedClass&  Left hand side.
+       */
       virtual DerivedClass &operator*=(const ElementType &scalar) = 0;
-      // Pairwise Addition
+
+      /**
+       * @brief Pairwise addition.
+       *
+       * @param other           Right hand side vector.
+       * @return DerivedClass&  Left hand side vector.
+       */
       virtual DerivedClass &operator+=(const DerivedClass &other) = 0;
-      // Pairwise Subtraction
+
+      /**
+       * @brief Pairwise subtraction.
+       *
+       * @param other           Right hand side vector.
+       * @return DerivedClass&  Left hand side vector.
+       */
       virtual DerivedClass &operator-=(const DerivedClass &other) = 0;
-      // Dot
+
+      /**
+       * @brief Dot product.
+       *
+       * @param other           Right hand side vector.
+       * @return ElementType    Dot product.
+       */
       virtual ElementType Dot(const DerivedClass &other) const = 0;
-      // Get the value at a position
-      virtual ElementType Get(int) const = 0;
-      // Set the value at a position
-      virtual void Set(int, ElementType) = 0;
-      // Return the raw pointer
+
+      /**
+       * @brief Get the element at the given index.
+       *
+       * @parama index        Vector index.
+       * @return ElementType  Value at given index.
+       */
+      virtual ElementType Get(int index) const = 0;
+
+      /**
+       * @brief Set the value at the given index.
+       *
+       * @param index Vector index.
+       * @param value New value.
+       */
+      virtual void Set(int index, ElementType value) = 0;
+
+      /**
+       * @brief Return the raw underlying array.
+       *
+       * @return const ElementType* Underlying array.
+       */
       virtual const ElementType *Raw() const = 0;
 
       // Implementations
 
-      // Pairwise Multiplication
+      /**
+       * @brief Pairwise multiplication.
+       *
+       * @param other           Right hand side vector.
+       * @return DerivedClass&  Left hand side vector.
+       */
       DerivedClass &operator*=(const DerivedClass &&other) {
         return *this *= other;
       }
 
+      /**
+       * @brief Pairwise multiplication.
+       *
+       * @param other         Right hand side vector.
+       * @return DerivedClass New vector.
+       */
       DerivedClass operator*(const DerivedClass &other) const {
         DerivedClass result;
         for (int i = 0; i < Dim; ++i) {
@@ -66,68 +143,145 @@ namespace jerobins {
         return result;
       }
 
+      /**
+       * @brief Pairwise multiplication.
+       *
+       * @param other         Right hand side vector.
+       * @return DerivedClass New vector.
+       */
       DerivedClass operator*(const DerivedClass &&other) const {
         return *this * other;
       }
 
+      /**
+       * @brief Scalar multiplication.
+       *
+       * @param scalar          Scalar value.
+       * @return DerivedClass&  Left hand side vector.
+       */
       DerivedClass &operator*=(const ElementType &&scalar) {
         return (*this *= scalar);
       }
 
-      // Scalar multiplication
+      /**
+       * @brief Scalar multiplication.
+       *
+       * @param scalar          Scalar value.
+       * @return DerivedClass   New vector with result.
+       */
       DerivedClass operator*(const ElementType &scalar) {
         DerivedClass result(*this);
         return result *= scalar;
       }
 
+      /**
+       * @brief Scalar multiplication.
+       *
+       * @param scalar          Scalar value.
+       * @return DerivedClass   New vector with result.
+       */
       DerivedClass operator*(const ElementType &&scalar) {
         return *this * scalar;
       }
 
-      // Pairwise Addition
+      /**
+       * @brief Pairwise addition.
+       *
+       * @param other           Right hand side vector.
+       * @return DerivedClass&  Right hand side vector.
+       */
       DerivedClass &operator+=(const DerivedClass &&other) {
         return *this += other;
       }
 
+      /**
+       * @brief Pairwise addition.
+       *
+       * @param other           Right hand side vector.
+       * @return DerivedClass   New vector with result.
+       */
       DerivedClass operator+(const DerivedClass &other) const {
         DerivedClass result = Clone();
         result += other;
         return result;
       }
 
+      /**
+       * @brief Pairwise addition.
+       *
+       * @param other           Right hand side vector.
+       * @return DerivedClass   New vector with result.
+       */
       DerivedClass operator+(const DerivedClass &&other) const {
         return *this + other;
       }
 
-      // Pairwise subtraction
+      /**
+       * @brief Pairwise subtraction.
+       *
+       * @param other           Right hand side vector.
+       * @return DerivedClass&  Left hand side vector.
+       */
       DerivedClass &operator-=(const DerivedClass &&other) {
         return *this -= other;
       }
 
+      /**
+       * @brief Pairwise subtraction.
+       *
+       * @param other           Right hand side vector.
+       * @return DerivedClass   New vector with result.
+       */
       DerivedClass operator-(const DerivedClass &other) const {
         DerivedClass result = Clone();
         result -= other;
         return result;
       }
 
+      /**
+       * @brief Pairwise subtraction.
+       *
+       * @param other           Right hand side vector.
+       * @return DerivedClass   New vector with result.
+       */
       DerivedClass operator-(const DerivedClass &&other) const {
         return (*this - other);
       }
 
-      // Dot product
+      /**
+       * @brief Dot product.
+       *
+       * @param other           Right hand side vector.
+       * @return ElementType    Dot product.
+       */
       ElementType Dot(const DerivedClass &&other) const { return Dot(other); }
 
     protected:
+      /**
+       * @brief Check the bounds of the index.
+       *
+       * @param pos The index to check.
+       */
       void BoundsCheck(int pos) const {
         if (pos < 0 || pos > Dim) {
           throw std::runtime_error("Out of bounds");
         }
       }
 
+      /**
+       * @brief Cast to the derived class.
+       *
+       * @return DerivedClass&  This object as the derived class type.
+       */
       DerivedClass &CastToDerived() {
         return *static_cast<DerivedClass *>(this);
       }
 
+      /**
+       * @brief Cast to the derived class.
+       *
+       * @return DerivedClass&  This object as the derived class type.
+       */
       const DerivedClass &CastToDerived() const {
         return *static_cast<DerivedClass *>(this);
       }
@@ -162,7 +316,7 @@ namespace jerobins {
         output.Set(i, j[mapping[i]]);
       }
     }
-  }
-}
+  } // namespace math
+} // namespace jerobins
 
 #endif

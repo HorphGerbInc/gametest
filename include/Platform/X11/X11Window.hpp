@@ -25,6 +25,16 @@ namespace jerobins {
     class X11Window : public jerobins::platform::Window {
 
     public:
+    /**
+     * @brief Create a new window for the X11 windowing system.
+     * 
+     * @param name          Name which appears in the title bar.
+     * @param height        Height of the window.
+     * @param width         Width of the window.
+     * @param fullscreen    Specifies if fullscreen.
+     * @param borderless    Specifies if borderless.
+     * @param resizable     Specifies if resizable.
+     */
       X11Window(const std::string name, int height = 1080, int width = 1920,
                 bool fullscreen = false, bool borderless = false,
                 bool resizable = true);
