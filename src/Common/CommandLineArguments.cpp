@@ -98,7 +98,7 @@ namespace jerobins {
           ++pos;
 
           if (pos == argc) {
-            throw jerobins::common::EndOfInputException(key);
+            throw jerobins::common::CommandLineEndOfInputException(key);
           }
 
           auto value = argv[pos];
@@ -108,7 +108,7 @@ namespace jerobins {
           flagsSeen.push_back(token);
           ++pos;
         } else {
-          throw jerobins::common::CommandLineArgumentException(token);
+          throw jerobins::common::CommandLineEndOfInputException(token);
         }
       }
     }

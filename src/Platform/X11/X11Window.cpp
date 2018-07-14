@@ -249,7 +249,7 @@ namespace jerobins {
       if (border == borderless) {
         return;
       }
-      // TODO: enable borderless
+      // TODO(jerobins): enable borderless
     }
 
     void X11Window::SwapBuffer() {

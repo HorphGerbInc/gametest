@@ -6,7 +6,11 @@
 
 namespace jerobins {
   namespace common {
+    /**
+     * @brief The version of the engine.
+     *
+     */
     extern const Version version;
-  }
-}
+  } // namespace common
+} // namespace jerobins
 #endif

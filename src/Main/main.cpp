@@ -36,60 +36,17 @@ static GLuint vertexbuffer;
 
 jerobins::resource::ShaderProgram program;
 
-void setupOpenGL() {
-
-  program =
-      jerobins::resource::ShaderProgram::Load("shaders/programs/default.json");
-  program.Link();
-
-  // black background
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-  glGenVertexArrays(1, &VertexArrayID);
-
-  glBindVertexArray(VertexArrayID);
-
-  static const GLfloat g_vertex_buffer_data[] = {
-      -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f,
-  };
-
-  glGenBuffers(1, &vertexbuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data),
-               g_vertex_buffer_data, GL_STATIC_DRAW);
-
-}
-
-void drawOpenGL() {
-  // Clear the screen
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  jerobins::common::Logger::GetLogger()->Log("glClear");
-  jerobins::render::opengl::CheckError();
-
-  program.Attach();
-  jerobins::common::Logger::GetLogger()->Log("attach");
-  jerobins::render::opengl::CheckError();
-
-  // 1rst attribute buffer : vertices
-  glEnableVertexAttribArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-  glVertexAttribPointer(0, // attribute 0. No particular reason for 0, but
-                           // must match the layout in the shader.
-                        3, // size
-                        GL_FLOAT, // type
-                        GL_FALSE, // normalized?
-                        0,        // stride
-                        (void *)0 // array buffer offset
-                        );
-
-  // Draw the triangle !
-  glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
-  glDisableVertexAttribArray(0);
-}
-
 void cleanupOpenGL() {
   glDeleteBuffers(1, &vertexbuffer);
   glDeleteVertexArrays(1, &VertexArrayID);
+}
+
+jerobins::common::CommandLineArguments initCommandLine(int argc, char *argv[]) {
+  jerobins::common::CommandLineArguments cli;
+  cli.AddFlag("debug");
+  cli.AddParameter("test");
+  cli.Parse(argc, argv);
+  return cli;
 }
 
 /**/
@@ -97,10 +54,7 @@ int main(int argc, char *argv[]) {
   jerobins::common::Logger::GetLogger()->Log("Starting");
   try {
     // Handle command line arguemnts
-    jerobins::common::CommandLineArguments cli;
-    cli.AddFlag("debug");
-    cli.AddParameter("test");
-    cli.Parse(argc, argv);
+    jerobins::common::CommandLineArguments cli = initCommandLine(argc, argv);
 
     jerobins::platform::Window *window =
         jerobins::platform::Window::Create("main");
@@ -110,10 +64,7 @@ int main(int argc, char *argv[]) {
 
     jerobins::render::Renderer renderer;
     renderer.Init();
-    jerobins::common::Logger::GetLogger()->Log("after window init");
-    jerobins::render::opengl::CheckError();
-
-    //setupOpenGL();
+    CheckOpenGLError();
 
     auto triangle = jerobins::resource::Model::Load("models/red_triangle.json");
 
@@ -122,11 +73,10 @@ int main(int argc, char *argv[]) {
       jerobins::common::Timer timer;
       timer.Start();
       window->HandleEvents();
+      CheckOpenGLError();
 
       renderer.Render(triangle);
-      //drawOpenGL();
-      jerobins::common::Logger::GetLogger()->Log("After Render call");
-      jerobins::render::opengl::CheckError();
+      CheckOpenGLError();
 
       window->SwapBuffer();
 
@@ -136,7 +86,6 @@ int main(int argc, char *argv[]) {
           jerobins::common::StringUtil::Format(
               "FPS: %f", DurationToFPS((double)timer.Duration())));
     }
-
     cleanupOpenGL();
 
     window->ReleaseContext();

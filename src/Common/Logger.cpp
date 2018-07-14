@@ -1,17 +1,22 @@
 
 #include <chrono>
+#include <cstdarg>
 #include <ctime>
 #include <fstream>
 #include <iomanip>
 #include <map>
 
+#include <Sync/Lock.hpp>
+
+// Static parameters.
 static const int BufferSize = 4096;
 static char Buffer[BufferSize];
+static std::mutex mutex_;
 
 #ifdef _WIN32
 #include <windows.h>
 std::string GetFullPath(std::string name) {
-  int len = GetFullPathName(name.c_str(), BufferSize, Buffer, NULL);
+  int len = GetFullPathNameA(name.c_str(), BufferSize, Buffer, NULL);
   Buffer[len] = 0;
   return std::string(Buffer);
 }
@@ -26,9 +31,7 @@ std::string GetFullPath(std::string name) {
 }
 
 #else
-
 #error "Unsupported OS"
-
 #endif
 
 #include <Common/Logger.hpp>
@@ -55,20 +58,39 @@ namespace jerobins {
 
     Logger::~Logger() { out = nullptr; }
 
-    void Logger::Log(std::string &msg, LoggingLevel level) {
+    void log(std::shared_ptr<std::ostream> out, LoggingLevel level,
+             std::string format, std::va_list args) {
+
+      const int MaxBuffer = 1024;
+      char buffer[MaxBuffer];
+      std::vsnprintf(buffer, MaxBuffer, format.c_str(), args);
+
+      std::stringstream ss;
       auto now = std::chrono::system_clock::now();
       auto in_time_t = std::chrono::system_clock::to_time_t(now);
-      *out << "[" << mapping[level] << "]"
-           << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X") << ": "
-           << msg << std::endl;
+      ss << "[" << mapping[level] << "]"
+         << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X") << ": "
+         << std::string(buffer);
+
+      *out << ss.str() << std::endl;
     }
 
-    Logger &Logger::operator=(const Logger &other) {
-      this->out = other.out;
-      return *this;
+    void Logger::Log(std::string format, ...) {
+      std::va_list args;
+      va_start(args, format);
+      log(out, LoggingLevel::Info, format, args);
+      va_end(args);
+    }
+
+    void Logger::Log(LoggingLevel level, std::string format, ...) {
+      std::va_list args;
+      va_start(args, format);
+      log(out, level, format, args);
+      va_end(args);
     }
 
     Logger *Logger::GetLogger(std::string filename) {
+      jerobins::sync::Lock l(mutex_);
       filename = GetFullPath(filename);
       auto iter = loggers.find(filename);
       if (iter == loggers.end()) {
@@ -78,5 +100,5 @@ namespace jerobins {
       }
       return &iter->second;
     }
-  }
-}
+  } // namespace common
+} // namespace jerobins

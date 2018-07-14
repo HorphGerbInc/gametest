@@ -13,13 +13,13 @@ namespace jerobins {
   namespace common {
 
     std::vector<std::string> StringUtil::Split(std::string str,
-                                               std::string delims) {
+                                               std::string delims, bool keepEmptyStrings) {
       std::vector<std::string> result;
       std::stringstream ss;
-      for_each(str.begin(), str.end(), [&ss, &result, &delims](char c) {
+      for_each(str.begin(), str.end(), [&ss, &result, &delims, &keepEmptyStrings](char c) {
         if (delims.find(c) != delims.npos) {
           std::string candidate = ss.str();
-          if (candidate.length() != 0) {
+          if (keepEmptyStrings || candidate.length() != 0) {
             result.push_back(candidate);
           }
           ss.clear();
@@ -48,5 +48,5 @@ namespace jerobins {
       }
       return std::string(formatted.get());
     }
-  }
-}
+  } // namespace common
+} // namespace jerobins

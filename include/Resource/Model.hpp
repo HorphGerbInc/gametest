@@ -18,41 +18,39 @@ namespace jerobins {
     public:
       /* IRenderable */
 
-      virtual const jerobins::math::Vec3<float> *GetVertices() const {
-        return &vertices[0];
-      };
-      virtual unsigned int VertexCount() const {
-        return this->vertices.size();
-      };
+      /**
+       * @brief
+       *
+       * @return const jerobins::math::Vec3<float>*
+       */
+      virtual const jerobins::math::Vec3<float> *GetVertices() const;
+
+      virtual unsigned int VertexCount() const;
 
       // Color of vertices
-      virtual const jerobins::render::Color *GetColors() const {
-        return &colors[0];
-      };
-      virtual unsigned int ColorCount() const { return this->colors.size(); };
+      virtual const jerobins::render::Color *GetColors() const;
+
+      virtual unsigned int ColorCount() const;
 
       // normal of vertices
-      virtual const jerobins::math::Vec3<float> *GetNormals() const {
-        return &norms[0];
-      };
-      virtual unsigned int NormalCount() const { return this->norms.size(); };
+      virtual const jerobins::math::Vec3<float> *GetNormals() const;
+
+      virtual unsigned int NormalCount() const;
 
       // Textures
-      virtual const jerobins::math::Vec2<int> *GetTexureCoords() const {
-        return &textCoords[0];
-      }
-      virtual unsigned int TextureCount() const { return textCoords.size(); }
+      virtual const jerobins::math::Vec2<int> *GetTexureCoords() const;
+
+      virtual unsigned int TextureCount() const;
 
       // Indices
-      virtual const int *GetIndices() const { return &indices[0]; }
-      virtual unsigned int IndicesCount() const { return indices.size(); }
+      virtual const int *GetIndices() const;
+
+      virtual unsigned int IndicesCount() const;
 
       // The structure of the data
-      virtual jerobins::render::RenderType Type() const { return type; }
+      virtual jerobins::render::RenderType Type() const;
 
-      virtual const jerobins::resource::ShaderProgram Program() const {
-        return program;
-      }
+      virtual const jerobins::resource::ShaderProgram Program() const;
 
       /* ISerializable */
       virtual void
@@ -62,9 +60,14 @@ namespace jerobins {
       static Model Deserialize(std::istream &is,
                                jerobins::common::SerializationFormat format);
 
+      virtual bool
+      SupportsFormat(jerobins::common::SerializationFormat format) const;
+
       /* IResource */
 
       static Model Load(std::string filename);
+
+      virtual void Save(std::string filename) const;
 
       virtual std::string ToString() const;
 
@@ -77,16 +80,8 @@ namespace jerobins {
 
     private:
       Model();
-
-      std::vector<jerobins::math::Vec3<float>> vertices;
-      std::vector<int> indices;
-      std::vector<jerobins::render::Color> colors;
-      std::vector<jerobins::math::Vec3<float>> norms;
-      std::vector<jerobins::math::Vec2<int>> textCoords;
-      jerobins::render::RenderType type;
-      ShaderProgram program;
     };
-  }
-}
+  } // namespace resource
+} // namespace jerobins
 
 #endif

@@ -9,17 +9,32 @@
 
 namespace jerobins {
   namespace common {
-    /*
-    *  Software version object.
-    */
+    /**
+     * @brief Represents a software version.
+     *
+     */
     class Version : public ISerializable<Version> {
     private:
       Version();
       mutable std::string strRep = "";
 
     public:
+      /**
+       * @brief Major version.
+       *
+       */
       const uint16_t Major;
+
+      /**
+       * @brief Minor version.
+       *
+       */
       const uint16_t Minor;
+
+      /**
+       * @brief Patch version.
+       *
+       */
       const uint16_t Patch;
 
       /*
@@ -41,11 +56,13 @@ namespace jerobins {
       virtual void Serialize(std::ostream &os,
                              SerializationFormat format) const;
       static Version Deserialize(std::istream &is, SerializationFormat format);
+
+      virtual bool SupportsFormat(SerializationFormat format) const;
     };
 
     /* Stream handling */
     std::ostream &operator<<(std::ostream &strm, const Version &a);
-  }
-}
+  } // namespace common
+} // namespace jerobins
 
 #endif

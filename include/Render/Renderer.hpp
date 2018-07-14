@@ -12,19 +12,31 @@ namespace jerobins {
   namespace render {
     class Renderer {
     public:
+      /**
+       * @brief Create a new Renderer.
+       *
+       */
       Renderer();
 
-      // Initialize OpenGL, create buffers, load programs.
+      /**
+       * @brief Initialize rendering system, create buffer, load programs.
+       *
+       */
       void Init();
-      /*
-       *  Given a list of polygons we render them
+
+      /**
+       * @brief Given a list of renderable objects render them.
+       *
+       * @param objs List of renderable objects.
        */
       void Render(std::vector<jerobins::render::IRenderable> objs);
 
-      /*
-       *  Given a polygon we want to render it to the screen
+      /**
+       * @brief Given a renderable object render it to the screen.
+       *
+       * @param obj The renderable object.
        */
-      void Render(jerobins::render::IRenderable &poly);
+      void Render(jerobins::render::IRenderable &obj);
 
     protected:
       GLint vertexAttrPtr;
@@ -34,9 +46,8 @@ namespace jerobins {
 
       GLuint VertexArrayID;
       GLuint vertexbuffer;
-      
     };
-  }
-}
+  } // namespace render
+} // namespace jerobins
 
 #endif

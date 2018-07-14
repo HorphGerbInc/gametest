@@ -15,36 +15,75 @@
 namespace jerobins {
   namespace resource {
 
+    /**
+     * @brief Shader type.
+     *  - Vertex    - Vertex shader.
+     *  - Fragment  - Fragment shader.
+     */
     enum ShaderType { Vertex, Fragment };
 
     template <class Derived, ShaderType type>
     class Shader : public jerobins::resource::IResource<Derived> {
     public:
-      // Return shader name
+      /**
+       * @brief Name of the shader.
+       *
+       * @return std::string  String representation of the shader.
+       */
       std::string Name() const { return name; }
 
-      // Return shader description
+      /**
+       * @brief Description of the shader.
+       *
+       * @return std::string String representation of the shader.
+       */
       std::string Description() const { return description; }
 
-      // Return shader contents
+      /**
+       * @brief Shader content.
+       *
+       * @return std::string  Content.
+       */
       std::string Content() const { return contents; }
 
-      // Length of the shader
+      /**
+       * @brief The length of the content.
+       *
+       * @return unsigned int Length of the content.
+       */
       unsigned int Length() const { return contents.size(); }
 
-      // Compile the shader
+      /**
+       * @brief Compile the shader.
+       *
+       * @return true   Compilation succeeded.
+       * @return false  Compilation failed.
+       */
       virtual bool Compile() = 0;
 
-      // Type of Shader (vertex/fragment)
+      /**
+       * @brief Get the type of the shader.
+       *
+       * @return ShaderType Type of the shader.
+       */
       ShaderType GetType() const { return type; };
 
-      // Return a string representation
+      /**
+       * @brief Convert this resource to a string.
+       *
+       * @return std::string Return a string representation of shader.
+       */
       virtual std::string ToString() const { return description; }
 
-      // Shader Id
+      /**
+       * @brief The shaders OpenGL ID.
+       *
+       * @return GLuint ID.
+       */
       GLuint ShaderId() const { return shaderId; }
 
     protected:
+      // Compile the shader for OpenGL.
       bool compile(GLenum shaderType) {
 
         jerobins::common::Logger::GetLogger()->Log("Compiling shader for " +
@@ -65,7 +104,7 @@ namespace jerobins {
           glGetShaderInfoLog(shaderId, 512, NULL, error);
           throw std::runtime_error(std::string(error));
         }
-        
+
         jerobins::common::Logger::GetLogger()->Log(
             "sucess compiling shader for " + Name());
         return true;
@@ -78,7 +117,7 @@ namespace jerobins {
       std::string contents;
       std::string version;
     };
-  }
-}
+  } // namespace resource
+} // namespace jerobins
 
 #endif

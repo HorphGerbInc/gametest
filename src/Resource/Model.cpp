@@ -58,6 +58,8 @@ namespace jerobins {
       jerobins::common::Logger::GetLogger()->Log("type read");
       result.vertices =
           input.at("vertices").get<std::vector<jerobins::math::Vec3<float>>>();
+          jerobins::common::Logger::GetLogger()->Log("%uz", result.vertices.size());
+          
 
       jerobins::common::Logger::GetLogger()->Log("vertices read");
       result.program = ShaderProgram::Load(

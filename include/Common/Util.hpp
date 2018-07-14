@@ -8,24 +8,48 @@
 namespace jerobins {
   namespace common {
 
-    // Convert from one data-type to another
+    /**
+     * @brief Convert a byte array into an object..
+     *
+     * @tparam T    The output type.
+     * @param input The input byte array.
+     * @return T    The output object.
+     */
     template <typename T> static T Convert(char *input) {
       return *dynamic_cast<T *>(input);
     }
 
-    // Returns tru e if a map contains a value
+    /**
+     * @brief Checks to see if a map contains the given key.
+     *
+     * @tparam K      Key type.
+     * @tparam V      Value type.
+     * @param map     Map to check.
+     * @param key     Key to look for.
+     * @return true   The key exists in the map.
+     * @return false  The key does not exist in the map.
+     */
     template <class K, class V>
-    auto Contains(const std::map<K, V> &map, const K &value) {
+    bool Contains(const std::map<K, V> &map, const K &key) {
       return map.find(value) != map.end();
     }
 
-    // Returns true if an enumerable contains a value
+    /**
+     * @brief Checks to see if the datastructure contains the value.
+     *
+     * @tparam T          The datastructure type.
+     * @tparam Y          The type the datastructure holds.
+     * @param enumerable  The datastructure.
+     * @param value       The value to search for.
+     * @param true        The valueis in the datastrcture.
+     * @param false       The value is not in the datastructure.
+     */
     template <class T, typename Y>
-    auto Contains(const T &enumerable, const Y &value)
-        -> decltype(end(enumerable), true) {
+    bool Contains(const T &enumerable, const Y &value)
+        ->decltype(end(enumerable), true) {
       return std::find(begin(enumerable), end(enumerable), value) !=
              end(enumerable);
     }
-  }
-}
+  } // namespace common
+} // namespace jerobins
 #endif

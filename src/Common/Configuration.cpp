@@ -4,6 +4,7 @@
 namespace jerobins {
   namespace common {
 
+    // Set the configuration version.
     const jerobins::common::Version Configuration::Version(0, 1, 0);
 
     Configuration::Configuration() { /* Empty */
@@ -30,22 +31,27 @@ namespace jerobins {
       }
     }
 
+    // Load a configuration from a stream.
     static Configuration Deserialize(std::istream &input) {
       Configuration config;
       std::string line;
       while (std::getline(input, line)) {
-        std::vector<std::string> lines = jerobins::common::StringUtil::Split(line, ":");
-        if (lines.size() != 2) {
+        std::vector<std::string> lines =
+            jerobins::common::StringUtil::Split(line, ":");
 
+        if (lines.size() != 2) {
           throw std::runtime_error("Could not deserialize");
         }
+
         std::string key = lines[0];
         std::string value = lines[1];
+
         config.Write<std::string>(key, value);
       }
       return config;
     }
 
+    // Write the configuration to a file.
     void Configuration::Serialize(std::ostream &output) const {
       for_each(this->mappings.begin(), this->mappings.end(),
                [&output](auto pair) {
@@ -53,5 +59,5 @@ namespace jerobins {
                });
       output.flush();
     }
-  }
-}
+  } // namespace common
+} // namespace jerobins
